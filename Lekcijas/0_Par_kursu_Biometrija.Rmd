@@ -1,6 +1,6 @@
 ---
 title: "Biometrija"
-author: "Andris Avotiņš & Didzis Elferts"
+author: "Andris Avotiņš"
 output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css","my-css.css"]
@@ -81,60 +81,48 @@ tēmām, kas ir bijusi kursa laikā
 ## Nodarbību laiki
 
 * Lekcijas
-  1. Trešdiena, 8.30 - 10.00 (kopā 8 lekcijas)
+  1. Pirmdiena, 8.30 - 10.00 (kopā 8 lekcijas)
   
 * Praktiskās nodarbības/darbi
-  1. Pirmdiena, 14.30 - 16.00
+  1. Pirmdiena, 12.30 - 14.00
   
-  2. Otrdiena, 12.30 - 14.00
+  2. Pirmdiena, 14.30 - 16.00
   
-  3. Otrdiena, 14.30 - 16.00
+  3. Otrdiena, 12.30 - 14.00
   
-  4. Trešdiena, 14.30 - 16.00
+  4. Otrdiena, 14.30 - 16.00
 
 .defin[
-Citas grupas laikā var ierasties tikai iepriekšs saskaņojot ar pasniedzēju!
+Citas grupas laikā var ierasties tikai iepriekš saskaņojot ar pasniedzēju!
 ]
 
 ---
 ## Lekcijas
 
-* 07.09.2022. - Biometrija. Dati.
+* 11.09.2022. - Biometrija. Dati.
 
-* 21.09.2022. - Eksperimentu dizains. Teorētiskie sadalījumi
+* 18.09.2022. - Eksperimentu dizains. Teorētiskie sadalījumi
 
-* 05.10.2022. - Statistiskie rādītāji un Ticamības intervāli
+* 02.10.2022. - Statistiskie rādītāji un Ticamības intervāli
 
-* 19.10.2022. - Paraugkopu salīdzināšana
+* 16.10.2022. - Paraugkopu salīdzināšana
 
-* 26.10.2022. - Korelācijas analīze un Regresijas analīze
+* 23.10.2022. - Korelācijas analīze un Regresijas analīze
 
-* 16.11.2022. - Dispersijas un Kovariācijas analīze
+* 13.11.2022. - Dispersijas un Kovariācijas analīze
 
-* 07.12.2022. - Vispārējie lineārie modeļi
+* 04.12.2022. - Vispārējie lineārie modeļi
 
-* 14.12.2022. - Rezultātu prezentēšana. Labs attēls
+* 11.12.2022. - Rezultātu prezentēšana. Labs attēls
 
----
-## Konsultācijas - Didzis Elferts
-
-* Ceturtdiena, 14:30-16:00 vai iepriekš vienojoties citā laikā
-
-* Telpa attālināti
-
-* e-pasts: didzis.elferts@lu.lv
-
-* e-studiju vide
-
-* Pieteikšanās iespēja: https://calendly.com/delferts/ 
 
 
 ---
 ## Konsultācijas - Andris Avotiņš
 
-* Iepriekš piesakoties
+* Otrdiena, 14:30-16:00 vai iepriekš piesakoties
 
-* Telpa 205.
+* 205. telpa
 
 * e-pasts: andris.avotins@lu.lv
 
