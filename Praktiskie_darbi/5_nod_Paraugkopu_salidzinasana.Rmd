@@ -1,0 +1,393 @@
+---
+title: "Paraugkopu salīdzināšana"
+author: "Andris Avotiņš & Didzis Elferts"
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css","my-css.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:10'
+---
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  header_h2_font_size = "2rem",
+  base_color = "#43418A",
+  text_font_size = "25px",
+  text_slide_number_font_size = "0.5em",
+  outfile = "xaringan-themer.css"
+)
+options(htmltools.dir.version = FALSE)
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.height = 3, fig.width = 8, dev='svg', fig.align = "center")
+```
+
+## Dati 1
+
+```{r,comment=NA,echo=FALSE}
+library(readxl)
+niedr2<-read_excel("../Dati/lapas.xlsx")
+```
+```{r,comment=NA,eval=FALSE}
+library(readxl)
+niedr2 <- read_excel("lapas.xlsx")
+```
+```{r,comment=NA}
+str(niedr2)
+```
+
+---
+class: center, middle, inverse
+
+# Analizējot datus ir jāpārliecinās, kura no metodēm ir piemērota konkrēto datu analīzei!
+
+---
+## Normalitātes pārbaude 1
+
+Lai izmantotu parametriskās paraugkopu salīdzināšanas metodes, analīzes objektam ir jābūt normāli sadalītam.
+
+Normalitātes pārbaudes soļi:
+
+- kopējā sadalījuma forma (*Q-Q plot*);
+
+- ietekmīgo vērtību klātbūtne (*boxplot*);
+
+- analītiskā pārbaude (*Shapiro-Wilk test*)
+
+
+---
+## Normalitātes pārbaude 2
+
+.izm90[
+Kopējās sadalījuma formas izvērtēšanai pret izlases apjomu mazāk jutīga ir kvantiļu diagramma (*Q-Q plot*)
+
+
+```{r, eval=TRUE,message=FALSE,warning=FALSE, fig.height=2.8}
+library(ggplot2)
+library(qqplotr)
+ggplot(niedr2, aes(sample = platums)) + facet_wrap(~paraug) +
+  geom_qq_band() + stat_qq_line() + stat_qq_point() +
+labs(x = "Teorētiskās kvantiles", y = "Paraugkopas kvantiles")
+```
+]
+
+---
+## Normalitātes pārbaude 3
+
+Izlēcēji ietekmē vidējo aritmētisko - tas kļūst neuzticams. Pārbaudei ērti ir izmantot kārbu (vērtībamplitūdas) diagrammu (*boxplot*)
+
+```{r, eval=TRUE}
+ggplot(niedr2, aes(paraug, platums)) +
+  geom_boxplot()
+```
+
+---
+## Normalitātes pārbaude 4
+
+Analītisks tests
+
+```{r, eval=TRUE}
+tapply(niedr2$platums, niedr2$paraug, shapiro.test)
+```
+
+---
+## Normalitātes pārbaude 5
+
+**Secinājums:** Niedru lapu platums nesatur ietekmīgas vērtības, mērījumu sastopamības biežums kopumā seko normālajam sadalījumam un pie būtiskuma līmeņa $\alpha = 0,05$ nevar noraidīt atbilstību normālajam sadalījumam ne Austrumu $(W_{(17)} = 0,976; p = 0,912)$, ne Rietumu $(W_{(17)} = 0,987; p = 0,994)$ parauglaukumos.
+
+---
+## Dispersiju salīdzināšana 1
+
+Dispersiju salīdzināšanu ar F testu veic izmantojot funkciju `var.test()`.
+
+Funkcijai kā argumentus var norādīt divas datu kolonnas, kas atdalītas ar komatu, vai arī datu kolonnu un grupu kolonnu, kas atdalītas ar tildes zīmi.
+
+```{r, eval=FALSE}
+var.test(pirmā.paraugkopa, otrā.paraugkopa)
+
+var.test(datu.kolonna ~ grupu.kolonna)
+```
+
+---
+## Dispersiju salīdzināšana 2
+
+```{r,comment=NA}
+var.test(niedr2$platums ~ niedr2$paraug)
+```
+
+---
+## Dispersiju salīdzināšana 3
+
+**Secinājums:** Pie būtiskuma līmeņa $\alpha = 0,05$ divu paraugkopu dispersijas ir
+homogēnas (neatšķiras būtiski), jo iegūtā F-vērtība ir 1,1996 un p-vērtība ir
+0,7203 (lielāka par 0,05). Ja skatās uz F vērtības ticamības intervālu, tad tas satur skaitli
+viens (0,43 līdz 3,31), tātad dispersijas ir līdzīgas (homogēnas).
+
+
+---
+## Vidējo aritmētisko salīdzināšana 1
+
+Vidējo aritmētisko salīdzināšanai izmanto funkciju `t.test()`. Ja pirms tam pierādīts, ka dispersijas neatšķiras, tad jāpievieno arguments `var.equal = TRUE`.
+
+Funkcijai kā argumentus var norādīt divas datu kolonnas, kas atdalītas ar komatu, vai arī datu kolonnu un grupu kolonnu, kas atdalītas ar tildes zīmi.
+
+```{r eval=FALSE}
+t.test(datu.kolonna ~ grupu.kolonna, var.equal = TRUE)
+
+t.test(paraugkopa1, paraugkopa2, var.equal = TRUE)
+```
+
+---
+## Vidējo aritmētisko salīdzināšana 2
+
+```{r,comment=NA}
+t.test(niedr2$platums ~ niedr2$paraug, var.equal = TRUE)
+```
+
+---
+## Vidējo aritmētisko salīdzināšana 3
+
+**Secinājums:** Pie būtiskuma līmeņa $\alpha = 0,05$ pastāv statistiski būtiska atšķirība starp Austrumu un Rietumu parauglaukumu vidējiem niedru lapu platumiem $(t_{(32)} = -3,2282; p = 0,0029)$. Vidējo aritmētisko starpības 95% ticamības intervāls ir no -2,47 līdz -0,56. Intervāls nesatur 0 (ja saturētu 0, tad tas norādītu, ka atšķirība nav būtiska).
+
+
+
+---
+## Saistītu paraugkopu vidējo aritmētisko salīdzināšana 1
+
+Saistītu vai atkarīgu paraugkopu vidējo aritmētisko salīdzināšanu veic ar funkciju `t.test()`, kurai papildus iekļauj argumentu `paired = TRUE`. Šī testa veikšanai abu paraugkopu datiem parasti jāatrodas katram savā kolonnā.
+
+```{r eval=FALSE}
+t.test(x, y, paired = TRUE)
+```
+
+**Mērījumu pāru starpībai ir jābūt normāli sadalītai!**
+
+---
+## Saistītu paraugkopu vidējo aritmētisko salīdzināšana 2
+
+```{r,comment=NA,echo=FALSE}
+rokas <- read_excel("../Dati/rokas.xlsx")
+```
+```{r,comment=NA,eval=FALSE}
+rokas <- read_excel("rokas.xlsx")
+```
+```{r,comment=NA}
+str(rokas)
+```
+
+---
+## Saistītu paraugkopu vidējo aritmētisko salīdzināšana 3
+
+Aprēķinām mērījumu starpību, pārbaudam tās normalitāti pēc iepriekšējās shēmas
+
+```{r eval=FALSE}
+rokas$starpiba <- rokas$kreisa-rokas$laba # mērījumu starpības aprēķins
+
+ggplot(rokas, aes(sample = starpiba)) +   
+  geom_qq_band() + stat_qq_line() + stat_qq_point() # kvantiļu diagramma
+
+ggplot(rokas,aes(starpiba)) + geom_boxplot() # kārbu diagramma
+
+shapiro.test(rokas$starpiba) # analītiskā pārbaude
+```
+
+---
+## Saistītu paraugkopu vidējo aritmētisko salīdzināšana 4
+
+**Secinājums:** par priekšnosacījumu?
+
+---
+## Saistītu paraugkopu vidējo aritmētisko salīdzināšana 5
+
+```{r,comment=NA}
+t.test(rokas$laba, rokas$kreisa, paired = TRUE)
+```
+
+---
+## Saistītu paraugkopu vidējo aritmētisko salīdzināšana 6
+
+**Secinājums:** Pie būtiskuma līmeņa $\alpha = 0,05$ pastāv statistiski būtiska
+atšķirība starp labās un kreisās rokas spēku $(t_{(24)} = 4,4743; p < 0,001)$. Vidējā
+pāru starpība ir 4,48 un tās 95% ticamības intervāls ir no 2,41 līdz 6,54.
+
+
+---
+## T-tests vienai paraugkopai 1
+
+Lai pārbaudītu vienas paraugkopas vērtību atbilstību zināmai vērtībai (ģenerālkopas vidējam aritmētiskajam), izmanto funkciju `t.test()`, kurai kā papildus argumentu norāda zināmo vērtību `mu =`.
+
+```{r, eval=FALSE}
+t.test(analizējamā.paraugkopa, mu = zināmā.vērtība)
+```
+
+**Gan analizējamai paraugkopai, gan ģenerālkopai ir jābūt normāli sadalītām**
+
+**Abām kopām ir jābūt homogēnām** 
+---
+## T-tests vienai paraugkopai 2
+
+```{r,comment=NA}
+t.test(niedr2$platums, mu = 3.0)
+```
+
+---
+## T-tests vienai paraugkopai 3
+
+**Secinājums:** pie būtiskuma līmeņa $\alpha = 0,05$ niedru lapu platums pētītajā
+teritorijā būtiski atšķiras no vērtības 3 mm $(t_{(33)} = 2,5592; p = 0,015)$. Niedru
+lapu platumu vidējais aritmētiskais ir 3,68 un tā 95% ticamības intervāls ir no 3,14 līdz 4,22 (nesatur vērtību 3,0).
+
+
+---
+## Neparametriskās metodes - neatkarīgas paraugkopas 1
+
+Neatkarīgu paraugkopu salīdzināšanai ar neparametriskajām metodēm izmanto funkciju `wilcox.test()`.
+
+Funkcijai kā argumentus var norādīt divas datu kolonnas, kas atdalītas ar komatu, vai arī datu kolonnu un grupu kolonnu, kas atdalītas ar tildes zīmi.
+
+```{r, eval=FALSE}
+wilcox.test(datu.kolonna ~ grupu.kolonna)
+
+wilcox.test(pirma.paraugkopa, otra.paraugkopa)
+```
+
+---
+## Neparametriskās metodes - neatkarīgas paraugkopas 2
+
+```{r,comment=NA}
+wilcox.test(niedr2$garums ~ niedr2$paraug)
+```
+
+---
+## Neparametriskās metodes - neatkarīgas paraugkopas 3
+
+**Secinājums:** Pie būtiskuma līmeņa $\alpha = 0,05$ starp Austrumu un Rietumu
+parauglaukumu niedru lapu garumu vērtību sadalījumiem pastāv statistiski būtiska
+atšķirība $(W_{(34)} = 75; p = 0,017)$.
+
+
+---
+## Neparametriskās metodes - atkarīgas paraugkopas 1
+
+Saistītu vai atkarīgu paraugkopu vērtību sadalījuma salīdzināšanu veic ar funkciju `wilcox.test()`, kurai papildus iekļauj argumentu `paired = TRUE`. Šī testa veikšanai abu paraugkopu datiem parasti jāatrodas katram savā kolonnā.
+
+```{r eval=FALSE}
+wilcox.test(pirma.paraugkopa, otra.paraugkopa, paired = TRUE)
+```
+
+---
+## Neparametriskās metodes - atkarīgas paraugkopas 2
+
+```{r,comment=NA}
+wilcox.test(rokas$laba, rokas$kreisa, paired = TRUE)
+```
+
+---
+## Neparametriskās metodes - atkarīgas paraugkopas 3
+
+**Secinājums:** Pie būtiskuma līmeņa $\alpha = 0,05$ pastāv statistiski būtiska
+atšķirība starp labās un kreisās rokas spēka vērtību sadalījumu $(V_{(17)} = 291,5; p < 0,001)$.
+
+
+---
+## $\chi^2$  tests 1
+
+$\chi^2$ testa veikšanai izmanto funkciju `chisq.test()`, kurai kā argumentus norāda empīrisko vērtību sadalījumu un sagaidāmo vērtību sadalījumu (kā iespējamības vērtības), ja jāsalīdzina ar teorētisko sadalījumu, vai arī matrici, kas satur divu paraugkopu vērtību sadalījumus, ja jāsalīdzina divas paraugkopas.
+
+```{r eval=FALSE}
+chisq.test(empir.sad.vektors, teor.sad.vektors)
+chisq.test(vertibu.matrice)
+```
+
+**Visām sagaidāmajām vērtībām ir jābūt lielākām par 1**
+
+**Vismaz 80% sagaidāmo vērtību ir jābūt >= 5**
+
+---
+## $\chi^2$  tests 2
+
+```{r,comment=NA}
+zirni <- c(315, 108, 101, 32)
+#dala ar vērtību summu (16), lai iegūtu iespējamības vērtības
+
+teor.zirni <- c(9, 3, 3, 1)/16 
+
+zirnu_tests <- chisq.test(x = zirni, p = teor.zirni)
+```
+
+---
+## $\chi^2$  tests 3
+
+Priekšnosacījumu par sagaidāmajām vērtībām pārbaude
+
+```{r,comment=NA}
+zirnu_tests$expected
+```
+
+Visas sagaidāmās vērtības ir lielākas par 5 - nav pārkāpumu pret $\chi^2$ testu.
+
+---
+## $\chi^2$  tests 4
+
+
+```{r,comment=NA}
+zirnu_tests
+```
+
+
+**Secinājums:** Pētījumā iegūto zirņu pazīmju skaldīšanās atbilst teorētiski
+sagaidāmajai pazīmju skaldīšanās attiecībai 9:3:3:1, jo Hī-kvadrāta testā $(\chi^2 _{(3,556)}=0.47002)$ iegūtā p vērtība $(p = 0,925)$ ir lielāka par būtiskuma līmeni $\alpha = 0,05$.
+
+
+---
+## $\chi^2$  tests 5
+
+```{r,comment=NA}
+koki <- matrix(c(12,34,56,23,8,27,33,47,14,11), ncol = 2)
+
+rownames(koki) <- c("Priede","Egle","Bērzs","Ozols","Kļava")
+colnames(koki) <- c("Paraug A","Paraug B")
+
+koki
+```
+
+---
+## $\chi^2$ tests 5
+
+```{r,comment=NA}
+koku_tests <- chisq.test(koki) # veicam Hī-kvadrāta testu
+
+koku_tests$expected # pārbaudam priekšnosacījumus
+
+```
+
+**Secinājums:** par priekšnosacījumiem?
+
+
+---
+## $\chi^2$ tests 6
+
+```{r,comment=NA}
+koku_tests # apskatām rezultātu
+```
+**Secinājums (1):** Pie būtiskuma līmeņa $\alpha = 0,05$ nav statistiski būtiskas
+atšķirības starp koku sugu sadalījumu divos parauglaukumos $(\chi^2 _{(4,265)}=9,2298; p = 0,056)$. Novērotā asociācija ir tuvu būtiskai.
+
+
+---
+## $\chi^2$ tests 7
+
+Asociācijas skaidrojumam ir izmantojamas standartizētās atlikumu vērtības (|stdres|>=2 piedalās būtiskuma veidošanā pie $\alpha = 0,05$ )
+```{r,comment=NA}
+koku_tests$stdres # standartizētās atlikumu vērtības
+```
+**Secinājums (2):** Asociācijas tendence veidojas priedes sastopamības atšķirību dēļ - otrajā parauglaukumā suga ir sastopama biežāk, tomēr tas nav *pietiekoši* ietekmējis pārējo sugu sastāvu.
+
+
+---
+class: center, inverse, middle
+# Kādi būtu jautājumi?

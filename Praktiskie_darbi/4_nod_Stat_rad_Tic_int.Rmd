@@ -1,0 +1,346 @@
+---
+title: "Statistiskie rādītāji un Ticamības intervāli"
+author: "Didzis Elferts & Andris Avotiņš"
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css","my-css.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:10'
+---
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+mono_accent(
+  base_color = "#43418A",
+  text_font_size = "25px",
+  text_slide_number_font_size = "0.5em",
+  outfile = "xaringan-themer.css"
+)
+options(htmltools.dir.version = FALSE)
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.height = 4, fig.width = 8, dev='svg', fig.align = "center")
+```
+
+
+
+## Dati
+
+```{r,echo=FALSE}
+library(readxl)
+niedr <- read_excel("../Dati/niedres2.xlsx")
+```
+```{r,eval=FALSE}
+library(readxl)
+niedr <- read_excel("niedres2.xlsx")
+```
+```{r}
+str(niedr)
+```
+
+---
+## Statistiskie rādītāji 1
+
+Vidējo aritmētisko, standartnovirzi, dispersiju un mediānu aprēķina attiecīgi ar funkcijām `mean()`, `sd()`, `var()` un `median()`. Visām šīm funkcijām kā arguments jānorāda skaitļu vektors/viena kolonna.
+
+.pull-left[
+```{r ,comment=NA}
+mean(niedr$garums)
+sd(niedr$garums)
+```
+]
+
+.pull-right[
+```{r ,comment=NA}
+var(niedr$garums)
+median(niedr$garums)
+```
+]
+
+---
+## Statistiskie rādītāji 2
+
+Skaitļu noapaļošanai izmanto funkciju `round()`, kurā norāda vienu skaitli, vai objektu ar vairākiem skaitļiem un decimāldaļu skaitu aiz komata.
+
+```{r,comment=NA}
+round(mean(niedr$garums), 1)
+```
+
+---
+## Statistiskie rādītāji 3
+
+```{r,comment=NA}
+x <- c(1:20, NA) # x tiek radīts tikai demostrācijas nolūkiem
+mean(x)
+mean(x, na.rm = TRUE)
+```
+
+Daudzas funkcijas R dod rezultātu NA, ja kāda no apstrādājamām vērtībām arī ir NA. Tāpēc jānorāda, ko darīt ar šīm NA vērtībām.
+
+---
+## Statistiskie rādītāji 4
+
+Minimālo un maksimālo vērtību aprēķina ar funkcijām `min()` un `max()`, vai arī ar funkciju `range()` var aprēķināt abas vērtības uzreiz.
+
+```{r ,comment=NA}
+min(niedr$garums)
+max(niedr$garums)
+range(niedr$garums)
+```
+
+---
+## Statistiskie rādītāji 5
+
+Kvartiles aprēķina ar funkciju `quantile()`. Ja nepieciešams aprēķināt procentiles, vai arī tikai kādu no kvartilēm, tad papildus norāda argumentu `probs=` un vajadzīgo rādītāju izteiktu decimāldaļās.
+
+```{r,comment=NA}
+quantile(niedr$garums)
+quantile(niedr$garums, probs = c(0.025, 0.975))
+```
+
+---
+## Statistiskie rādītāji 6
+
+Ja funkcijā `summary()` ievieto skaiļu vektoru, rezultātā iegūst sešus statistiskos rādītājus, kas to raksturo. 
+
+```{r,comment=NA}
+summary(niedr$garums)
+```
+
+---
+## Statistiskie rādītāji 7
+
+Ja funkcijā `summary()` ievieto datu tabulu, rezultātā katrai skaitliskajai kolonnai iegūst sešus statistiskos rādītājus, bet faktora kolonnai iegūst vērtību atkārošanās biežumu. 
+
+```{r,comment=NA}
+summary(niedr)
+```
+
+---
+## Statistiskie rādītāji 8
+
+Ja nepieciešams aprēķināt kādu statistisko rādītāju vienam vektoram/kolonnai, kas sadalīts grupās balstoties uz otru vektoru/kolonnu, var izmantot funkciju `tapply()`. Ja funkcijai ir jānorāda papildus argumentus, tos norāda liekot komatu aiz funkcijas nosaukuma (bez papildus iekavām!).
+
+```{r,comment=NA}
+tapply(niedr$garums,niedr$paraug,sd)
+```
+
+
+---
+## Ticamības intervāli - vidējā aritmētiskā ticamības intervāls
+
+$$\overline{x}-t_{\alpha,\nu} \cdot s_{\overline{x}} < \mu < \overline{x}+t_{\alpha,\nu} \cdot s_{\overline{x}}$$
+
+kur $\overline{x}$ - vidējais aritmētiskais
+
+$t_{\alpha,\nu}$ - Stjūdenta kritērija teorētiskā vērtība
+
+$\nu= n-1$ - brīvības pakāpju skaits
+
+$s_{\overline{x}}$ - vidējā aritmētiskā reprezentācijas rādītājs $s_{\overline{x}}=\frac{s}{\sqrt{n}}$
+
+$\mu$ - ģenerālkopas vidējais aritmētiskais.
+
+
+---
+## Ticamības intervāli 1
+
+```{r ,comment=NA}
+n <- length(niedr$garums) #novērojumu skaits
+
+briv <- n-1 #brīvības pakāpju skaits
+
+but <- 0.01 #būtiskuma līmenis
+
+vid <- mean(niedr$garums) #vidējais aritmētiskais
+
+stand <- sd(niedr$garums) #standartnovirze
+```
+
+---
+## Ticamības intervāli 2
+
+Stjūdenta kritēriju aprēķina ar funkciju `qt()`, kurai kā argumenti jānorāda 1-būtiskuma līmenis/2 un brīvības pakāpju skaits.
+
+```{r,comment=NA}
+robeza <- qt(1 - but/2, briv) * stand/sqrt(n) #t reiz se
+augsa <- vid + robeza #augšējā robeža
+apaksa <- vid - robeza  #apakšējā robeža
+augsa
+apaksa
+```
+**Secinājums:** vidējā aritmētiskā 99% ticamības intervāls pazīmei niedru lapu garums ir no 33,69 līdz 41,50
+
+
+---
+## Ticamības intervāli - pakete Hmisc
+
+Vidējo un tā ticamības intervālu uzreiz var aprēķināt ar funkciju `smean.cl.normal()` no paketes `Hmisc`. Funkcijai kā argumenti jānorāda skaitļu vektors un ticamības intervāls, kas jārēķina.
+
+```{r,comment=NA,message=FALSE}
+library(Hmisc)
+smean.cl.normal(niedr$garums, conf.int = 0.99)
+```
+
+
+---
+## Ticamības intervāli - pakete Hmisc
+
+Lai aprēķinātu ticamības intervālu katram parauglaukumam atsevišķi, var kombinēt funkcijas `tapply()` un `smean.cl.normal()`. Papildus argumentus (`conf.int =`) norāda, liekot komatu aiz funkcijas nosaukuma (aiz funkcijas nav iekavas).
+
+```{r}
+tabula <- tapply(niedr$garums, niedr$paraug, smean.cl.normal, conf.int = 0.99)
+tabula
+```
+
+
+
+---
+## Ticamības intervāli - grafiskais attēlojums 1
+
+Vidējo aritmētisko un to ticamības intervāla parādīšanai var izmantot funkciju `stat_summary()` no paketes `ggplot2`. Šai funkcijai jānorāda arguments `fun.data =` (jāveic aprēķins visiem datiem un iegūst rezultātā datu tabulu ar rezultātiem) un vērtība `mean_cl_normal` - nozīmē, ka jāaprēķina vidējais ar ticamības intervālu (95%) balstoties uz t-sadalījumu.
+```{r eval=FALSE}
+library(ggplot2)
+ggplot(niedr, aes(paraug, garums)) + 
+      stat_summary(fun.data = "mean_cl_normal")
+```
+
+---
+## Ticamības intervāli - grafiskais attēlojums 2
+
+```{r echo=FALSE,warnings=FALSE,message=FALSE, fig.height=4.5}
+library(ggplot2)
+ggplot(niedr, aes(paraug, garums)) + stat_summary(fun.data = "mean_cl_normal")
+```
+
+
+---
+## Ticamības intervāli - grafiskais attēlojums 3
+
+Lai attēlotu citu ticamības intervālu, funkcijā `stat_summary()` pievieno argumentu `fun.args =` un norāda nepieciešamo `conf.int =` vērtību. 
+
+```{r, eval = FALSE}
+ggplot(niedr, aes(paraug, garums)) + 
+  stat_summary(fun.data = "mean_cl_normal", fun.args = list(conf.int = 0.99))
+```
+
+---
+## Ticamības intervāli - grafiskais attēlojums 4
+
+```{r, echo = FALSE}
+ggplot(niedr, aes(paraug, garums)) + 
+  stat_summary(fun.data = "mean_cl_normal", fun.args = list(conf.int = 0.99))
+```
+
+
+---
+## Ticamības intervāli - grafiskais attēlojums 5
+
+Kombinējot funkcijas `do.call()` un `rbind()` no `tapply()` rezultāta var izveidot tabulu, kurai pēc tam pievieno dalījuma nosaukumus (jo sākotnēji ir kā rindu nosaukumi).
+
+```{r}
+tic_tabula <- as.data.frame(do.call(rbind,tabula))
+tic_tabula
+```
+```{r}
+tic_tabula$Parauglaukums <- rownames(tic_tabula)
+tic_tabula
+```
+
+
+---
+## Ticamības intervāli - grafiskais attēlojums 6
+
+Lai attēlotu statistisko rādītāju ar tā kļūdas intervālu (piemēram, vidējo aritmētisko ar ticamības intervālu), kas ir aprēķināti pirms attēla veidošanas, var izmantot `geom_pointrange()`.
+
+```{r, eval=FALSE}
+ggplot(tic_tabula, aes(x = Parauglaukums, y = Mean, ymin  = Lower, ymax = Upper)) +
+  geom_pointrange() + labs(y = "Vidējais ar 99% ticamības intervālu")
+```
+
+---
+## Ticamības intervāli - grafiskais attēlojums 7
+
+
+```{r, echo=FALSE}
+ggplot(tic_tabula, aes(x = Parauglaukums, y = Mean, ymin  = Lower, ymax = Upper)) +
+  geom_pointrange() + labs(y = "Videjais ar 99% ticamības intervālu")
+```
+
+
+---
+## Ticamības intervāli - proporcijām: binomiālā sadalījuma ticamības intervāls
+
+.izm90[
+Asimptotisks analītiskais aprēķins
+
+$$\hat{p}-z_{1-\alpha} \cdot {\sqrt{\frac{{\hat{p}} \cdot {(1-\hat{p})}}{n}}} < \pi < \hat{p}+z_{1-\alpha} \cdot {\sqrt{\frac{{\hat{p}} \cdot {(1-\hat{p})}}{n}}}$$
+
+kur $\pi$ - proprocija ģenerālkopā
+
+$z_{1-\alpha}$ - z-sadalījuma teorētiskā vērtība
+
+$\hat{p}$ - novērotā proporcija paraugkopā
+
+$n$ - izlases apjoms
+
+${\sqrt{\frac{{\hat{p}} \cdot {(1-\hat{p})}}{n}}}$ - proporciju standartkļūda.
+]
+
+---
+## Ticamības intervāli - proporcijām: kontinuitātes korekcija
+
+.izm90[
+$$\hat{p}-z_{1-\alpha} \cdot {\sqrt{\frac{{\hat{p}} \cdot {(1-\hat{p})}}{n}}} - {\frac{0,5}{n}} < \pi < \hat{p}+z_{1-\alpha} \cdot {\sqrt{\frac{{\hat{p}} \cdot {(1-\hat{p})}}{n}}} + {\frac{0,5}{n}}$$
+
+kur $\pi$ - proprocija ģenerālkopā
+
+$z_{1-\alpha}$ - z-sadalījuma teorētiskā vērtība
+
+$\hat{p}$ - novērotā proporcija paraugkopā
+
+$n$ - izlases apjoms
+
+${\sqrt{\frac{{\hat{p}} \cdot {(1-\hat{p})}}{n}}}$ - proporciju standartkļūda
+
+${\frac{0,5}{n}}$ - korekcijas parametrs jeb *kļūdas robeža*.
+]
+---
+## Ticamības intervāli - proporcijām 1
+
+
+```{r, echo = TRUE}
+set.seed(1278)
+alpha <- 0.05
+paraugs <- sample(c(0:1), 50, replace = TRUE)
+sadalijums <- table(paraugs)
+n <- length(paraugs)
+p_hat <- sadalijums["1"]/n
+z <- qnorm(1 - alpha/2)
+p_apaksa <- p_hat - z * sqrt(p_hat * (1 - p_hat)/n)
+p_augsa <- p_hat + z * sqrt(p_hat * (1 - p_hat)/n)
+p_apaksa
+```
+
+```{r, echo = TRUE}
+p_augsa
+```
+
+
+---
+## Ticamības intervāli - proporcijām 2
+
+Iepriekš aprēķinājām asimptotisko ticamības intervālu. Biežāk lietots ir eksaktais (*Exact*) vai Vilsona (*Wilson*)
+
+```{r, echo = TRUE}
+library(Hmisc)
+binconf(sadalijums["1"], n , alpha = alpha, method = "all")
+```
+
+
+---
+class: center, inverse, middle
+# Kādi būtu jautājumi?

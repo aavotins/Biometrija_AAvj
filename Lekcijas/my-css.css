@@ -1,0 +1,35 @@
+.izm10 {font-size: 10%}
+
+.izm50 {font-size: 50%}
+
+.izm70 {font-size:70%}
+
+.izm75 {font-size:75%}
+
+.izm80 {font-size:80%}
+
+.izm85 {font-size:85%}
+
+.izm90 {font-size:90%}
+
+.izm75 .remark-code {
+  font-size: 0.675em;
+}
+
+.izm80 .remark-code, .izm80 .remark-code * {
+  font-size: 80%}
+.izm90 .remark-code, .izm90 .remark-code * {
+  font-size: 90%}
+.izm85 .remark-code, .izm85 .remark-code * {
+  font-size: 85%}
+  
+.defin {
+  border-radius: 10px;
+  background: #D9D9E7;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 5px;
+  font-weight: 700;
+  font-size: 110%;
+}

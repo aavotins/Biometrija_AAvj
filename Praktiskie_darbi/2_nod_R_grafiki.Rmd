@@ -1,0 +1,704 @@
+---
+title: "R grafiskās iespējas"
+author: "Andris Avotiņš & Didzis Elferts"
+subtitle: "ggplot2 grafiskā sistēma"
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css","my-css.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:10'
+---
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+mono_accent(
+  base_color = "#43418A",
+  text_font_size = "25px",
+  text_slide_number_font_size = "0.5em",
+  outfile = "xaringan-themer.css"
+)
+options(htmltools.dir.version = FALSE)
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.height = 3, fig.width = 8, dev='svg')
+```
+
+
+
+## Pamatojums
+
+* ggplot2 pakete atšķiras no citām diagrammu veidošanas paketēm ar to, ka tās
+pamatā ir noteikta ”gramatika” (Wilkinson, 2005. Grammar of graphics)
+
+* Sistēma sastāv no vairākām atseviškām komponentēm, kuras var dažādā
+veidā kombinēt
+
+* Ir iespēja veidot jaunus diagrammu veidus, kas parāda Jums aktuālo problēmu
+
+
+---
+## Papildus informācija
+
+.izm85[
+Oficiālā dokumentācija:
+
+[https://ggplot2.tidyverse.org/reference/](https://ggplot2.tidyverse.org/reference/)
+
+R attēlu ”recepšu grāmata”:
+
+[http://www.cookbook-r.com/Graphs/](http://www.cookbook-r.com/Graphs/)
+
+Jautājumi un atbildes:
+
+[http://stackoverflow.com/questions/tagged/ggplot2](http://stackoverflow.com/questions/tagged/ggplot2)
+
+ggplot2 grāmata latviski
+
+[http://delferts.github.io/gramatas/ggplot2_gramata/index.html](http://delferts.github.io/gramatas/ggplot2_gramata/index.html)
+
+Papildinājumi ggplot2 paketei
+
+[https://exts.ggplot2.tidyverse.org](https://exts.ggplot2.tidyverse.org)
+]
+
+
+---
+## Sistēmas komponentes
+
+`ggplot2` attēli tiek veidoti no slāņiem:
+
+*  **data** – informācija, kuru vēlas attēlot
+
+*  **aes** jeb **aesthetics** – datu attēlošanas veids – simbolu veids, krāsa, utt.
+
+*  **geom** – ģeometriskie objekti (līnija, punkti, poligoni), kurus reāli redz
+
+*  **stats** – statistiskās transformācijas datiem
+
+*  **scale** – nodrošina datu vērtību attēlojumu atbilstoši izvēlētajiem datu
+parādīšanas veidam (aesthetics), kā arī veido leģendas un asis
+
+*  **coord** – koordināšu sistēma, ko izmanto diagrammā
+
+*  **facet** – nosaka kā sadalīt datus pa atsevišķām diagrammām
+
+---
+## geom veidi
+
+* `geom_point()` – zīmē punktus, lai veidotu izkliedes diagrammu
+
+* `geom_smooth()` – zīmē līniju, kas izlīdzina datus, kā arī šīs līnijas
+ticamības intervālu
+
+* `geom_boxplot()` – veido vērtībamplitūdas (box-and-whisker) diagrammu
+
+* `geom_path()` un `geom_line()` – zīmē līniju, kas savieno punktus
+
+* `geom_abline()`,`geom_hline()`,`geom_vline()` – zīmē līnijas
+
+* `geom_histogram()` – veido histogrammu
+
+* `geom_density()` – veido blīvuma diagrammu
+
+* `geom_bar()` – veido joslu jeb stabiņu diagrammu
+
+---
+## Dati
+
+```{r, eval=FALSE}
+library(readxl)
+dati <- read_excel("augi.xlsx")
+head(dati)
+```
+
+```{r, echo=FALSE}
+library(readxl)
+dati <- read_excel("../Dati/augi.xlsx")
+head(dati)
+```
+
+---
+## Attēlu veidošana
+
+`ggplot2` sistēmā attēlus veido ar funkciju  `ggplot()`.
+
+Funkcijā `ggplot()` kā pirmais arguments ir jānorāda datu tabulu (data frame), no kurienes ņemt datus, tad iekšā ir funkcija `aes()`, kur attiecīgi norāda x un y vērtības (atdalītas ar komatu).
+
+`ggplot2` sistēmā **NAV** jāizmanto mainīgo pieraksts ar `$` zīmi.
+
+
+---
+## geom_point()
+Lai izveidotu punktu (izkliedes) attēlu, `ggplot()` norāda datu tabulu un x/y vērtības, un tam pieskaita nepieciešamo `geom_...` veidu.
+
+```{r, eval=FALSE}
+library(ggplot2)
+ggplot(dati, aes(garums, lapas)) + geom_point()
+```
+
+```{r,echo=FALSE, fig.height=2.9}
+library(ggplot2)
+theme_set(theme_gray(base_size = 12))
+ggplot(dati, aes(garums, lapas)) + geom_point()
+```
+
+
+
+---
+## Izskata maiņa
+
+Lai mainītu punktu, līniju, poligonu izskatu (krāsu, lielumu, formu, caurspīdīgumu), ir divas iespējas:
+
+1. Ja izskatam ir jābūt vienādam visiem elementiem, piemēram, visi punkti sarkani, tad atbilstošais arguments ir jāievieto `geom_...` funkcijā ārpus `aes()` iekavām un jānorāda atbilstošā vērtība.
+
+2. Ja izskatam ir jāmainās atbilstoši kādam mainīgajam (piemēram, katrai sugai cita krāsa), tad atbilstošais arguments ir jāievieto funkcijā `geom_...` vai `ggplot()`, bet OBLIGĀTI iekšā `aes()` iekavām un kā vērtība jānorāda mainīgā nosaukums.
+
+
+---
+## geom_point()
+
+Krāsa kā gradients
+
+```{r}
+ggplot(dati, aes(garums, lapas)) + 
+  geom_point(aes(colour = garums))
+```
+
+
+---
+## geom_point()
+
+Krāsa kā diskrēta vērtība
+
+```{r}
+ggplot(dati, aes(garums, lapas)) + 
+  geom_point(aes(colour = gaisma))
+```
+
+---
+## geom_point()
+
+Forma kā diskrēta vērtība
+
+```{r}
+ggplot(dati, aes(garums, lapas)) + 
+  geom_point(aes(shape = gaisma))
+```
+
+---
+## geom_point()
+
+Izmērs kā gradients
+
+```{r}
+ggplot(dati, aes(garums, lapas)) + 
+  geom_point(aes(size = garums))
+```
+
+---
+## geom_point()
+
+Krāsa un izmērs, kas noteikts visiem punktiem vienāds
+
+```{r}
+ggplot(dati, aes(garums, lapas)) + 
+  geom_point(colour = "red", size = 3)
+```
+
+
+---
+## geom_bar() un geom_col()
+
+Veidojot stabiņu diagrammu  ir divas iespējas - `geom_bar()` un `geom_col()`. Pirmā funkcija paredzēta, ja nepieciešams izveidot attēlu, kur stabiņu lielums atbilst novērojumu skaitam (nevis vērtību summai) katrā no grupām (saskaita pati funkcija), otrā funkcija - ja stabiņu lielums atbilst datos esošajai vērtībai.
+
+```{r, fig.height=2.5}
+ggplot(dati, aes(gaisma)) + geom_bar()
+```
+
+
+---
+## geom_bar()
+
+Stabiņam ir iespējams noteik krāsu (līniju, kas ir apkārt) un aizpildījumu (`fill=`).
+
+```{r}
+ggplot(dati, aes(gaisma)) + 
+      geom_bar(fill = "white", colour = "darkgreen")
+```
+
+---
+## geom_bar()
+
+Ja aizpildījumu norāda kā mainīgo `aes()`, pēc noklusējuma stabiņi tiek sadalīti pa daļām atbilstoši mainīgajam.
+
+```{r}
+ggplot(dati, aes(gaisma, fill = stress)) + geom_bar()
+```
+
+---
+## geom_bar()
+Lai iegūtu stabiņus, kas sadalīti pēc mainīgā un būtu novietoti blakus, papildus jānorāda arguments `position = "dodge"`.
+
+```{r}
+ggplot(dati, aes(gaisma, fill = stress)) + 
+      geom_bar(position = "dodge")
+```
+
+---
+## geom_col()
+
+Funkcijai `geom_col()` ir tie paši principi kā `geom_bar()`, tikai jānorāda gan x, gan y vērtības. 
+
+```{r}
+df <- data.frame(Dzimums = c("F","M"),
+                 Skaits = c(23,19))
+ggplot(df, aes(Dzimums, Skaits)) + 
+      geom_col()
+```
+
+
+---
+## geom_histogram()
+```{r}
+ggplot(dati, aes(lapas)) + 
+      geom_histogram()
+```
+
+---
+## geom_histogram()
+```{r}
+ggplot(dati, aes(lapas)) + 
+      geom_histogram(binwidth = 10)
+```
+
+---
+## geom_histogram()
+```{r}
+ggplot(dati, aes(lapas)) + 
+      geom_histogram(binwidth = 5)
+```
+
+
+---
+## geom_line()
+
+Ar `geom_line()` savieno punktus no mazākā uz lielāko x vērtību.
+
+```{r}
+ggplot(dati, aes(garums, lapas)) + geom_line()
+```
+
+
+
+---
+## geom_line()
+```{r}
+ggplot(dati, aes(garums, lapas)) + 
+      geom_line(aes(colour = stress))
+```
+
+---
+## geom_line()
+```{r}
+ggplot(dati, aes(garums, lapas)) + 
+      geom_line(colour = "red", size = 1)
+```
+
+
+---
+## annotate()
+
+Ar funkciju `annotate()` ir iespējams izvietot attēlā elementus, kas nav nodefinēti atsevišķās datu tabulās.
+
+Kā argumenti jānorāda elementa veids, atbilstošās koordinātes.
+
+```{r, fig.height=2}
+ggplot(dati, aes(garums, lapas)) + geom_point() + 
+      annotate("text", x = 80, y = 300, 
+               label = "Teksts attela")
+```
+
+---
+## annotate()
+Ar argumentu `"rect"` var izveidot taisnstūri.
+
+```{r}
+ggplot(dati, aes(x = garums, y = lapas)) + geom_point() + 
+      annotate("rect", xmin = 80, xmax = 100, 
+               ymin = 250, ymax = 300, alpha = 0.5)
+```
+
+---
+## annotate()
+Ar argumentu `"segment"` var izveidot ierobežota garuma līniju.
+
+```{r}
+ggplot(dati, aes(x = garums, y = lapas)) + geom_point() + 
+      annotate("segment", x = 75, xend = 120, 
+               y = 200, yend = 300, colour = "blue")
+```
+
+
+---
+## Skalas
+
+Izmantojot funkcijas `scale_..._...()` var mainīt ne tikai x un y asu
+noformēju un veidu, bet arī ietekmēt visus citus atribūtus, kas tiek noteikti
+izmantojot `aes()`: krāsas, lielumus, punktu formas, līniju veidus, apzīmējumu
+caurspīdīgumu.
+
+.izm85[
+Skalu piemēri:
+
+* `scale_x_discrete()`,`scale_y_discrete()`
+
+* `scale_x_continuous()`,`scale_y_continuous()`
+
+* `scale_colour_discrete()`,`scale_colour_continuous()`,`scale_colour_grey()`,
+`scale_colour_gradient()`
+
+* `scale_fill_discrete()`,`scale_fill_continuous()`,`scale_fill_grey()`,
+`scale_fill_gradient()`
+]
+
+---
+## Skalas
+
+Skalu piemēri:
+
+* `scale_linetype_discrete()`,`scale_linetype_manual()`,
+`scale_linetype_identity()`
+
+* `scale_x_log10()`,`scale_x_reverse()`,`scale_x_sqrt()`
+
+---
+## Skalas
+
+Skalām var mainīt sekojošos parametrus:
+
+* name - nosaukums
+
+* breaks - dalījuma vietas
+
+* labels - apzīmējumi dalījuma vietās
+
+* limits - vērtību diapozons
+
+* values - lietotāja definētās krāsas/līniju veidi/simbolu veidi - izmanto tikai ar
+`scale_..._manual()`
+
+
+---
+## scale_colour_manual()
+
+Izmantojot `scale_..._manual()` ir iespējams izraudzīties paša definētās vērtības (to skaitam jāatbilst līmeņu skaitam). 
+
+```{r, fig.height=2.5}
+ggplot(dati, aes(garums, lapas, color = gaisma)) + 
+  geom_point() + 
+      scale_colour_manual(values = c("gold","black"))
+```
+
+---
+## scale_colour_manual()
+
+Lai mainītu līmeņu nosaukumus leģendā, jāizmanto argumentu `labels = ` (strādā ar visām skalām).
+```{r, fig.height=2}
+ggplot(dati, aes(garums, lapas, color = gaisma)) + 
+  geom_point()+ 
+      scale_colour_manual("Gaismas\ndaudzums",
+                values = c("gold","black"),
+                labels=c("Pietiekams","Nepietiekams"))
+```
+
+
+
+---
+## scale_continuous()
+Ar argumentu `breaks=` var noteikt vērtības, pie kādām veikt skalas dalījumu.
+```{r, fig.height=2.5}
+ggplot(dati, aes(garums, lapas, color = gaisma)) + 
+  geom_point() + 
+      scale_y_continuous("Lapu laukums", 
+                         breaks = c(175, 225, 275, 325))
+```
+
+---
+## scale_continuous()
+```{r}
+df <- data.frame(grupa =  c("A", "B", "C"),
+               proporcija = c(0.5, 0.3, 0.2))
+ggplot(df, aes(grupa, proporcija)) + geom_col()
+```
+
+---
+## scale_continuous()
+
+Paketē `scales` ir funkcijas, kas ļauj noformēt skalu vērtības, piemēram, funkcija `percent()` skaitļus pārvēšs procentos.
+
+```{r, fig.height=2.5}
+library(scales)
+ggplot(df, aes(grupa, proporcija))+ geom_col()+
+      scale_y_continuous(labels=percent)
+```
+
+
+---
+## Nosaukumi
+
+Nosaukumus asīm, attēlam, leģendai var mainīt ar funkciju `labs()` un argumentiem, `x =`, `y =`, `title =`, `colour =`, `fill =`, `size =`, ...
+
+
+```{r, fig.height=2.2}
+ggplot(dati, aes(garums, lapas, color = gaisma))+ 
+  geom_point() + 
+  labs(x = "X ass",y = "Y ass",
+       title = "Galvenais",color = "Krasas")
+```
+
+---
+## Attēla izskata maiņa
+
+Lai mainītu attēla izskatu, var izmantot gatavas tēmas vai arī mainīt katru elementu atsevišķi izmantojot funkciju `theme()`.
+
+Gatavās tēmas, piemēram, ir `theme_bw()` vai `theme_minimal()`.
+
+---
+## theme_bw()
+
+```{r}
+ggplot(dati, aes(garums, lapas,colour = gaisma)) + 
+  geom_point()
+```
+
+---
+## theme_bw()
+```{r}
+ggplot(dati, aes(garums, lapas,colour = gaisma)) + 
+  geom_point() + theme_bw()
+```
+
+---
+## theme_minimal()
+```{r}
+ggplot(dati, aes(garums, lapas,colour = gaisma)) + 
+  geom_point() + theme_minimal()
+```
+
+---
+## theme_classic()
+```{r}
+ggplot(dati, aes(garums, lapas,colour = gaisma)) + 
+  geom_point() + theme_classic()
+```
+
+
+---
+## theme()
+
+Argumenti attēla elementu mainīšanai
+
+.izm90[
+* axis.title    -   asu paraksti (element_text)
+* axis.title.x -       x ass paraksts (element_text)
+* axis.title.y	- y ass paraksts (element_text)
+* axis.text	- apzīmējumi pie asīm (element_text)
+* axis.text.x	- apzīmējumi pie x ass (element_text)
+* axis.text.y	- apzīmējumi pie y ass (element_text)
+* axis.ticks	- nogriežņi pie asīm (element_line)
+* axis.ticks.x	- nogriežņi pie x ass (element_line)
+* axis.ticks.y	- nogriežņi pie y ass (element_line)
+* axis.ticks.length	- nogriežņu garums pie asīm (unit)
+* axis.ticks.margin	- atstarpe starp ass apzīmējumu un nogriežņiem (unit)
+* axis.line	- līnijas gar asīm (element_line)
+* axis.line.x	- līnijas pie x ass (element_line)
+* axis.line.y	- līnijas pie y ass (element_line)
+]
+
+---
+## theme() 
+
+.izm90[
+* legend.background   - leģendas pamatne (element_rect)
+* legend.margin	- papildus atstarpe apkārt leģendai (unit)
+* legend.key	- pamatne zem leģendas ierakstiem (element_rect)
+* legend.key.size	- leģendas ierakstu izmērs (unit)
+* legend.key.height	- leģendas ieraksta pamatnes augstums (unit)
+* legend.key.width	- leģendas ieraksta pamatnes platums (unit)
+* legend.text	- leģendas ieraksti (element_text)
+* legend.text.align	- leģendas teksta novietojums (skaitlis no 0 līdz 1)
+* legend.title	- leģendas virsraksts (element_text)
+* legend.title.align	- leģendas virsraksta novietojums (skaitlis no 0 līdz 1)
+* legend.position	- leģendas novietojums ("left", "right", "bottom", "top", vai divu skaitļu vektors)
+* legend.direction	- leģendas ierakstu izvietojums ("horizontal" or "vertical")
+* legend.justification	- leģendas novietojums diagrammas iekšienē ("center" vai divu skaitļu vektors)
+]
+
+---
+## theme()
+
+* legend.box	- vairāku leģendu novietojums ("horizontal" or "vertical")
+* panel.background   -  diagrammas iekšienes pametne (element_rect)
+* panel.border	- robeža apkārt diagrammas iekšienei (element_rect)
+* panel.margin      - mala ap atsevišķām diagrammām (facet) (unit)
+* panel.grid	- grid lines (element_line)
+* panel.grid.major	- galvenās grid lines (element_line)
+* panel.grid.minor	- mazās grid lines (element_line)
+* panel.grid.major.x	- vertikālās galvenās grid lines (element_line)
+* panel.grid.major.y	- horizontālās galvenās grid lines (element_line)
+* panel.grid.minor.x	- vertikālās mazās grid lines (element_line)
+* panel.grid.minor.y	- horizontālās mazās grid lines (element_line)
+* plot.background - visas diagrammas pamatne (element_rect)
+
+
+---
+## theme()
+
+* plot.title	- diagrammas virsraksts (element_text)
+* plot.margin	- mala apkārt visai diagrammai (unit)
+* strip.background    - atsevišķu diagrammu (facet) uzrakstu pamatne (element_rect)
+* strip.text	- atsevišķu diagrammu (facet) uzraksts (element_text)
+* strip.text.x	- atsevišķu diagrammu (facet) uzraksts horizontālā virzienā (element_text)
+* strip.text.y	- atsevišķu diagrammu (facet) uzraksts vertikālā virzienā (element_text)
+
+---
+## theme()
+```{r}
+ggplot(dati, aes(garums, lapas,colour = gaisma)) + 
+  geom_point() + labs(title="Virsraksts")
+```
+
+---
+## theme()
+```{r}
+ggplot(dati, aes(garums, lapas,colour = gaisma)) + 
+  geom_point() + labs(title="Virsraksts") + 
+    theme(plot.title = element_text(size = rel(2),
+                                    colour = "blue"))
+```
+
+
+
+---
+## theme()
+```{r}
+ggplot(dati, aes(garums, lapas,colour = gaisma))+ 
+  geom_point() + 
+      theme(axis.title.y = element_text(size = rel(1.5), 
+                                    angle = 90, face = "bold"))
+```
+
+
+
+---
+## theme()
+Jā kādu no elementiem nepieciešams pilnībā izslēgt/paslēpt, izmanto argumentu `element_blank()`.
+
+```{r, fig.height=2.5}
+ggplot(dati, aes(garums, lapas,colour = gaisma)) +
+  geom_point() + 
+      theme(axis.text.y = element_blank())
+```
+
+
+---
+## theme()
+```{r}
+ggplot(dati, aes(garums, lapas,colour = gaisma))+ 
+  geom_point() + 
+      theme(legend.position = "bottom")
+```
+
+
+---
+## theme()
+```{r}
+ggplot(dati, aes(garums, lapas,colour = gaisma)) + 
+  geom_point() + 
+  theme(legend.background=element_rect(fill="green"))
+```
+
+---
+## theme()
+```{r}
+ggplot(dati, aes(garums, lapas,colour = gaisma)) + 
+  geom_point() + 
+  theme(panel.grid.minor = element_line(colour = "red", 
+                                    linetype = "dotted"))
+```
+
+---
+## theme()
+```{r}
+ggplot(dati, aes(garums, lapas,colour = gaisma)) + 
+  geom_point() + 
+  theme(panel.background = element_rect(colour = "pink",
+                                            size = 3))
+```
+
+
+
+---
+## theme()
+
+Katrs elements nav jānorāda savā `theme()` funkcijā, bet tos visus var iekļaut vienā funkcijā.
+
+.izm90[
+```{r,eval=FALSE}
+ggplot(dati, aes(garums, lapas,colour = gaisma)) + 
+ geom_point()+labs(color="Gaismas daudzums")+
+ theme(axis.text.y=element_text(face="bold"),
+      axis.text.x=element_text(face="bold",
+                                 angle=90,vjust=0.5),
+      axis.title=element_text(size=rel(2),face="bold"),
+      axis.line=element_line(color="black"),
+      panel.background=element_blank(),
+      panel.grid.minor=element_blank(),
+      panel.grid.major=element_line(color="grey90"),
+      legend.position="top",
+      legend.key=element_rect(fill="white"),
+      legend.title=element_text(size=rel(1.5)),
+      legend.text=element_text(size=rel(1.5)))
+```
+]
+---
+## theme()
+```{r,echo=FALSE, fig.height=4}
+ggplot(dati, aes(garums, lapas,colour = gaisma)) + geom_point()+
+      labs(color="Gaismas daudzums")+
+  theme(axis.text.y=element_text(size=rel(1.2),face="bold"),
+        axis.text.x=element_text(size=rel(1.2),face="bold",angle=90,vjust=0.5),
+        axis.title=element_text(size=rel(1.5),face="bold"),
+        axis.line=element_line(color="black"),
+        panel.background=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major=element_line(color="grey90"),
+        legend.position="top",
+        legend.key=element_rect(fill="white"),
+        legend.title=element_text(size=rel(1.5)),
+        legend.text=element_text(size=rel(1.5)))
+```
+
+
+
+---
+## Attēlu saglabāšana
+
+ggplot2 attēlus var saglabāt arī pēc to izveidošanas.
+
+
+Lai saglabātu attēlu, izmanto funkciju `ggsave()`, kurā jānorāda vēlamais faila
+nosaukums ar paplašinājumu, izmērs (pēc noklusējuma collās). Šo komandu
+izpilda kā pēdējo.
+
+
+`ggsave("1_attels.png",width = 8,height = 5)`
+
+
+---
+class: center, inverse, middle
+# Kādi būtu jautājumi?
+

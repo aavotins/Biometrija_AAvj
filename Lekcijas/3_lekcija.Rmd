@@ -1,0 +1,748 @@
+---
+title: "Statistiskie rādītāji. Ticamības intervāli"
+author: "Didzis Elferts & Andris Avotiņš"
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css","my-css.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:10'
+---
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+mono_accent(
+  base_color = "#43418A",
+  text_font_size = "25px",
+  text_slide_number_font_size = "0.5em",
+  outfile = "xaringan-themer.css"
+)
+options(htmltools.dir.version = FALSE)
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.height = 4.5, fig.width = 8, dev='svg', message = FALSE, fig.align = "center")
+```
+
+
+
+
+class: inverse, center, middle
+# Statistiskie rādītāji
+
+---
+## Statistiskie rādītāji
+
+* **Vidējie jeb centrālās tendences rādītāji** - raksturo pazīmes vidējo vērtību
+
+* **Izkliedes rādītāji** – raksturo pazīmes vērtību izkliedi
+
+* **Standartkļūdas (reprezentācijas rādītāji)** – raksturo paraugkopas/izlases sadalījuma rādītājus
+
+---
+## Vidējie rādītāji
+
+* Vidējais aritmētiskais
+
+* Pazīmes īpatsvars
+
+* Mediāna
+
+* Moda
+
+* Kvartile
+
+* Procentile
+
+---
+## Vidējais aritmētiskais jeb caurmēra rādītājs
+
+**Vienkāršo vidējo aritmētisko** ( $\overline{x}$) aprēķina paraugkopām, kas nav grupētas klasēs, pēc formulas:
+
+$$\overline{x}=\frac{\sum\limits_{i=1}^{n}x_i}{n}$$
+
+kur $x_i$ - i-tā paraugkopas vērtībā, n - paraugkopas apjoms.
+
+---
+## Vidējais aritmētiskais
+
+Skaitļi: 11,12,13,14,15,16,17,18,19,20
+
+$$\overline{x}=\frac{11+12+13+14+15+16+17+18+19+20}{10}=\frac{155}{10}=15,5$$
+
+---
+## Svērtais vidējais aritmētiskais
+
+
+**Svērto vidējo aritmētisko** ( $\overline{x}$) lieto, ja paraugkopas apjoms ir liels un tā grupēta klasēs, vai arī gadījumos, ja katrai vērtībai ir noteikta sava ietekme:
+
+
+$$\overline{x}=\frac{\sum\limits_{j=1}^{k}{\overline{x}_j}\cdot n_j}{n}$$
+
+kur  $x_j$ - j-tās klases vidējā vērtība vai konkrētā vērtība, k - klašu skaits vai vērtību skaits; $n_j$ - j-tās klases frekvence vai konkrētās vērtības ietekme.
+
+---
+## Svērtais vidējais aritmētiskais
+
+Nosakot studentu vērtējumus stipendijas saņemšanai, rēķina vidējos svērto vērtējumu, kas atkarīgs no kredītpunktu apjoma kursā. 
+
+Tātad studentam, kura atzīmes kursis ir 7 (2 KP kurss), 8 (3 KP kurss) un 9 (4 KP kurss), vienkāršs vidējais aritmētiskais būtu 8, toties vidējā svērtā atzīme būs
+
+$$\overline{x}=\frac{2*7 + 3*8 + 4*9}{2+3+4}=\frac{14 + 24 + 36}{9}=\frac{74}{9}=8,22$$
+
+---
+## Vidējais aritmētiskais
+
+Pieskaitot konstanti katrai vērtībai, arī vidējais mainās par šo konstanti
+
+Ja  $y_i=x_i+c$,  kur i=1,...,n
+
+tad  $\overline{y}=\overline{x}+c$  
+
+Reizinot katru vērtību ar konstanti, arī vidējais reizinās ar šo konstanti
+
+Ja $y_i=c \cdot x_i$,  kur i=1,...,n
+
+tad  $\overline{y}=c \cdot \overline{x}$ 
+
+---
+## Pazīmes īpatsvars
+
+.defin[
+**Pazīmes īpatsvars** raksturo kvalitatīvas paraugkopas un norāda, cik liela daļa no kopējā novērojumu skaita atbilst konkrētajai klasei.
+]
+
+Alternatīvi variējošas paraugkopas pazīmes īpatsvara formula ir: 
+
+$$p=\frac{m}{n}$$
+
+, kur m - pozitīvo novērojumu skaits, 
+
+n - paraugkopas apjoms.
+
+---
+## Pazīmes īpatsvars
+
+Nealternatīvi variējošas kvalitatīvas paraugkopas pazīmes īpatsvaru aprēķina katrai atsevišķai klasei pēc formulas
+
+$$p_j=\frac{m_j}{n}$$
+
+, kur $m_j$ - j-tās klases pozitīvo novērojumu skaits, j = 1, 2,..., k, 
+
+k - gradācijas klašu skaits, k > 2, 
+
+n - paraugkopas apjoms.
+
+
+---
+## Pazīmes īpatsvars
+
+.izm90[
+Ja iesēja 100 sēklas un izdīga tikai 34, tad izdīgušo sēklu pazīmes īpatsvars ir:
+$$p=\frac{34}{100}=0,34$$
+
+Ja auditorijā 23 studenti ar brūnām acīm, 12 ar zilām, 6 ar zaļām, tad pazīmju īpatsvari ir:
+
+$$p_{brunas}=\frac{23}{23+12+6}=\frac{23}{41}=0,56$$
+
+$$p_{zilas}=\frac{12}{23+12+6}=\frac{12}{41}=0,29$$
+
+$$p_{zalas}=\frac{6}{23+12+6}=\frac{6}{41}=0,15$$
+]
+
+---
+## Mediāna
+
+.defin[
+**Mediāna** ir tā pētāmās pazīmes vērtība, kas varianšu skaitu dala divās vienādās daļās, t.i., mediāna ir ranžētās rindas viduspunkts.
+]
+
+Ranžētai rindai (n=7, nepāra skaitlis): 1, 2, 3, 3.5, 5, 6, 7, mediāna = 3.5.  
+
+Ranžētai rindai (n=8, pāra skaitlis): 1, 2.5, 2.5, 4, 5.5, 5.5, 7, 8, mediāna =(4+5.5)/2=4.75
+
+---
+## Vidējais un mediāna
+
+```{r 3l_vid,echo=FALSE,fig.align='center',fig.height=5,fig.width=8}
+par(ps=25)
+plot(10:14,rep(5,5),type="l",lwd=3,axes=FALSE,ann=FALSE,ylim=c(1.5,6),xlim=c(9,21))
+lines(c(10,20),c(2,2),lwd=3)
+points(10:14,rep(5,5),pch=3)
+points(c(10,11,12,13,20),rep(2,5),pch=3)
+points(c(12,12,13.2),c(5,2,2),pch=1,col=c("red","blue","green"),cex=3,lwd=5)
+text(c(10,11,12,13,20),rep(2.5,5),labels=c(10,11,12,13,20),font=2)
+text(c(10,11,12,13,14),rep(5.5,5),labels=c(10,11,12,13,14),font=2)
+```
+
+---
+## Moda
+
+.defin[
+**Moda** ir tā pētāmās pazīmes vērtība, kurai ir vislielākā frekvence jeb atkārtošanās biežums.
+]
+
+Ranžētai rindai: 1, 2, 3.5, 3.5, 5, 6,7, moda = 3.5.
+
+Ranžētai rindai: 1, 2.5, 2.5, 4, 5.5, 5.5, 7, 8, moda = 2.5 un 5.5.
+
+Unimodāls sadalījums – sadalījums, kurā ir tikai viena modālā vērtība
+
+Bimodāls sadalījums – sadalījums, kurā ir divas modālās vērtības
+
+---
+## Kvartile
+
+
+.defin[
+**Kvartile** ir pētāmās pazīmes vērtības, kas dala ranžēto rindu četrās vienādās daļās.
+]
+
+.izm80[
+$Q_0$ - nulltā kvartile: tās vērtība sakrīt ar $x_{min}$, līdz šai vērtībai atrodas 0% no visām ranžētās rindas vērtībām.
+
+$Q_1$ - pirmā kvartile: tās vērtība sakrīt ar tās pazīmes vērtību, līdz kurai atrodas 25% no visām vērtībām.
+
+$Q_2$ - otrā kvartile: tās vērtība sakrīt ar mediānu $M_e$, līdz šai vērtībai atrodas 50% no visām vērtībām.
+
+$Q_3$ - trešā kvartile: tās vērtība sakrīt ar tās pazīmes vērtību, līdz kurai atrodas 75% no visām vērtībām.
+
+$Q_4$ - ceturtā kvartile: tās vērtība sakrīt ar $x_{max}$, līdz šai vērtībai atrodas 100% jeb visas vērtības.
+]
+
+---
+## Procentile
+
+.defin[
+**Procentile** ir pētāmās pazīmes vērtības, kas dala ranžēto rindu 100 vienādās daļās. 
+]
+
+Starp procentilēm un kvartilēm pastāv sekojošas likumsakarības: $P_0 = Q_0, P_{25} = Q_1, P_{50} =  Q_2, P_{75} =  Q_3, P_{100}= Q_4$.
+
+---
+## Kvartiles un procentiles
+
+```{r 3l_proc,echo=FALSE,fig.align='center',fig.height=5,fig.width=8}
+par(ps=18, mar = c(0,0,0,0))
+set.seed(1)
+y<-rnorm(50)
+plot(rep(1,50),y,xlim=c(0.5,2),axes=FALSE,ann=FALSE)
+points(rep(1.5,50),y)
+segments(rep(0.9,5),quantile(y),rep(1.1,5),quantile(y),lwd=2)
+segments(rep(1.4,11),quantile(y,probs=seq(0,1,0.1)),rep(1.6,11),quantile(y,probs=seq(0,1,0.1)),lwd=2)
+text(rep(0.9,5),quantile(y),labels=paste0("Q",0:4),pos=2,font=2)
+text(rep(1.6,5),quantile(y,probs=seq(0,1,0.1)),labels=paste0("P",seq(0,100,10)),pos=4,font=2)
+```
+
+---
+## Vidējie rādītāji
+
+Dati (reto sugu skaits parauglaukumā): 0,0,0,0,0,0,0,0,0,8
+```{r comment=NA}
+summary(c(0,0,0,0,0,0,0,0,0,8))
+```
+
+---
+## Izkliedes rādītāji
+```{r 3l_izkliede,echo=FALSE,fig.align='center',fig.height=5,fig.width=8}
+par(ps=25)
+plot(10:15,rep(5,6),type="l",lwd=3,axes=FALSE,ann=FALSE,ylim=c(1.5,6),xlim=c(5,21))
+lines(c(6,19),c(2,2),lwd=3)
+points(10:15,rep(5,6),pch=3)
+points(c(6,8,11,14,17,19),rep(2,6),pch=3)
+points(c(12.5,12.5),c(5,2),pch=1,col=c("red","red"),cex=3,lwd=5)
+text(c(6,8,11,14,17,19),rep(2.5,6),labels=c(6,8,11,14,17,19),font=2,cex=0.8)
+text(c(10,11,12,13,14,15),rep(5.5,6),labels=c(10,11,12,13,14,15),font=2,cex=0.8)
+```
+
+---
+## Izkliedes rādītāji
+
+* Amplitūda
+
+* Standartnovirze
+
+* Dispersija
+
+* Variācijas koeficients
+
+* Normētā novirze
+
+* Asimetrijas rādītājs
+
+* Ekscesa rādītājs
+
+---
+## Amplitūda
+
+.defin[
+**Amplitūda** ir starpība starp mazāko un lielāko vērtību datos.
+]
+
+Kā patstāvīgu variēšanas rādītāju amplitūdu lietot nav ieteicams.
+
+$$l=x_{max}-x_{min}$$
+
+kur $x_{min}$ - mazākā paraugkopas vērtība, $x_{max}$ - lielākā paraugkopas vērtība.
+
+---
+## Paraugkopas starndartnovirze
+
+.defin[
+**Standartnovirze** ir galvenais varianšu izkliedes rādītājs un raksturo varianšu izkliedi ap vidējo aritmētisko.
+]
+
+Paraugkopas standartnovirzi apzīmē ar s, bet ģenerālkopas standartnovirzi ar $\sigma$.
+
+$$s=\sqrt{s^2}=\sqrt{\frac{\sum\limits_{i=1}^{n}(x_i-\overline{x})^2}{n-1}}$$
+
+kur $x_i$ - i-tā paraugkopas vērtība, i=1, 2, ..., n, n - paraugkopas apjoms, $\overline{x}$ - paraugkopas vidējais aritmētiskais.
+
+---
+## Paraugkopas dispersija
+
+.defin[
+Standartnovirzes kvadrātu sauc par **dispersiju** un apzīmē attiecīgi ar $s^2$ un $\sigma^2$.
+]
+
+$$s^2=\frac{\sum\limits_{i=1}^{n}(x_i-\overline{x})^2}{n-1}$$
+
+, kur $x_i$ - i-tā paraugkopas vērtība, i=1, 2, ..., n, n - paraugkopas apjoms, $\overline{x}$ - paraugkopas vidējais aritmētiskais.
+
+---
+## Standartnovirze un dispersija
+
+Gan dispersijas, gan standartnovirzes formulās paraugkopas dalītājā ir n-1, jo paraugkopa satur tikai daļu no visas populācijas datu (parasti neietver visus ekstrēmus). 
+
+Dalīšana ar n-1 nodrošina labāko iespējamo standartnovirzes novērtējumu (tā netiek aprēķināta par mazu). Ja ir pilnīgi visi populācijas dati, tad dala ar N (kopējais novērojumu skaits).
+
+---
+## Standartnovirze un dispersija
+
+.izm80[
+```{r,echo=FALSE,comment=NA}
+tab<-data.frame(x=11:20)
+tab$st<-tab$x-mean(tab$x)
+tab$kv<-(tab$st)^2
+tab<-rbind(tab,colSums(tab))
+rownames(tab)<-c(1:10,"Summa")
+colnames(tab)<-c("x_i","x_i-x","(x_i-x)^2")
+knitr::kable(tab)
+```
+]
+
+---
+## Standartnovirze un dispersija
+
+Dispersija
+
+$$s^2=\frac{82.5}{10-1}=9.167$$
+
+Standartnovirze
+
+$$s=\sqrt{\frac{82.5}{10-1}}=3.028$$
+
+---
+## Standartnovirze un dispersija
+
+Ja ir paraugkopas ar vērtībām $x_1,...,x_n$ un $y_1,...,y_n$, un $y_i=x_i+c$,
+
+tad $s_{y}^2=s_{x}^2$ un $s_{y}=s_{x}$
+
+Ja ir paraugkopas ar vērtībām $x_1,...,x_n$ un $y_1,...,y_n$, un $y_i=c \cdot x_i$, un $c>0$,
+
+tad $s_{y}^2=c^2 \cdot s_{x}^2$ un $s_y=c \cdot s_x$
+
+---
+## Standartnovirze un dispersija (Kvalitatīvas paraugkopas)
+
+Kvalitatīvas paraugkopas pazīmju klases dispersijas un standartnovirzes formulas:
+
+$$s_{j}^2=p_j \cdot (1-p_j)$$
+
+$$s_j=\sqrt{s_{j}^2}=\sqrt{p_j \cdot (1-p_j)}$$
+
+, kur $p_j$ - j-tās klases īpatsvars.
+
+---
+## Standartnovirze un dispersija (Kvalitatīvas paraugkopas)
+
+Ja auditorijā 23 studenti ar brūnām acīm, 12 ar zilām, 6 ar zaļām, tad pazīmju standartnovirzes ir:
+
+$$s_{brunas}=\sqrt{0,56 \cdot (1-0,56)}=\sqrt{0,56 \cdot 0,44}=\sqrt{0,2464}=0,496$$
+
+$$s_{zilas}=\sqrt{0,29 \cdot (1-0,29)}=\sqrt{0,29 \cdot 0,71}=\sqrt{0,2059}=0,454$$
+
+$$s_{zalas}=\sqrt{0,15 \cdot (1-0,15)}=\sqrt{0,15 \cdot 0,85}=\sqrt{0,1275}=0,357$$
+
+---
+## Variācijas koeficients
+
+
+.defin[
+**Variācijas koeficients** ir standartnovirzes relatīvā vērtība.
+]
+
+.izm80[
+Jo mazāka variācijas koeficienta vērtība, jo mazāka varianšu izkliede ap vidējo aritmētisko. Paraugkopas variācijas koeficientu apzīmē - v, ģenerālkopas - $\omega$. 
+
+$$v=\frac{s}{\overline{x}} \cdot 100\% $$
+
+,kur s - paraugkopas standartnovirze,  $\overline{x}$ - paraugkopas vidējais aritmētiskais.
+
+Variācijas koeficients kvalitatīvajām pazīmēm: 
+
+$$ v=\frac{1-p}{n \cdot p} \cdot 100\%$$
+
+, kur p - pazīmes īpatsvars, n - paraugkopas apjoms.
+]
+
+---
+## Normētā novirze jeb z vērtība (z-score)
+
+..defin[
+**Normētā novirze** raksturo, cik standartnoviržu attālumā no vidējā aritmētiskā atrodas konkrētā variante $x_i$.
+]
+
+$$z=\frac{x_i-\overline{x}}{s}$$
+
+---
+## Asimetrijas rādītājs
+
+.defin[
+**Asimetrijas rādītājs** skaitliski raksturo empīriskā sadalījuma simetriju attiecībā pret aritmētisko vidējo (X ass virzienā).
+]
+
+Sadalījumu sauc par simetrisku, ja A = 0 un vidējais aritmētiskais, mediāna un moda ir skaitliski vienādi lielumi: $\overline{x}=M_e=M_o$
+
+$$A=\frac{\sum\limits_{i=1}^n(x_i-\overline{x})^3}{ns^3}$$
+
+kur $\overline{x}$ - paraugkopas vidējais aritmētiskais, $x_i$ - i-tā paraugkopas vērtība, i=1, 2, ..., n, n - paraugkopas apjoms, s - paraugkopas standartnovirze.
+
+---
+## Asimetrijas rādītājs
+
+```{r 3l_asim,echo=FALSE,fig.align='center',fig.height=5,fig.width=8,warning=FALSE,message=FALSE}
+library(sn)
+dati<-data.frame(Vertibas=seq(-3, 3, by=0.01),
+           Simetrisks=dsn(seq(-3, 3, by=0.01), alpha=0),
+           Pozitiva_asimetrija=dsn(seq(-3, 3, by=0.01), alpha=3),
+           Negativa_asimetrija=dsn(seq(-3, 3, by=0.01), alpha=-3))
+library(reshape2)
+dati.gar<-melt(dati,id.vars="Vertibas")
+dati.gar$variable<-factor(dati.gar$variable,labels=c("Simetrisks","Pozitīva asimetrija","Negatīva asimetrija"))
+library(ggplot2)
+library(grid)
+ggplot(dati.gar,aes(Vertibas,value))+geom_line(size=2)+
+  facet_wrap(~variable,ncol=1)+
+  theme_xaringan()+
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        panel.grid=element_blank(),
+        strip.background=element_blank(),
+        strip.text=element_text(size=rel(0.5),face="bold"))
+```
+
+---
+## Ekscesa rādītājs
+
+.defin[
+**Ekscesa rādītājs** raksturo empīriskā sadalījuma koncentrāciju ap aritmētisko vidējo (Y ass virzienā). 
+]
+
+Normālajam sadalījumam ekscesa rādītājs E=0. Ekscesa rādītājs ir nenosaukts skaitlis.
+
+$$E=\frac{\sum\limits_{i=1}^n(x_i-\overline{x})^4}{ns^4}-3$$
+
+---
+## Ekscesa rādītājs
+
+```{r 3l_eksc,echo=FALSE,fig.align='center',fig.height=5,fig.width=8,warning=FALSE}
+df<-data.frame(vert=c(dnorm(seq(-3,3,0.01),0,0.2),dnorm(seq(-3,3,0.01),0,1.2)),sad=rep(c("Pozitīvs","Negatīvs"),each=601),skaitli=rep(1:601,times=2))
+ggplot(df,aes(skaitli,vert,color=sad))+geom_line(size=2)+
+    theme_bw()+
+  scale_color_discrete("Ekscesa veids",labels=c("Negatīvs","Pozitīvs"))+
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        panel.grid=element_blank(),
+        legend.position="top",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_text(size=rel(1.8)))
+```
+
+---
+class: inverse, center, middle
+
+# Ticamības intervāli
+
+---
+## Paraugkopas un ģenerālkopa
+
+Iedomāsimies, ka ir populācija, kurā ir 500 žurkas, ar vidējo 550, standartnovirzi 50.
+```{r,comment=NA, echo=FALSE}
+set.seed(114)
+zurkas.visas <- round(rnorm(500, mean = 550, sd = 50), 0)
+summary(zurkas.visas)
+```
+
+No populācijas paņem paraugkopu 50 žurku apmērā
+
+```{r, echo=FALSE, comment=NA}
+par1 <- sample(zurkas.visas, 50,replace=FALSE)
+summary(par1)
+```
+
+---
+## Paraugkopas un ģenerālkopa
+
+No populācijas paņem vēl divas paraugkopas, katru pa 50 žurkām.
+
+```{r,comment=NA, echo=FALSE}
+par2 <- sample(zurkas.visas, 50,replace=FALSE)
+summary(par2)
+par3 <- sample(zurkas.visas, 50,replace=FALSE)
+summary(par3)
+```
+
+---
+## Paraugkopas un ģenerālkopa
+
+Eksperimentu atkārto 300 reizes.
+
+```{r echo=FALSE}
+vid <- rep(0, 300)
+ for (i in 1:300) {
+     vid[i] <- mean(sample(zurkas.visas, 50))
+ }
+library(cowplot)
+theme_set(theme_cowplot())
+ggplot(data.frame(vid), aes(vid)) + geom_histogram(binwidth = 3, fill = "#43418A") + labs(x = "Paraugkopas vidējais", y = "Skaits")
+```
+
+---
+## Centrālā  robežteorēma I
+
+.defin[
+Ja populācijas dati veido normālo sadalījumu un mēs no šīs populācijas veidojam daudzas vienādas paraugkopas, tad šādām paraugkopām aprēķinātie vidējie aritmētiskie veidos normālo sadalījumu,
+turklāt šo vidējo aritmētisko kopējais vidējais aritmētiskais ir vienāds ar populācijas/ģenerālkopas vidējo aritmētisko $\mu$.
+]
+
+
+---
+## Vidējā aritmētiskā standartkļūda
+
+.izm90[
+Vidējo aritmētisko sadalījuma standartnovirze (saukta arī par vidējā aritmētiskā standartkļūdu):
+
+$$\sigma_{\overline{x}}=\frac{\sigma}{\sqrt{n}}$$
+
+kur $\sigma$ ir populācijas standartnovirze un n - novērojumu skaits paraugkopā.
+
+Nezinot populācijas standartnovirzi, to aizstāj ar paraugkopas standartnovirzi.
+
+$$s_{\overline{x}}=\frac{s}{\sqrt{n}}$$
+
+kur s ir populācijas standartnovirze un n - novērojumu skaits paraugkopā.
+]
+
+---
+## Normālais sadalījums
+
+```{r bliv_varb,fig.width=8, echo=FALSE,fig.align='center'}
+library(png)
+library(grid)
+img <- readPNG("../Atteli/bliv_varb.png") 
+ grid.raster(img)
+```
+
+---
+## Centrālā  robežteorēma II
+
+.defin[
+Ja populācijas dati veido jebkādu sadalījumu un mēs no šīs populācijas veidojam daudzas vienādas paraugkopas, tad šādām paraugkopām aprēķinātie vidējie aritmētiskie tieksies uz normālo sadalījumu,
+ja novērojumu skaits tiek palielināts.
+]
+
+---
+## Pazīmes īpatsvara standartkļūda
+
+Populācijas gadījumā:
+
+$$ \sigma_{p}=\sqrt{\frac{\psi \cdot \kappa}{n}}$$
+
+Paraugkopas gadījumā:
+
+$$s_{p}=\sqrt{\frac{\psi \cdot \kappa}{n}}$$
+
+kur $\psi$ - notikuma iestāšanās varbūtība, $\kappa$ - pretējā notikuma iestāšanās varbūtība, n - kopējais notikumu skaits
+
+---
+## Ticamības intervāls
+
+.defin[
+P ticamības intervāls parametram x ir intervāls, ko aprēķina pēc paraugkopas datiem tādā veidā, ka P ir iespējamība ģenerēt intervālu, kurš satur patieso parametra x vērtību.
+
+Jeb, P ir ticamības intervālu daļa no n nejauši atlasītām paraugkopām, kas satur patieso parametra x vērtību.
+]
+
+---
+## Ticamības intervāls
+
+```{r eval=FALSE}
+library(animation)
+
+conf.int()
+```
+
+---
+## Ticamības intervāls
+
+Zinot populācijas datus (kas atbilst normālajam sadalījumam), aprēķināt intervālu, kurā atrodas noteiktas vērtības, var vienkārši izmantojot z vērtības un to likumsakarības
+
+Ja ir zināmi tikai paraugkopas dati, šī pieeja nestrādā, jo parametru vērtības ir atkarīgas no novērojumu skaita
+
+Šīs problēmas novēršanai, izmanto Stjūdenta (t) sadalījumu, kas ir atkarīgs no brīvības pakāpju skaita (novērojumu skaits mīnus 1)
+
+---
+## Stjūdenta sadalījums
+```{r 3l_brivibas,echo=FALSE,fig.align='center',fig.height=5,fig.width=9,warning=FALSE}
+ggplot()+geom_line(data=data.frame(x=seq(-3,3,0.01),y=dt(seq(-3,3,0.01),1)),aes(x,y,color="1"),size=2)+
+  geom_line(data=data.frame(x=seq(-3,3,0.01),y=dt(seq(-3,3,0.01),5)),aes(x,y,color="5"),size=2)+
+  geom_line(data=data.frame(x=seq(-3,3,0.01),y=dt(seq(-3,3,0.01),10)),aes(x,y,color="10"),size=2)+
+  geom_line(data=data.frame(x=seq(-3,3,0.01),y=dt(seq(-3,3,0.01),100)),aes(x,y,color="100"),size=2)+
+  scale_color_discrete("Brīvības pakāpju skaits",breaks=c("1","5","10","100"))+
+  theme_bw()+
+    theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        panel.grid=element_blank(),
+        legend.position="top",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_text(size=rel(1.8)))
+```
+
+---
+## Vidējā aritmētiskā ticamības intervāls
+
+$$\overline{x}-t_{\alpha,\nu} \cdot s_{\overline{x}} < \mu < \overline{x}+t_{\alpha,\nu} \cdot s_{\overline{x}}$$
+
+
+kur $\overline{x}$ - vidējais aritmētiskais
+
+$t_{\alpha,\nu}$ - Stjūdenta kritērija teorētiskā vērtība
+
+$\nu= n-1$ - brīvības pakāpju skaits
+
+$s_{\overline{x}}$ - vidējā aritmētiskā reprezentācijas rādītājs $s_{\overline{x}}=\frac{s}{\sqrt{n}}$
+
+$\mu$ - ģenerālkopas vidējais aritmētiskais.
+
+---
+## Vidējā aritmētiskā ticamības intervāls
+
+Dati:
+177, 151, 150, 169, 178, 175, 152, 165, 155, 154, 170, 179, 164, 157, 167, 174, 163, 173, 166, 176
+
+
+Vidējais aritmētiskais: 163,4 Standartnovirze: 9,4 Novērojumu skaits: 20
+
+Standartkļūda: $9,4/\sqrt(20)=2,11$
+
+Stjūdenta kritērija teorētiskā vērtība: $t_{\alpha,\nu}=t_{0,05,19}=2,093$
+
+Vidējā aritmētiskā ticamības intervāla apakšējā robeža:
+
+163,4-2,093*2,11 = 158,99
+
+Vidējā aritmētiskā ticamības intervāla augšējā robeža:
+
+163,4+2,093*2,11 = 167,81
+
+
+
+---
+## Ticamības intervāls
+```{r 3l_tic_int,echo=FALSE,fig.align='center',fig.height=5,fig.width=9,warning=FALSE}
+df<-data.frame(x=rep(5:100,times=3))
+df$briv<-df$x-1
+df$but<-rep(c(0.05,0.01,0.001),each=96)
+vid=0
+stand=5
+df$aug<-with(df,vid+qt(1-but/2,briv)*stand/sqrt(x))
+df$apak<-with(df,vid-qt(1-but/2,briv)*stand/sqrt(x))
+ggplot(df,aes(x,color=factor(but)))+geom_line(aes(y=apak),size=1.5)+
+  geom_line(aes(y=aug),size=1.5)+
+  scale_color_discrete("Ticamības intervāls",labels=c("99,9%","99%","95%"))+
+  labs(x="Novērojumu skaits",y="")+
+    theme_bw()+
+    theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="top",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_text(size=rel(1.8)))
+
+```
+
+---
+## Ticamības intervāli - proporcijām: binomiālā sadalījuma ticamības intervāls
+
+.izm90[
+Asimptotisks analītiskais aprēķins
+
+$$\hat{p}-z_{1-\alpha} \cdot {\sqrt{\frac{{\hat{p}} \cdot {(1-\hat{p})}}{n}}} < \pi < \hat{p}+z_{1-\alpha} \cdot {\sqrt{\frac{{\hat{p}} \cdot {(1-\hat{p})}}{n}}}$$
+
+kur $\pi$ - proprocija ģenerālkopā
+
+$z_{1-\alpha}$ - z-sadalījuma teorētiskā vērtība
+
+$\hat{p}$ - novērotā proporcija paraugkopā
+
+$n$ - izlases apjoms
+
+${\sqrt{\frac{{\hat{p}} \cdot {(1-\hat{p})}}{n}}}$ - proporciju standartkļūda.
+]
+
+---
+## Ticamības intervāli - proporcijām: kontinuitātes korekcija
+
+.izm90[
+$$\hat{p}-z_{1-\alpha} \cdot {\sqrt{\frac{{\hat{p}} \cdot {(1-\hat{p})}}{n}}} - {\frac{0,5}{n}} < \pi < \hat{p}+z_{1-\alpha} \cdot {\sqrt{\frac{{\hat{p}} \cdot {(1-\hat{p})}}{n}}} + {\frac{0,5}{n}}$$
+
+kur $\pi$ - proprocija ģenerālkopā
+
+$z_{1-\alpha}$ - z-sadalījuma teorētiskā vērtība
+
+$\hat{p}$ - novērotā proporcija paraugkopā
+
+$n$ - izlases apjoms
+
+${\sqrt{\frac{{\hat{p}} \cdot {(1-\hat{p})}}{n}}}$ - proporciju standartkļūda
+
+${\frac{0,5}{n}}$ - korekcijas parametrs jeb *kļūdas robeža*.
+]
+
+
+---
+## Kāpēc jāizmanto ticamības intervālus?
+
+* Tie dod punkta un intervāla novērtējumu interesējošam rādītājam vienādās mērvienībās
+
+* Ir saistībā starp ticamības intervāliem un p-vērtībām (NHST)
+
+* Ticamības intervāli ļauj apkopot informāciju no vairākiem pētījumiem (meta-analīze)
+
+* Ticamības intervāli dod informāciju par precizitāti
+
+---
+class: center, inverse, middle
+# Kādi būtu jautājumi?

@@ -1,0 +1,368 @@
+---
+title: "Attēlu veidošana"
+author: "Andris Avotiņš &Didzis Elferts"
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css","my-css.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:10'
+---
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+mono_accent(
+  base_color = "#43418A",
+  text_font_size = "25px",
+  text_slide_number_font_size = "0.5em",
+  outfile = "xaringan-themer.css"
+)
+options(htmltools.dir.version = FALSE)
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.height = 3.5, fig.width = 8, dev='svg')
+```
+
+
+## Dati
+
+Eksperiments ar augiem
+
+```{r, eval=FALSE}
+library(readxl)
+dati <- read_excel("augi.xlsx")
+head(dati)
+```
+
+```{r, echo=FALSE}
+library(readxl)
+dati <- read_excel("../Dati/augi.xlsx")
+head(dati)
+```
+
+---
+## Dati
+
+Īpatņu skaits paraugos.
+
+```{r}
+dati_stab <- data.frame(Paraugs = c("PA","AD","LL","RT","CV"),
+                        Skaits = c(5, 4, 15, 8, 2))
+dati_stab
+```
+
+---
+## Attēlu sadalīšana daļās
+
+`ggplot2` sistēmā ir iespējams automātiski sadalīt attēlu vairākās daļās balstoties uz vienu vai vairākiem mainīgajiem. To panāk ar funkcijām `facet_grid()` un `facet_wrap()`. 
+
+Pirmajā gadījumā tiek izveidots rāmis, kur jānorāda mainīgais, kas dala x ass virzienā un y ass virzienā, bet `facet_wrap()` gadījumā dalījums notiek pēc viena mainīgā, norādot nepieciešamo rindu vai kolonnu skaitu.
+
+---
+## facet_grid()
+```{r}
+library(ggplot2)
+ggplot(dati, aes(garums, lapas)) + geom_point() +
+  labs(x = "Auga garums, cm", y = expression(paste("Lapu laukums, ", cm^{2})))
+```
+
+---
+## facet_grid()
+```{r}
+ggplot(dati, aes(garums, lapas)) + geom_point() + 
+      facet_grid(. ~ stress) +
+  labs(x = "Auga garums, cm", y = expression(paste("Lapu laukums, ", cm^{2})))
+```
+
+---
+## facet_grid()
+```{r}
+ggplot(dati, aes(garums, lapas)) + geom_point() + 
+      facet_grid(stress ~ .)  +
+  labs(x = "Auga garums, cm", y = expression(paste("Lapu laukums, ", cm^{2})))
+```
+
+---
+## facet_grid()
+```{r}
+ggplot(dati, aes(garums, lapas)) + geom_point() + 
+      facet_grid(gaisma ~ stress) +
+  labs(x = "Auga garums, cm", y = expression(paste("Lapu laukums, ", cm^{2})))
+```
+
+---
+## facet_grid()
+
+Ja funkcijai `facet_grid()` pieliek argumentu `margins = TRUE`, tad tiek izveidoti arī faktoru kombināciju attēli.
+
+```{r, fig.height=3}
+ggplot(dati, aes(garums, lapas)) + geom_point() + 
+      facet_grid(gaisma ~ stress, margins=TRUE) +
+  labs(x = "Auga garums, cm", y = expression(paste("Lapu laukums, ", cm^{2})))
+```
+
+---
+## facet_grid()
+
+Ar argumentu `scales="free"` panāk, ka mazajiem attēliem ir atšķirīgas vērtību skalas.
+
+```{r, fig.height=3}
+ggplot(dati, aes(garums, lapas)) + geom_point() + 
+      facet_grid(. ~ stress, scales = "free") +
+  labs(x = "Auga garums, cm", y = expression(paste("Lapu laukums, ", cm^{2})))
+```
+
+---
+## facet_grid()
+Arguments `space="free"` nodrošina, ka mazajiem attēliem atvēlētā vieta mainās atkarībā no attēlojamo datu diapazona.
+
+```{r, fig.height=2.5}
+ggplot(dati, aes(garums, lapas)) + geom_point() + 
+      facet_grid(. ~ stress, scales = "free", 
+                 space = "free") +
+  labs(x = "Auga garums, cm", y = expression(paste("Lapu laukums, ", cm^{2})))
+```
+
+---
+## facet_wrap()
+```{r}
+ggplot(dati, aes(garums, lapas)) + geom_point() +
+  labs(x = "Auga garums, cm", y = expression(paste("Lapu laukums, ", cm^{2})))
+```
+
+---
+## facet_wrap()
+```{r}
+ggplot(dati, aes(garums, lapas)) + geom_point() + 
+      facet_wrap(~ stress) +
+  labs(x = "Auga garums, cm", y = expression(paste("Lapu laukums, ", cm^{2})))
+```
+
+---
+## facet_wrap()
+```{r,fig.height=3}
+ggplot(dati, aes(garums, lapas)) + geom_point() + 
+      facet_wrap(~ stress, ncol = 1) +
+  labs(x = "Auga garums, cm", y = expression(paste("Lapu laukums, ", cm^{2})))
+```
+
+
+---
+## Stabiņu secība
+
+Pēc noklusējuma stabiņu attēlos secība ir alfabētiska.
+
+```{r}
+library(ggplot2)
+ggplot(dati_stab, aes(Paraugs, Skaits)) + 
+  geom_col()
+```
+
+---
+## Stabiņu secība
+
+Ar funkciju `reorder()`, var panākt, ka x mainīgā secība ir atkarīga no cita mainīgā.
+
+```{r}
+ggplot(dati_stab, aes(reorder(Paraugs,Skaits), Skaits)) + 
+  geom_col()
+```
+
+---
+## Stabiņu secība
+
+Ja mainīgājam, pēc kura kārto, pievieno mīnus zīmi, var panākt secību no lielākā uz mazāko.
+
+```{r}
+ggplot(dati_stab, aes(reorder(Paraugs,-Skaits), Skaits)) + 
+  geom_col()
+```
+
+---
+## Grupu atdalīšana
+
+Vairākiem geom veidiem, sadalot grupās, vērtības pārklājas.
+
+```{r}
+ggplot(dati, aes(gaisma, lapas, shape = stress)) + 
+  stat_summary(fun.data = "mean_cl_normal") +
+  labs(x = "Stresa līmenis", y = expression(paste("Lapu laukums, ", cm^{2})))
+```
+
+---
+## Grupu atdalīšana
+
+Ar argumentu `position_dodge()` pārklājošās grupas var "atbīdīt"
+
+```{r, fig.height=3}
+ggplot(dati, aes(gaisma, lapas, shape = stress)) + 
+  stat_summary(fun.data = "mean_cl_normal", 
+               position = position_dodge(width = 0.25)) +
+  labs(x = "Stresa līmenis", y = expression(paste("Lapu laukums, ", cm^{2})))
+```
+
+
+---
+## Regresijas rezultātu vizualizācija ar paketi ggpmisc
+
+Paketē `ggpmisc` ir vairākas funkcijas, kas ļauj pievienot regresijas attēliem vienādojumus un citus rādītājus, kā arī attēlot atlikuma vērtības 
+
+Vairāk informācijas:
+https://cran.r-project.org/web/packages/ggpmisc/index.html
+
+
+---
+## Izskaidrotā variācija
+
+```{r, fig.height=3, message=FALSE}
+library(ggplot2)
+library(ggpmisc)
+ggplot(iris,aes(Petal.Width,Petal.Length)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  stat_poly_eq(formula = y ~ x, parse = TRUE) +
+  labs(x = "Vainaglapu platums, cm", y = "Kauslapu garums, cm")
+```
+
+---
+## Pielāgotā izskaidrotā variācija
+
+```{r, fig.height=3}
+ggplot(iris, aes(Petal.Width, Petal.Length)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  stat_poly_eq(formula = y ~ x, parse = TRUE, 
+               aes(label = ..adj.rr.label..)) +
+  labs(x = "Vainaglapu platums, cm", y = "Kauslapu garums, cm")
+```
+
+---
+## Regresijas vienādojums
+
+```{r, fig.height=3}
+ggplot(iris, aes(Petal.Width, Petal.Length)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  stat_poly_eq(formula = y ~ x, parse = TRUE, 
+               aes(label = ..eq.label..)) +
+  labs(x = "Vainaglapu platums, cm", y = "Kauslapu garums, cm")
+```
+
+---
+## Vairāki parametri
+
+```{r, fig.height=2.5}
+ggplot(iris,aes(Petal.Width,Petal.Length)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  stat_poly_eq(formula = y ~ x, parse = TRUE,
+               aes(label = paste(..eq.label..,
+                    ..adj.rr.label..,sep = "*\",\"~~"))) +
+  labs(x = "Vainaglapu platums, cm", y = "Kauslapu garums, cm")
+```
+
+---
+## Dalījums grupās
+
+```{r, fig.height=2.5}
+ggplot(iris,aes(Petal.Width,Petal.Length, color = Species)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  stat_poly_eq(formula = y ~ x, parse = TRUE,
+               aes(label = paste(..eq.label..,
+                          ..rr.label..,sep = "*\",\"~~"))) +
+  labs(x = "Vainaglapu platums, cm", y = "Kauslapu garums, cm")
+```
+
+
+
+---
+## Vairāku attēlu apvienošāna vienā
+
+Ar funkcijām, kas pieejamas paketē `cowplot`, ir iespējams apvienot vairākus ggplot2 attēlus vienā kopīgā attēlā, kā arī šiem attēliem piešķirt numerāciju.
+
+
+Piemēri un vairāk informācija ir https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html
+
+```{r,message=FALSE}
+library(cowplot)
+```
+
+---
+## Vairāku attēlu apvienošana vienā
+
+Attēlus no sākuma ir jāsaglabā kā objektus.
+
+```{r, fig.height=3}
+plot.lapas <- ggplot(dati, aes(garums, lapas, 
+        colour = gaisma)) + geom_point(size=2.5) +
+  labs(x = "Auga garums, cm", y = expression(paste("Lapu laukums, ", cm^{2})))
+plot.lapas
+```
+
+---
+## Vairāku attēlu apvienošana vienā
+
+```{r, fig.height=3}
+plot.stabini <- ggplot(dati_stab, aes(Paraugs, Skaits, fill = Paraugs)) + 
+  geom_col() +
+  theme(axis.text.x = element_text(angle=70, vjust=0.5))
+plot.stabini
+```
+
+---
+## Vairāku attēlu apvienošana vienā
+
+Attēlu apvienošanai izmanto funkciju `plot_grid()`, kurai kā argumentus norāda apvienojamos attēlus (objektus), kā arī norāda kādus apzīmējums izmantot (`labels=`).
+
+```{r,fig.width=9,fig.height=3}
+plot_grid(plot.lapas, plot.stabini,labels = c("A","B"))
+```
+
+---
+## Vairāku attēlu apvienošana vienā
+
+Lai panāktu, ka asis ir vienāda garuma dažādiem objektiem, jāizmanto arguments `align=`.
+
+```{r,fig.width=9,fig.height=3}
+plot_grid(plot.lapas, plot.stabini, 
+          labels = c("A", "B"), align = "h")
+```
+
+---
+## Vairāku attēlu apvienošana vienā
+
+Lai izkārtotu attēlus kolonnā, jānorāda vajadzīgais rindu skaits.
+
+```{r,fig.height=3}
+plot_grid(plot.lapas, plot.stabini, 
+          labels = c("A", "B"), nrow = 2, align = "v")
+```
+---
+## Vairāku attēlu apvienošana vienā
+
+Kombinējot vairākas reizes funkciju `plot_grid()`, ir iespējams iegūt arī dažāda izmēra attēlu kombinācijas.
+
+```{r, eval=FALSE}
+plot_grid(plot.stabini,
+      plot_grid(plot.lapas, plot.lapas, labels = c("B","C")), 
+      nrow = 2, labels = c("A",""))
+```
+
+---
+## Vairāku attēlu apvienošana vienā
+
+
+```{r, echo=FALSE, fig.height=5}
+plot_grid(plot.stabini,
+      plot_grid(plot.lapas, plot.lapas, labels = c("B","C")), 
+      nrow = 2, labels = c("A",""))
+```
+
+
+
+---
+class: center, inverse, middle
+# Kādi būtu jautājumi?

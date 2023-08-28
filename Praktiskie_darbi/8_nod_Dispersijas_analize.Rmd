@@ -1,0 +1,314 @@
+---
+title: "Dispersijas analīze"
+author: "Andris Avotiņš & Didzis Elferts"
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css","my-css.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:10'
+---
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+mono_accent(
+  base_color = "#43418A",
+  text_font_size = "25px",
+  text_slide_number_font_size = "0.5em",
+  outfile = "xaringan-themer.css"
+)
+options(htmltools.dir.version = FALSE)
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.height = 4.5, fig.width = 8, dev='svg', fig.align = "center")
+```
+
+
+## Dispersijas analīzes funkcijas
+
+Dispersijas analīzi programmā R veic ar funkciju `aov()`, vai arī kombinējot funkcijas `anova()` un `lm()`.
+
+```{r eval=FALSE}
+aov(pētāmā.pazīme~faktors,data=datu.tabula)
+
+anova(lm(pētāmā.pazīme~faktors,data=datu.tabula))
+```
+
+Lai analīze tiktu veikta pareizi, regresoram (x) ir jābūt izteiktam kā faktoram.
+
+
+---
+## Dati 1
+
+
+.izm80[
+```{r,comment=NA,echo=FALSE}
+library(readxl)
+miezi <- read_excel("../Dati/miezi.xlsx")
+```
+```{r,comment=NA,eval=FALSE}
+library(readxl)
+miezi <- read_excel("miezi.xlsx")
+```
+```{r,comment=NA}
+str(miezi)
+head(miezi)
+```
+]
+
+---
+## Dati 2
+
+```{r,comment=NA}
+summary(miezi)
+```
+
+---
+## Pārveidošana par faktoru
+
+Lai pārbaudītu vai mainīgais tiek uztverts kā faktors, izmanto funkciju `is.factor()` . Lai mainīgo pārvērstu par faktoru, izmanto funkciju `as.factor()`.
+```{r,comment=NA}
+is.factor(miezi$skirne)
+miezi$skirne <- as.factor(miezi$skirne)
+is.factor(miezi$skirne)
+```
+
+
+---
+## Vizuālais salīdzinājums
+
+```{r, fig.height=4}
+library(ggplot2)
+ggplot(miezi, aes(skirne, raza)) + geom_boxplot()
+```
+
+
+
+
+---
+## Dispersiju salīdzināšana
+
+Pirms dispersijas analīzes veikšanas grupu dispersijas salīdzina ar funkciju `leveneTest()`, kas atrodas paketē `car`.
+
+```{r,comment=NA,warning=FALSE, message=FALSE}
+library(car)
+leveneTest(y = miezi$raza, group = miezi$skirne)
+```
+
+**Secinājums:** pie būtiskuma līmenā $\alpha=0,05$ starp atsevišķu gradācijas klašu dispersijām nepastāv statistiski būtiska atšķirība jeb dispersijas ir homogēnas ( $F_{(2; 27)} = 0,1785$), jo iegūtā p vērtība (0,84) ir lielāka par būtiskuma līmeni.
+
+---
+## Vienfaktora dispersijas analīze
+
+```{r,comment=NA}
+anov.miezi <- aov(raza ~ skirne, data = miezi)
+summary(anov.miezi)
+```
+**Secinājums:** pie būtiskuma līmenā $\alpha=0,05$ starp gradācijas klašu vidējiem aritmētiskajiem pastāv statistiski būtiska atšķirība jeb faktora šķirne ietekme uz ražu ir būtiska ( $F_{(2; 27)} = 4,596$), jo iegūtā p vērtība (0,019) ir mazāka par būtiskuma līmeni.
+
+
+---
+## Analīzes pieņēmumu pārbaude
+
+Atlikuma vērtību normalitātes pārbaude
+
+```{r, fig.height=4}
+plot(anov.miezi, 2)
+```
+
+---
+## Analīzes pieņēmumu pārbaude
+
+Atlikuma vērtību normalitātes pārbaude
+
+
+```{r}
+shapiro.test(residuals(anov.miezi))
+```
+
+**Secinājums**: Šapiro-Vilka testā iegūta vērtiba $W_{(30)} = 0,939$ ar p-vērtību (0,087), kas lielāka par būtiskuma līmeni $\alpha = 0,05$, secināms, ka atlikuma vērtības veido apmēram  normālo sadalījumu.
+
+
+
+---
+## Analīzes pieņēmumu pārbaude
+
+Atlikuma vērtību homogenitātes pārbaude
+
+```{r, fig.height=4}
+plot(anov.miezi, 1)
+```
+
+
+---
+## Faktora ietekmes īpatsvars
+
+Faktora ietekmes īpatsvaru aprēķina dalot faktora kvadrātu summas (`Sum Sq`) vērtību ar kopējo kvadrātu summu.
+
+```{r,comment=NA}
+275/(275+808)
+```
+**Secinājums:** Faktora šķirne ietekmes īpatsvars uz ražas lielumu ir 25% un
+nekontrolēto (atlikuma) faktoru summārā iedarbība ir 75% (1-0.25).
+
+---
+## Gradācijas klašu salīdzināšana
+
+.izm80[
+Funkcijā `TukeyHSD()` jānorāda dispersijas analīzes objektu, kurš ir veidots ar funkciju `aov()`.
+
+```{r,comment=NA}
+TukeyHSD(anov.miezi)
+```
+**Secinājums:** pie būtiskuma līmenā $\alpha=0,05$ statistiski būtiska atšķirība pastāv starp 3. un 1. šķirnes ražu (vidējo starpība 7,36 (TI: 1.30 - 13,42), p vērtība = 0,015), bet starp 1. un 2. (starpība 2,90 (TI: -3,16 - 8,96)), kā arī 2. un 3. šķirni (starpība 4,46 (TI: -1,60 - 10,52) atšķirība nav statistiski būtiska (p vērtības lielākas par 0,05).
+]
+
+---
+## Vidējo vērtību grafiskais attēlojums
+
+Grafiskais attēlošanai var izmantot arī vidējo ar ticamības intervālu.
+
+```{r, fig.height=3}
+ggplot(miezi, aes(skirne, raza)) + 
+  stat_summary(fun.data = "mean_cl_normal") + 
+  labs(x = "Miežu šķirne", y = "Raža")
+```
+
+---
+## Dispersijas analīze, ja dispersijas nav homogēnas
+
+Gadījumos, kad dispersijas ir atšķirīgas, viens no risinājumiem ir izmantot dispersiiju analīzi ar pielāgojumu heterogēnām dispersijām.
+
+Viena no funkcijām viena faktora dispersijas analīzes veikšanai ir `oneway.test()`.
+
+
+---
+## Dispersijas analīze, ja dispersijas nav homogēnas
+
+```{r}
+oneway.test(raza ~ skirne, data = miezi)
+```
+**Secinājums:** pie būtiskuma līmeņa $\alpha=0,05$ starp gradācijas klašu vidējiem aritmētiskajiem pastāv statistiski būtiska atšķirība jeb faktora šķirne ietekme uz ražu ir būtiska ( $F_{(2; 17,642)} = 5,06$), jo iegūtā p vērtība (0,018) ir mazāka par būtiskuma līmeni.
+
+
+---
+## Dispersijas analīze, ja dispersijas nav homogēnas
+
+.izm90[
+Gradācijas klašu savstarpējo salīdzināšanu situācijā, kad nav honogēnas dispersijas, var veikt ar Games-Howell testu. Tests ir ieviests `rstatix` paketes funkcijā `games_howell_test`.
+
+```{r, message=FALSE}
+library(rstatix)
+games_howell_test(raza ~ skirne, data = miezi)
+```
+
+**Secinājums:** pie būtiskuma līmenā $\alpha=0,05$ statistiski būtiska atšķirība pastāv starp 3. un 1. šķirnes ražu (vidējo starpība 7,36 (TI: 1.54 - 13,18), p vērtība = 0,015), bet starp 1. un 2. (starpība 2,90 (TI: -3,30 - 9,10)), kā arī 2. un 3. šķirni (starpība 4,46 (TI: -2,29 - 11,20)) atšķirība nav statistiski būtiska (p vērtības lielākas par 0,05).
+]
+
+
+---
+## Dati
+
+.izm80[
+```{r,comment=NA,echo=FALSE}
+soja <- read_excel("../Dati/soja.xlsx")
+```
+```{r,comment=NA,eval=FALSE}
+soja <- read_excel("soja.xlsx")
+```
+```{r,comment=NA}
+str(soja)
+head(soja)
+```
+]
+
+---
+## Datu pārbaude
+
+```{r,comment=NA}
+names(soja)
+is.factor(soja$gaisma)
+is.factor(soja$stress)
+soja$gaisma <- as.factor(soja$gaisma)
+soja$stress <- as.factor(soja$stress)
+```
+
+---
+## Dispersiju salīdzināšana
+
+Kols starp mainīgajiem pie argumenta `group = ` nozīmē, ka jāsalīdzina dispersijas faktoru kombinācijas līmeņos.
+
+```{r,comment=NA}
+library(car)
+leveneTest(y = soja$lapas, group = soja$gaisma:soja$stress)
+```
+**Secinājums:** pie būtiskuma līmenā $\alpha=0,05$ starp atsevišķu gradācijas klašu dispersijām nepastāv statistiski būtiska atšķirība jeb dispersijas ir homogēnas ( $F_{(3;48)}=0,1963; p = 0,898$).
+
+---
+## Daudzfaktoru dispersijas analīze 1
+
+Pieraksts `faktors1*faktors2` nozīmē, ka pārbauda katra faktora ietekmi, kā arī faktoru kombinācijas (mijiedarbības) ietekmi.
+```{r,comment=NA}
+modelis <- aov(lapas ~ gaisma*stress, data = soja)
+summary(modelis)
+```
+
+---
+## Daudzfaktoru dispersijas analīze 2
+
+**Secinājums:** pie būtiskuma līmenā $\alpha=0,05$ sojas lapu laukumu būtiski ietekmē gaismas daudzums ( $F_{(1;48)} = 47,749$; p vērtība <0,0001) un stresa līmenis ( $F_{(1;48)} = 16,595$; p vērtība = 0,0002), bet faktoru kombinācijas ietekme nav būtiska ( $F_{(1;48)} = 0,029$; p vērtība = 0,86).
+
+---
+## Ietekmes īpatsvara noteikšana
+
+```{r,comment=NA}
+kv.sum <- 42752 + 14858 + 26 + 42976
+42752/kv.sum  #gaisma
+14858/kv.sum  #stress
+```
+**Secinājums:** Faktora gaisma ietekmes īpatsvars uz lapu virsmas laukumu
+ir 42,5%, stresa ietekmes īpatsvars ir 14,8%.
+
+---
+## Gradācijas klašu salīdzināšana
+
+Šajā gadījumā Post-Hoc testu var arī neveikt, jo faktoram ir tikai divas gradācijas klases, bet vispārīgā gadījumā funkcijā jānorāda modeļa nosaukums un būtiskā faktora nosaukums.
+
+```{r,comment=NA}
+TukeyHSD(modelis,"gaisma")
+```
+
+---
+## Datu grafiskā parādīšana
+
+Tā kā ir divi faktori, tad, veidojot vērtībamplitūdas attēlu, vienu faktoru norāda kā x, bet otru kā aizpildījumu (`fill = `).
+
+```{r, fig.height=3}
+ggplot(soja, aes(gaisma, lapas, fill = stress)) + 
+  geom_boxplot()
+```
+
+---
+## Kruskola-Volisa tests
+
+```{r}
+kruskal.test(raza ~ skirne, data = miezi)
+```
+**Secinājums:** pie būtiskuma līmenā $\alpha=0,05$ miežu šķirņu ražas nepieder vienai ģenerālkopai jeb starp gradācijas klasēm pastāv būtiska atšķirība ( $\chi^2_{(2;30)} = 6,712$; p = 0,035).
+
+---
+## Dunna tests
+
+Ja Kruskola-Volisa testā konstatēta būtiska faktora ietekme, gradācijas klases savā starpā var salīdzināt ar Dunna testu no paketes `rstatix``.
+
+```{r}
+dunn_test(raza ~ skirne, data = miezi)
+```
+
+**Secinājums:** pie būtiskuma līmenā $\alpha=0,05$ statistiski būtiska atšķirība pastāv starp 3. un 1. šķirnes ražu ( $z_{(20)} = 2,591$; p vērtība = 0,0029), bet starp 1. un 2. ( $z_{(20)} = 1,295$), kā arī 2. un 3. šķirni ( $z_{(20)} = 1,295$) atšķirība nav statistiski būtiska (p vērtības lielākas par 0,05).
+
+---
+class: center, inverse, middle
+# Kādi būtu jautājumi?

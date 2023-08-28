@@ -1,0 +1,830 @@
+---
+title: "Teorētiskie sadalījumi. Eksperimentu dizains."
+author: "Didzis Elferts"
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css","my-css.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:10'
+---
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+mono_accent(
+  base_color = "#43418A",
+  text_font_size = "25px",
+  text_slide_number_font_size = "0.5em",
+  outfile = "xaringan-themer.css"
+)
+options(htmltools.dir.version = FALSE)
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.height = 4.5, fig.width = 8, dev='svg', echo = TRUE, message = FALSE, warning = FALSE, fig.align = "center")
+```
+
+
+
+
+
+class: inverse, middle, center
+
+# Teorētiskie sadalījumi
+
+---
+## Gadījuma notikumi un varbūtība
+
+* Gadījuma parādības – notikumi
+
+* Varbūtība - notikuma iestāšanās iespējamības rādītājs
+
+.defin[
+* Notikuma A varbūtība P(A) ir notikumam A labvēlīgo
+gadījumu skaita m attiecība pret kopējo notikumu skaitu n, ja
+atsevišķie gadījumi ir nesavienojami, vienīgi iespējami un
+vienādi iespējami
+]
+* P(A)=m/n
+
+---
+## Notikumi
+
+* Notikumus A un B sauc par **nesavienojamiem**, ja nav
+iespējama to vienlaicīga iestāšanās
+
+* Ja iespējams realizēties tikai notikumam A un B, šos
+notikumus sauc par **vienīgi iespējamiem**
+
+* Ja notikumu A un B iestāšanās iespējas ir vienādas, šos
+notikums sauc par **vienādi iespējamiem**
+
+---
+## Notikumi
+
+* $P(A) = \phi$ – notikuma iestāšanās varbūtība
+
+* $P(A) = \kappa$ – pretējā notikuma iestāšanās varbūtība
+
+* Klasiskās definīcijas pielietošana ir ierobežota (nevar noteikt
+m un n)
+
+* Lieto statistisko varbūtību, kurai pamatā ir relatīvās frekvences
+
+---
+## Klasiskā definīcija
+
+Metamie kauliņi
+
+
+---
+## Lielo skaitļu likums
+
+.defin[
+Ja paraugkopas apjoms palielinās un palielinās, iegūto datu
+relatīvās frekvences nonākt tuvāk un tuvāk teorētiskajām
+(patiesajām) iespējamības vērtībām
+]
+
+---
+## Teorētiskie sadalījumi
+
+Daudzus procesus/pazīmes dabā var aprakstīt izmantojot matemātiskas formulas un vērtību sadalījumus.
+
+Bioloģijā svarīgākie teorētiskie sadalījumi ir:
+
+* binomiālais sadalījums
+
+* Puasona sadalījums
+
+* normālais sadalījums
+
+---
+## Binomiālais sadalījums
+
+* Viens no svarīgākajiem diskrēti variējošu pazīmju sadalījumiem
+
+* Raksturīga mēģinājumu organizēšana pēc Bernulli shēmas
+
+* Ir jāzin kopējais notikumu skaits
+
+---
+## Binomiālais sadalījums
+
+Formula
+
+$$ 
+P(r)=\frac{n!}{r!(n-r)!}p^rq^{n-r}
+$$
+
+n - kopējais notikumu skaits
+
+r - labvēlīgo notikumu skaits
+
+p - notikuma iestāšanās varbūtība
+
+q - iespējamība, ka notikums neiestāsies (1-p)
+
+---
+## Binomiālais sadalījums
+
+Binomiālo sadalījumu raksturo:
+
+* vidējā vērtība, kur $n_p$ - kopējais notikumu skaits, $\psi$ - notikuma iestāšanas varbūtība.
+$$
+\mu=n_p \cdot \psi
+$$
+* dispersija, kur $\kappa$ - pretējā notikuma iestāšanas varbūtība,
+$$
+\sigma^2=n_p \cdot \psi \cdot \kappa
+$$
+* standartnovirze
+$$
+\sigma=\sqrt{\sigma^2}
+$$
+
+---
+## Binomiālais sadalījums
+
+```{r,echo=FALSE}
+par(mfrow=c(2,2),mar=c(3,3,3,1))
+x<-dbinom(0:10,10,0.5)
+names(x) <- 0:10
+barplot(x,main="p=0.5,np=10")
+x<-dbinom(0:15,15,0.5)
+names(x) <- 0:10
+barplot(x,main="p=0.5,np=15")
+x<-dbinom(0:10,10,0.15)
+names(x) <- 0:10
+barplot(x,main="p=0.15,np=10")
+x<-dbinom(0:10,10,0.85)
+names(x) <- 0:10
+barplot(x,main="p=0.85,np=10")
+```
+
+---
+## Binomiālais sadalījums
+
+.izm80[
+Vecāki ir heterozigoti pēc albīnisma gēna: Aa. Pēc G. Mendeļa
+teorijas, notikuma varbūtība, ka tādiem vecākiem būs bērns albīns,
+ir p= 0,25. Kāda varbūtība albīnu skaitam četru bērnu ģimenē?
+
+$$ 
+P_{0,4,0.25}=\frac{4!}{0! \cdot (4-0)!} \cdot 0.25^0 \cdot 0.75^4=\frac{4 \cdot 3 \cdot 2 \cdot 1}{1 \cdot 4 \cdot 3 \cdot 2 \cdot 1} \cdot 1 \cdot 0.75^4=0.32
+$$
+
+$$ 
+P_{1,4,0.25}=\frac{4!}{1! \cdot (4-1)!} \cdot 0.25^1 \cdot 0.75^3=\frac{4 \cdot 3 \cdot 2 \cdot 1}{1 \cdot 3 \cdot 2 \cdot 1} \cdot 0.25 \cdot 0.75^3=0.42
+$$
+
+$$ 
+P_{2,4,0.25}=\frac{4!}{2! \cdot (4-2)!} \cdot 0.25^2 \cdot 0.75^2=\frac{4 \cdot 3 \cdot 2 \cdot 1}{2 \cdot 1 \cdot 2 \cdot 1} \cdot 0.25^2 \cdot 0.75^2=0.21
+$$
+
+$$ 
+P_{3,4,0.25}=\frac{4!}{3! \cdot (4-3)!} \cdot 0.25^3 \cdot 0.75^1=\frac{4 \cdot 3 \cdot 2 \cdot 1}{3 \cdot 2 \cdot 1 \cdot 1} \cdot 0.25^3 \cdot 0.75=0.05
+$$
+
+
+$$ 
+P_{4,4,0.25}=\frac{4!}{4! \cdot (4-4)!} \cdot 0.25^4 \cdot 0.75^0=\frac{4 \cdot 3 \cdot 2 \cdot 1}{4 \cdot 3 \cdot 2 \cdot 1 \cdot 1} \cdot 0.25^4 \cdot 1=0.004
+$$
+]
+
+---
+## Puasona sadalījums
+
+* Sadalījums raksturo diskrēti variējošu pazīmju varbūtību
+sadalījumu
+
+* Raksturīgs sadalījums skaita datiem, sevišķi, ja notikuma iestāšanās varbūtība ir zema
+
+* Vidējā vērtība un dispersija ir vienādas
+
+---
+## Puasona sadalījums
+
+$$ 
+P_{m_j,n_p,\psi}=\frac{\lambda^{m_j}}{m_j !} \cdot e^{-\lambda}
+$$
+
+kur $m_j !$ - labvēlīgā notikuma skaita faktoriāls, $m_j$ = 0, 1, 2, ..., $n_p$
+
+$n_p$ - kopējais notikumu skaits
+
+e - naturālā logaritma bāze
+
+$\lambda$ (lambda) - Puasona sadalījuma vidējā vērtība
+
+---
+## Puasona sadalījums 
+
+Puasona sadalījumu raksturo:
+ 
+* vidējā vērtība, kur $n_p$ - kopējais notikumu skaits, $\psi$ - notikuma iestāšanas varbūtība,
+$$
+\mu=n_p \cdot \psi =\lambda
+$$
+
+* standartnovirze $\sigma=\sqrt{\sigma^2}$ un dispersija $\sigma^2= n_p \cdot \psi$
+
+* vidējā vērtība un dispersija ir skaitliski vienādas $\mu=\sigma^2=\lambda$
+
+---
+## Puasona sadalījums
+
+```{r,echo=FALSE}
+par(mfrow=c(2,2),mar=c(3,3,3,1))
+x<-dpois(0:10,0.05)
+names(x) <- 0:10
+barplot(x,main="lambda=0.05")
+x<-dpois(0:10,0.5)
+names(x) <- 0:10
+barplot(x,main="lambda=0.5")
+x<-dpois(0:10,1)
+names(x) <- 0:10
+barplot(x,main="lambda=1")
+x<-dpois(0:10,5)
+names(x) <- 0:10
+barplot(x,main="lambda=5")
+```
+
+---
+## Normālais sadalījums
+
+* Nozīmīgākais nepārtraukti variējošu pazīmju varbūtību
+sadalījums bioloģiskajos pētījumos
+
+* Sadalījumu rakstoro tā vidējais aritmētiskais un
+standartnovirze
+
+---
+## Normālais sadalījums
+
+$$
+n_j=\frac{c \cdot n}{\sigma \sqrt{2\pi}} \cdot e^{-\frac{(x_j-\mu)^2}{2\sigma^2}}
+$$
+
+kur $n_j$ - j-tās klases normālā sadalījuma frekvence
+
+$x_j$ - j-tās klases vidējā vērtība
+
+n - paraugkopas apjoms
+
+c - klases intervāls
+
+$\sigma$ - populācijas standartnovirze
+
+e - naturālā logaritma bāze
+
+$\mu$ - populācijas vidējais aritmētiskais
+
+---
+## Normālais sadalījums
+
+```{r bliv_varb,fig.width=8, echo=FALSE,fig.align='center'}
+library(png)
+library(grid)
+img <- readPNG("../Atteli/bliv_varb.png") 
+ grid.raster(img)
+```
+
+---
+## Normālais sadalījums
+
+```{r,echo=FALSE,warning=FALSE}
+par(mfrow=c(2,2),mar=c(1,3,3,1))
+x<-dnorm(seq(-5,5,by=0.01),0,1)
+plot(x,type="l",main="Vidējais = 0, sd = 1")
+box()
+x<-dnorm(seq(-5,5,by=0.01),1,1)
+plot(x,type="l",main="Vidējais = 1, sd = 1")
+box()
+x<-dnorm(seq(-5,5,by=0.01),0,2)
+plot(x,type="l",main="Vidējais = 0, sd = 2")
+box()
+x<-dnorm(seq(-5,5,by=0.01),0,0.5)
+plot(x,type="l",main="Vidējais = 0, sd = 0.5")
+box()
+```
+
+---
+## Standarta normālais sadalījums (z-sadalījums)
+
+$$
+z=\frac{x-\mu}{\sigma}
+$$
+
+Šādam sadalījumam vidējais aritmētiskais ir 0 un standartnovirze 1.
+Pārvēršot reālo vērtību par z vērtību, vienmēr var pateikt kāda ir
+iespējamība dabūt šādu vērtību (izmantojot speciālās tabulas vai
+funkcijas).
+
+---
+## Atbilstības normālajam sadalījumam
+
+* Grafiskā pārbauda
+
+* Analītiskā pārbaude
+
+---
+## Paraugkopas empīriskais sadalījums
+
+```{r,echo=FALSE, message=FALSE}
+set.seed(1240)
+x<-rnorm(1000,165,15)
+library(ggplot2)
+library(cowplot)
+theme_set(theme_cowplot())
+p1 <- ggplot(data.frame(x), aes(x)) + geom_histogram(bins = 10)
+p2 <- ggplot(data.frame(x), aes(x)) + geom_histogram(bins = 5)
+plot_grid(p1,p2, ncol = 2)
+```
+
+---
+## QQ attēls
+
+```{r,echo=FALSE}
+ggplot(data.frame(x), aes(sample = x)) + geom_qq() + geom_qq_line()
+```
+
+---
+## Analītiskā pārbaude
+
+* Šapiro tests
+
+* Andersona-Darlinga tests
+
+* Krāmera fon Misses tests
+
+* Lilliefora (Kolmogorova-Smirnova) tests
+
+* Pīrsona tests
+
+* Šapiro-Francia tests
+
+---
+class: inverse, middle, center
+# Eksperimentu/Pētījumu dizains
+
+---
+## Eksperimentu dizains
+
+* Problēmas formulēšana
+
+* Eksperimenta organizēšana
+
+* Datu analīze
+
+---
+## Problēmas formulēšana
+
+* kāds ir bioloģiskais jautājums?
+
+* kā uz to atbildēt?
+
+* kas jau ir zināms?
+
+* kāda informācija trūkst?
+
+---
+## Eksperimentu organizēšana
+
+* kādi dati ir nepieciešami, lai atbildētu uz jautājumu?
+
+* kā ievākt datus?
+
+* cik daudz datu ir nepieciešams?
+
+* atkārtojumi
+
+* kā veikt eksperimentu (paraugu sagatavošana, mērījumi)?
+
+---
+## Datu analīze
+
+* datu sagatavošana – pirmsapstrāde
+
+* filtrēšana & nerakturīgo vērtību (outlier) izslēgšana
+
+* normalizēšana
+
+* statistisko modeļu piemērošana
+
+* hipotēžu pārbaude
+
+* rezultātu prezentēšana
+
+---
+## Veids kā plānot pētījumu/pielietot statistiku
+
+Modificēts pēc Good, P.I., Hardin, J.W., 2012.
+
+1. Jānosaka mērķis un uzdevumi pirms sāk reālas darbības
+
+2. Jānodefinē, kas ir pētāmā populācija
+
+3. Jānosaka hipotēze un alternatīvās hipotēzes
+
+4. Jāapraksta tas, kā tiks iegūts reprezentatīvs paraugs
+
+5. Jāizvēlas reprezentatīvi, robusti, efektīvi rādītāji populācijas novērtēšanai
+
+6. Jāpārzin izmantoto testu pieņēmumi
+
+7. Aprakstot pētījumu, jānorāda arī datu iegūšana, trūkstošie dati, utt.
+
+---
+## Atkārtojamība un reproducejamība
+
+Pētījums jāveido tā, lai tas būtu atkārtojams (repeatable) un vēlams reproducējams (reproducible)
+
+.defin[
+**Atkārtojams pētījums** - metodes aprakstītas tā, ka kāds cits pētnieks var pilnībā atkārtot Jūsu pētījumu ar saviem objektiem/datiem.
+]
+<br>
+.defin[
+**Reproducējams pētījums** - ir pieejami visi aprēķinu kodi, nosacījumi un dati, lai kāds cits var veikt visus tos pašus aprēķinus un teorētiski iegūt to pašu rezultātu.
+]
+
+---
+## Atkārtojumi (Replicates)
+
+.defin[
+Eksperimenta apstākļu/nosacījumu atkārtošana, lai varētu novērtēt
+pētāmā faktora variāciju.
+]
+
+Kāpēc nepieciešami atkārtojumi?
+
+* Lai samazinātu nekontrolētās variācijas efektu (palielinātu
+precizitāti)
+
+* Lai noteiktu nejaušības lielumu
+
+* Lai palielinātu testu precizitāti
+
+* Lai palielinātu testu vispārināšanas iespēju
+
+---
+## Pseudoatkārtojumi
+
+.defin[
+**Pseudoatkārtojumi (pseudoreplication)** – eksperimenta (pētījuma) vienības tiek uzskatītas par neatkarīgiem atkārtojumiem (novērojumiem), kaut arī tie tādi nav. 
+]
+
+Ja datos ir pseudoatkārtojumi, tad jāizvēlas atbilstošās analīzes metodes.
+
+---
+## Randomizēšana
+
+Eksperimenta subjekti (vienības) jāiedala ietekmes grupās pēc
+nejaušības principa.
+
+Randomizēšana ir nepieciešama, lai:
+
+* Izvairītos no neobjektivitātes, piemēram, ņemot paraugus pēc
+kārtas, tie var atšķirties no pārējiem
+
+* Kontrolētu gadījuma iespējamību
+
+---
+## Novērojumi
+
+* Tiešie novērojumi – tas, ko redz, sajūt pētnieks vai pētāmais
+objekts, mēdz būt subjektīvi
+
+* Netiešie novērojumi – novērojumiem izmanto specializētas
+mērierīces (aparatūru)
+
+---
+## Eksperiments
+
+* Aktīvs pētīšanas veids
+
+* Notiek noteikta iedarbība uz objektu, lai pētītu reakciju
+
+* 1.variants – tiek fiksēti visi objekta parametri, mainot tikai
+vienu no tiem
+
+* 2.variants – tiek fiksēti visi objekta parametri, mainot uzreiz
+daudz pētāmā objekta parametrus
+
+
+---
+## Citas paraugu ņemšanas tehnikas
+
+* **Stratificēta paraugošana** – sadala populāciju atsevišķās
+apakšgrupās (strata) un no katras ņem nejaušu paraugu
+
+* **Sistemātiska paraugošana** – visus populācijas eksemplārus
+sanummurē, tad ņem katru k-to indivīdu (sākot no nejaušas
+vietas)
+
+* **Klāsteru paraugošana** – sadala visu populāciju eksistējošās
+grupās (klāsteros), tad izvēlas nejauši klāsterus
+
+* **Multistadiju paraugošana** – izmanto vairāku metožu
+apvienojumu
+
+* **”Ērtības” paraugošana** – izveido paraugu izmantojot datus par
+populācijas indivīdiem, kas ir pieejami
+
+
+
+---
+## Nulles hipotēze
+
+**Jāņem vērā:** šī pieeja tiek daudz kritizēta, daļa statistiķu iesaka no tās atteikties, bet daļa turpina pieturēties pie vecajām vērtībām.
+
+.defin[
+**Nulles hipotēze** ( $H_0$) ir zinātnisks pieņēmums, kas ir loģisks un
+ticams, bet prasa pārbaudi un pierādījumu.
+]
+
+**Statistiskā hipotēze** ir pieņēmums par statistiskās kopas vai divu
+kopu īpašībām.
+$$
+H_0 : X_1 = X_2
+$$
+Šāds pieraksts apgalvo, ka divu parametru $X_1$ un $X_2$ starpība ir
+nulle (to vērtības ir vienādas).
+
+---
+## Alternatīvā hipotēze
+
+Var izvirzīt arī pilnīgi pretējo **alternatīvo hipotēzi**:
+$$
+H_1 : X_1 \neq X_2
+$$
+ka parametru $X_1$ un $X_2$ starpība nav nulle un viņu starpība
+ir būtiska.
+
+---
+## Nulles un alternatīvā hipotēze
+
+.defin[
+Statistiskais tests ir **divpusējs (two-tailed)**, ja $H_1$ apgalvo, ka
+parametrs ir atšķirīgs no vērtības, kas norādīta $H_0$.
+]
+<br>
+.defin[
+Statistiskais tests ir **vienpusējs (one-tailed)**, ja $H_1$ apgalvo, ka
+parametrs ir mazāks (**left-tailed**) vai lielāks (**right-tailed**) nekā
+vērtība, kas norādīta $H_0$.
+]
+
+---
+## Populācija un paraugkopa
+
+```{r,echo=FALSE}
+set.seed(4444)
+popul<-rnorm(1000,170,10)
+```
+Mums ir populācija, kuru veido 1000 studenti ar vidējo garumu `r round(mean(popul),1)` cm.
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+library(ggplot2)
+library(grid)
+ggplot(data.frame(popul),aes(popul))+geom_histogram(binwidth=2.5)+
+      labs(x="Garums,cm",y="Skaits")+theme_bw()
+```
+
+---
+## Populācijas un paraugkopas
+
+No šīs populācijas izveido divas paraugkopas, katrā pa 50
+cilvēkiem.
+
+```{r,echo=FALSE}
+set.seed(345)
+par1<-sample(popul,50)
+par2<-sample(popul,50)
+```
+Paraugkopa 1 => vidējais aritmētiskais `r round(mean(par1),1)` cm
+
+Paraugkopa 2 => vidējais aritmētiskais `r round(mean(par2),1)` cm
+
+Vidējo aritmētisko statrpība => `r abs(round(mean(par1)-mean(par2),1))` cm
+
+Eksperimentu atkārto 10 000 reizes.
+
+---
+## Populācijas un paraugkopas
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+set.seed(123)
+zz<-sapply(1:10000,function(x){
+    mean(sample(popul,50))-mean(sample(popul,50))  
+})
+ggplot(data.frame(zz),aes(zz))+geom_histogram()+
+      labs(x="Vidējo aritmētisko starpība, cm",y="Skaits")+
+      theme_bw()
+```
+
+---
+## Ticamības un būtiskuma līmeņi
+
+Biometrijā pieņemti trīs rezultātu ticamības līmeņi: $P_1$=0,95,
+$P_2$=0,99, $P_3$=0,999 jeb procentos: $P_1$=95%, $P_2$=99% un
+$P_3$=99,9%.
+
+Analoģiski pieņemti trīs rezultātu būtiskuma līmeņi ( $\alpha=1-P$): $\alpha_1$
+= 0,05, $\alpha_2$ = 0,01, $\alpha_3$ = 0,001. Bioloģijā visbiežāk novērtē
+rezultātus pie $\alpha$= 0,05.
+
+---
+## p-vērtība
+
+.defin[
+Pieņemot, ka $H_0$ ir patiesa, iespējamību, ka statistiskā testa
+vērtība pieņems vērtību, kas ir tik pat ekstrēma vai pat ekstrēmāka
+nekā novērotā testa vērtība, sauc par testa p-vērtību.
+]
+
+Jo mazāka p-vērtība, ko iegūst no paraugkopas datiem, jo nopietnāki
+pierādījumi pret $H_0$.
+
+
+---
+## Vienpusējs tests
+
+```{r echo=FALSE,warning=FALSE}
+x<-seq(-5,5,0.1)
+y<-dt(x,14)
+df<-data.frame(x,y)
+library(ggplot2)
+ggplot(df,aes(x,y))+geom_line(size=1.3)+xlab("T vērtība")+ylab("")+
+  geom_ribbon(data=subset(df,x>1.76),aes(ymax=y,fill="Teorētiskā vērtība"),ymin=0,colour=NA)+
+  geom_ribbon(data=subset(df,x>2.15),aes(ymax=y,fill="Empīriskā vērtība"),ymin=0,colour=NA)+
+  scale_fill_manual(values=c("blue","red"))+
+    theme_bw()+
+    theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="top",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+
+---
+## Divpusējs tests
+
+```{r echo=FALSE,warning=FALSE}
+x<-seq(-5,5,0.1)
+y<-dt(x,49)
+df<-data.frame(x,y)
+
+ggplot(df,aes(x,y))+geom_line(size=1.3)+xlab("T vērtība")+ylab("")+
+  geom_ribbon(data=subset(df,x>1.82),aes(ymax=y,fill="Empīriskā vērtība"),ymin=0,colour=NA)+
+  geom_ribbon(data=subset(df,x>2.01),aes(ymax=y,fill="Teorētiskā vērtība"),ymin=0,colour=NA)+
+  geom_ribbon(data=subset(df,x< -2.01),aes(ymax=y,fill="Teorētiskā vērtība"),ymin=0,colour=NA)+
+    scale_fill_manual(values=c("red","blue"))+
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="top",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+---
+## p-vērtība
+
+Ja p-vērtība ir mazāka vai vienāda ar $\alpha$, mēs noraidām $H_0$ un
+apgalvojam, ka dati/atšķirība ir statistiski būtiska pie $\alpha$ būtiskuma
+līmeņa.
+
+Ja p-vērtība ir lielāka par $\alpha$, tad $H_0$ netiek noraidīta.
+
+---
+class: inverse, center, middle
+
+# p-vērtība nav absolūta taisnība
+
+
+---
+## Kļūdas saistībā ar hipotēzēm
+
+.defin[
+**I tipa kļūda** (Type I) – nulles hipotēze tiek noraidīta, kaut arī tā ir
+patiesa.
+]
+
+<br>
+
+.defin[
+**II tipa kļūda** (Type II) – nulles hipotēze netiek noraidīta, kaut arī
+tā ir nepatiesa.
+]
+
+---
+## Kļūdas saistībā ar hipotēzēm
+
+```{r,echo=FALSE}
+library(jpeg)
+library(grid)
+img <- readJPEG("../Atteli/type-i-and-type-ii-errors.jpg") 
+ grid.raster(img)
+```
+http://effectsizefaq.files.wordpress.com/2010/05/type-i-and-type-ii-errors.jpg
+
+
+---
+## Kļūdu iespējamības rādītāji
+
+I tipa kļūdu iespējamību raksturo P un $\alpha$ vērtības – visbiežāk
+bioloģiskajos pētījumos tiek noraidīta nulles hipotēze, ja p<0.05,
+tas ir, ja iespējamība nejaušības pēc iegūt kādu parametra vērtību
+ir zemāka par 5%.
+
+II tipa kļūdu iespējamību raksturo $\beta$ jeb testa spējas (Power of the
+test).
+
+---
+## Testa kļūdu līmeņi
+
+* $\alpha$ vērtību var kontrolēt, nosakot kritisko P vērtību nulles
+hipotēzes noraidīšanai
+
+* $\beta$ vērtību var samazināt:
+    - palielinot $\alpha$ vērtību
+    - palielinot paraugkopas apjomu
+    - samazinot paraugkopas dispersiju
+    - palielinot efekta lielumu
+
+* Spēja (Power) ir $1-\beta$
+
+---
+## Spēju analīze (Power analysis)
+
+**Statistiskā spēja (power)** – iespējamība pareizi identificēt kādas
+izmaiņas
+
+**Statistiskā ticamība** – iespējamība neindificēt neesošas izmaiņas
+
+---
+## Efekta lielums (Effect size)
+
+Spēju analīzes kontekstā, **efekta lielums** tiek definēts kā starpība
+starp nulles hipotēzi un specifisku alternatīvo hipotēzi.
+
+Piemēram, ja nulles hipotēze nosaka, ka starpība starp divos
+parauglaukumos ievākto ražu ir 0 kg/ha, bet alternatīvā hipotēze
+nosaka, ka ražu starpība būs 20 kg/ha, tad efekta lielums ir
+20-0=20 kg/ha.
+
+Atsevišķās analīzēs efekta lielums tiek izteikts arī relatīvās vienībās.
+
+---
+## Spēju analīze (Power analysis) pirms pētījuma
+
+Izmantojot spēju analīzi, pirms pētījuma varētu noteikt:
+
+* atkārtojumu vai paraugu skaitu, kas nepieciešams, lai
+nodrošinātu noteiktu līmeni testa spējām, ņemot vērā noteiktu
+efekta lielumu, $\alpha$ un dispersiju
+
+* novērtēt nulles hipotēzes testa spējas, ja paraugu skaitu
+ierobežo, piemēram, izmaksas
+
+* noteikt minimālo efekta lielumu, ko var noteikt, pie noteikta
+testa spēju līmeņa, $\alpha$, dispersijas un paraugkopas lieluma
+
+
+---
+## Problēmas ar p-vērtībām
+
+* Nebalstīt savu secinājumus tikai uz to, ka saistība/efekts ir statistiski būtisks
+
+* Neticiet, ka saistība/efekts pastāv, tikai tāpēc, ka tas ir statistiski būtisks
+
+* Neticiet, ka saistība/efekts nepastāv, jo tas nav statistiski būtisks
+
+* Neticiet, ka Jūsu p-vērtība norāda iespējamību, ka novērotā/ais saistība/efekts ir radies tikai nejaušības rezultātā, vai iespējamību, ka testa hipotēze ir patiesa
+
+* Neizdariet secinājumus par zinātnisko/praktisko svarīgumu balstoties uz statistiko būtiskumu
+
+.izm50[Avots: Ronald L. Wasserstein, Allen L. Schirm & Nicole A. Lazar (2019) Moving to a World Beyond “p < 0.05”, The American Statistician, 73:sup1, 1-19, DOI: 10.1080/00031305.2019.1583913]
+
+
+---
+## Problēmas ar p-vērtībām
+
+* Pieņemt nenoteiktību
+
+* Efekta lielums
+
+* Papildināt informāciju, piemēram, ticamības intervāli
+
+---
+class: center, inverse, middle
+# Kādi būtu jautājumi?

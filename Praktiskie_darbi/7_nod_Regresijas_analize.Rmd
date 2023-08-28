@@ -1,0 +1,430 @@
+---
+title: "Regresijas analīze"
+author: "Andris Avotiņš & Didzis Elferts"
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css","my-css.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:10'
+---
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+mono_accent(
+  base_color = "#43418A",
+  text_font_size = "25px",
+  text_slide_number_font_size = "0.5em",
+  outfile = "xaringan-themer.css"
+)
+options(htmltools.dir.version = FALSE)
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.height = 4.5, fig.width = 8, dev='svg')
+```
+
+
+## Regresijas analīzes funkcijas
+
+Regresijas analīzes veikšanai izmanto funkciju `lm()`, kurai kā argumentus norāda pārbaudāmo formulu (regresents~regresors), kā arī datu tabulu, kurā atrodas mainīgie.
+
+Regresijas analīzes rezultātu apskata ar funkciju `summary()`.
+
+```{r eval=FALSE}
+modelis <- lm(regresents~regresors,data=datu.tabula)
+
+summary(modelis)
+```
+
+---
+## Lineārās regresijas pieņēmumi
+
+- regresents ir nepārtraukti mainīga kvantitāte;
+
+- (daudzfaktoru regresijā) regresori ir savstarpēji neatkarīgi;
+
+- starp regresentu un katru no regresoriem un modelī kopumā pastāv lineāra sakarība;
+
+- atlikumu vērtības ir aptuveni normāli sadalītas;
+
+- atlikumu vērtības ir neatkarīgas;
+
+- atlikumu vērtības ir homogēnas (nepastāv heteroskedasticitāte);
+
+- nav ietekmīgu novērojumu.
+
+
+---
+## Dati
+
+.izm90[
+```{r,comment=NA,echo=FALSE}
+library(readxl)
+bietes <- read_excel("../Dati/bietes.xlsx")
+```
+```{r,comment=NA,eval=FALSE}
+library(readxl)
+bietes <- read_excel("bietes.xlsx")
+```
+```{r,comment=NA}
+str(bietes)
+summary(bietes)
+```
+]
+
+---
+## Pāru regresijas analīze
+
+.izm90[
+```{r ,comment=NA}
+modelis <- lm(svars ~ udens, data = bietes)
+summary(modelis)
+```
+]
+
+---
+## Pāru regresijas analīzes secinājumi 1
+
+* korigētais determinācijas koeficients (*Adjusted R-Squared*; $R_{adj.}^2$ ) = 0,712, tas ir, ūdens daudzums izskaidro 71,2% no svara vērtību variēšanas;
+
+* izskaidrotās regresenta mainības īpatsvars pie $\alpha = 0,05$ ir būtisks $(F_{(1;26)} = 67,77; p < 0,001)$;
+
+* visi modeļa koeficienti - ūdens $(t_{(26)} = 8.232; p<0,001)$ un brīvais loceklis (*Intercept*) $(t_{(26)} = 24.202; p<0,001)$ - ir būtiski, jo atbilstošās p-vērtības ir mazākas par būtiskuma līmeni $\alpha$;
+
+
+
+---
+## Pāru regresijas analīzes secinājumi 2
+
+Funkcija `confint()` raksturo modeļa objekta koeficientu ticamības intervālu robežas
+
+```{r ,comment=NA}
+confint(modelis)
+```
+
+* izmantotā ūdens apjomam pieaugot par vienu *vienību*, biešu svars pieaug par 0,0269 (95% TI 0,0202 - 0,0336) *vienībām*
+
+* lineārās regresijas vienādojums vidējai vērtībai ir $svars = 12,25+0,0269 * udens$
+
+---
+## Modeļa diagnostika 1
+
+Diagnosticējošos attēlos redzamas atlikuma vērtības pret prognozētajām vērtībām, atlikuma vērtību QQ attēls, kā arī attēls, kas parāda katra novērojuma ietekmi uz modeli (apakšējais labais attēls). Ja ietekmes attēlā kāds punkts atrodas aiz raustītās līnijas (Cook's distance virs 0,5), novērojums uzskatāms par ietekmīgu. Komandu rinda `par(mfrow = c(2, 2))` nodrošina, ka visi četri diagnosticējošie attēli ir vienā lapā.
+
+```{r eval=FALSE}
+par(mfrow = c(2, 2))
+plot(modelis)
+par(mfrow = c(1, 1))
+```
+
+---
+## Modeļa diagnostika 2
+
+```{r 7n_dig_bietes,echo=FALSE,fig.align='center',fig.height=5,fig.width=8}
+par(ps=15,mar=c(5,5,3,3))
+par(mfrow = c(2, 2))
+plot(modelis)
+```
+
+---
+## Modeļa diagnostika 3: Linearitēte
+
+Visiem novērojumiem (punktiem) vajadzētu būt vienmērīgi izkliedētiem un sarkanajai līnijai uz nulles.
+```{r diag_linearit,echo=FALSE,fig.align='center',fig.height=3,fig.width=6}
+par(ps=13,mar=c(4,4,2,2))
+plot(modelis,1)
+```
+
+Negatīvas atlikumu (*residual*) vērtības nozīmē, ka tiek prognozēta augstāka vidējā vērtība par faktiski novēroto.
+
+---
+## Modeļa diagnostika 4: Normalitāte
+
+Atlikumu vērtībām ir jābūt normāli sadalītām - punktiem būtu jāatrodas uz diagonālās līnijas.
+
+```{r diag_normalit,echo=FALSE,fig.align='center',fig.height=3,fig.width=6}
+par(ps=13,mar=c(4,4,2,2))
+plot(modelis,2)
+```
+
+Izmantojot funkciju `residuals(modelis)` tās var iegūt kā objektu, kuram izmantot arī Šhapiro-Vilka testu.
+
+---
+## Modeļa diagnostika 5: homoskedasticitāte
+
+Atlikumu vērtībām ir jābūt vienmērīgi izkliedētām visā prognozes diapozonā - sarkanajai līnijai ir jābūt horizontālai
+
+```{r diag_homosced,echo=FALSE,fig.align='center',fig.height=3,fig.width=6}
+par(ps=13,mar=c(4,4,2,2))
+plot(modelis,3)
+```
+
+---
+## Modeļa diagnostika 6: ietekmīgie novērojumi
+*Standartized residuals* demonstrē novērojumu novirzi no prognozes, izteiktu standartnovirzēs
+
+*Leverage* raksturo novērojuma ietekmi uz regresijas koeficientiem. Ietekmīgas ir > `2 x (p + 1)/n`, kur `p` ir regresoru skaits un `n` ir novērojumu skaits
+
+*Cook's distance* apkopo abus iepriekš minētos
+```{r diag_influence,echo=FALSE,fig.align='center',fig.height=3,fig.width=6}
+par(ps=13,mar=c(4,4,1.25,1))
+plot(modelis,5)
+```
+
+
+---
+## Modeļa diagnostika 7: Kuka distance
+
+Ir pieņemts uzskatīt, ka novērojumi, kuriem *Cook's distance* ir lielāka par 0,5 slikti pakļaujās prognozei un ietekmē regresijas koeficientus - **tos ir nepieciešams padziļināti izpētīt**.
+
+```{r diag_cook,echo=TRUE,fig.align='center',fig.height=3,fig.width=6}
+plot(modelis,4)
+```
+
+---
+## Modeļa diagnostika 8: autokorelācija
+
+Atlikumu vērtībām ir jābūt savstarpēji neatkarīgām - nedrīkst pastāvēt autokorelācija.
+
+```{r acf,echo=TRUE,fig.align='center',fig.height=3,fig.width=6}
+acf(residuals(modelis),lag.max = 28)
+```
+
+Nozīmīgi visām regresijām. Bet, jo sevišķi, analizējot mainību telpā un/vai laikā.
+---
+## Vērtību prognozēšana 1
+
+Funkcija `coefficients()` no regresijas analīzes objekta paņem regresijas vienādojuma koeficientus.
+```{r,comment=NA}
+koef <- coefficients(modelis)
+koef
+udens2 <- 301
+raza2 <- koef[1] + koef[2] * udens2
+raza2
+```
+
+---
+## Vērtību prognozēšana 2
+
+Vērtību prognozēšanai var izmantot funkciju `predict()`, kurai kā argumentus norāda izveidoto modeli, kā arī datu tabulu ar jaunajām vērtībām. Šajā tabulā jābūt identiskiem kolonnu nosaukumiem kā modelī izmantotajiem regresoriem.
+
+```{r,comment=NA}
+jaunidati <- data.frame(udens = 301)
+predict(modelis, jaunidati,interval = "confidence")
+```
+
+---
+## Vērtību prognozēšana 3
+
+Funkcijā `predict()`, lietojot papildargumentu `interval="confidence"` tiek prognozēts vidējās vērtības apgabals populācijā
+
+```{r,comment=NA}
+jaunidati <- data.frame(udens = 301)
+predict(modelis, jaunidati, interval = "confidence")
+```
+
+Ar papildargumentu `interval="predict"` tiek prognozēts sagaidāmo vērtību apgabals
+
+```{r,comment=NA}
+predict(modelis, jaunidati, interval = "predict")
+```
+
+---
+## Rezultātu parādīšana
+
+Pāru lineārās regresijas trenda līniju var pievienot ar `geom_smooth()` un argumentu `method = "lm"`.
+
+```{r, fig.height=2.7}
+library(ggplot2)
+ggplot(bietes, aes(udens, svars)) + geom_point() + 
+      geom_smooth(method = "lm")
+```
+
+
+---
+## Daudzfaktoru regresijas analīzes funkcijas
+
+Regresijas analīzes veikšanai izmanto funkciju `lm()`, kurai kā argumentus norāda pārbaudāmo formulu (regresents~regresors1+regresors2+..), kā arī datu tabulu, kurā atrodas mainīgie.
+
+Regresijas analīzes rezultātu apskata ar funkciju `summary()`.
+
+```{r eval=FALSE}
+modelis <- lm(regresents~regresors1+regresors2+regresors3+
+                ...+regresorsK,data=datu.tabula)
+
+summary(modelis)
+```
+
+
+---
+## Dati 1
+
+```{r,comment=NA,echo=FALSE}
+library(readxl)
+dati <- read_excel( "../Dati/renda.xlsx")
+```
+```{r,comment=NA,eval=FALSE}
+library(readxl)
+dati <- read_excel( "renda.xlsx")
+```
+```{r,comment=NA}
+str(dati)
+```
+
+---
+## Dati 2
+
+```{r,comment=NA}
+summary(dati)
+```
+
+
+---
+## Modeļa definēšana
+
+.izm85[
+```{r, comment=NA}
+modelis <- lm(hron ~ dec + jan + feb + mar, data = dati)
+
+summary(modelis)
+```
+]
+
+---
+## Regresoru neatkarība
+
+Regresoriem ir jābūt savstarpēji neatkarīgiem - tādiem, kas cits citu (arī kopīgi) nespēj precīzi prognozēt. Citiem vārdiem sakot, to vērtību dispersijām (*variance*) ir jābūt savstarpēji neietekmētām. To var pārbaudīt ar `vif()` (*variance inflation factor*) funkciju, kurā kā argumentu lieto izveidoto regresijas objektu. Ir pieņemts uzskatīt, ka $vif\le4$ nozīmē savstarpēju neatkarību, tomēr modeli var veidot kā prognostisku (ne vairs precīzi skaidrojošu) sistēmu, ja $vif\le10$
+
+```{r}
+library(car)
+vif(modelis)
+```
+
+
+---
+## Regresijas analīze - secinājumi
+
+* Regresijas modeļa izskaidrotie 31,7% no vērtību variēšanas $(R_{adj.}^2=0.317)$ ir būtiski $(F_{(4;76)} = 10,27; p < 0,001)$;
+
+* Tomēr atsevišķu faktoru (decembra un janvāra temperatūras) ietekme nav būtiska (p vērtības attiecīgi 0,1973 un 0,1473); 
+
+* Tā kā atsevišķu regresoru ietekme nav būtiska, var veidot vienkāršāku modeli.
+
+
+
+---
+## Modeļa definēšana 
+
+.izm85[
+```{r ,comment=NA}
+modelis1 <- lm(hron ~ jan + feb + mar, data = dati)
+
+summary(modelis1)
+```
+]
+
+---
+## Regresijas analīze - secinājumi
+
+* Regresijas modeļa izskaidrotie 31,1% no vērtību variēšanas $(R_{adj.}^2=0.311)$ ir būtiski $(F_{(3;77)} = 13,01; p < 0,001)$;
+
+* Tomēr janvāra temperatūru ietekme joprojām nav būtiska (p vērtība ir 0,0982); 
+
+* Tā kā atsevišķu regresoru ietekme nav būtiska, var veidot vienkāršāku modeli.
+
+
+
+---
+## Regresijas rezultāts 
+
+.izm85[
+```{r,comment=NA}
+modelis2 <- lm(hron ~ feb + mar, data = dati)
+
+summary(modelis2)
+```
+]
+
+---
+## Regresijas analīze - secinājumi
+
+* 29,46% kopējās regresenta (hron) izkliedes $(R_{adj.}^2=0.295)$ izskaidrojama ar regresoru
+(feb un mar) lineāro ietekmi;
+
+* pēc Fišera kritērija $(F_{(2;78)} = 17,71; p < 0,001)$ lineārās regresijas
+modelis ir statistiski būtisks; 
+
+* pēc Stjūdenta kritērija visi koeficienti ir būtiski pie $\alpha = 0,05$;
+
+* lineārās regresijas vienādojums ir
+hron = 1,0491+0,0090 x feb+0,0148 x mar
+
+
+---
+## Regresijas analīze - parametru ietekmes apjoms
+
+```{r}
+cbind(coefficients(modelis2),confint(modelis2))
+```
+
+* Februāra temperatūrai pieaugot par vienu grādu, *hron* vērtības pieaugs par 0,0090 (95% TI 0,0024 - 0,0156) vienībām;
+
+* Marta temperatūrai pieaugot par vienu grādu, *hron* vērtības pieaugs par 0,0148 (95% TI 0.0054 - 0,0242) vienībām
+
+
+---
+## Diagnostika
+.izm80[
+```{r,echo=TRUE,eval=FALSE}
+par(mfrow = c(2, 2))
+plot(modelis2)
+```
+```{r,echo=FALSE,fig.align='center',fig.height=4.5,fig.width=8}
+par(ps=15,mar=c(5,5,3,3))
+par(mfrow = c(2, 2))
+plot(modelis2)
+```
+]
+
+---
+## Autokorelācija
+.izm80[
+```{r,echo=TRUE,fig.align='center',fig.height=5,fig.width=8}
+acf(residuals(modelis2),lag.max=81)
+```
+]
+
+---
+## Modeļu salīdzinājums 1
+
+Divu savstarpēji saistītu lineārās regresijas modeļu salīdzināšanai var izmantot informācijas kritērijus, piemēram, Akaike informācijas kritēriju (AIC). Jo mazāka ir AIC vērtība, jo labāku vispārinājumu populācijā sniegs modelis. Par konkurējošiem (salīdzināmiem) ir uzskatāmi modeļi, kuru vērtību starpība ir $\le4$ 
+
+.izm80[
+```{r,comment=NA}
+AIC(modelis,modelis2)
+```
+]
+Modeļa kopleksitāti labāk izvērtē izlases apjomam koriģētais Akaike informācijas kritērijs (AICc)
+.izm80[
+```{r,comment=NA}
+library(MuMIn)
+AICc(modelis,modelis2)
+```
+]
+
+---
+## Modeļu salīdzinājums 2
+
+Divu savstarpēji saistītu lineārās regresijas modeļu salīdzināšanai var izmantot funkciju `anova()`.
+
+```{r,comment=NA}
+anova(modelis,modelis2)
+```
+
+**Secinājums:** starp modeļiem nav statistiski būtiskas atšķirības (p vērtība 0,1114 lielāka par būtiskuma līmeni), pēc AICc tie ir uzskatāmi par konkurējošiem, tāpēc var izvēlēties vienkāršāko modeli.
+
+---
+class: center, inverse, middle
+# Kādi būtu jautājumi?

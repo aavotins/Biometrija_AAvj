@@ -1,0 +1,464 @@
+---
+title: "Vispārējie lineārie modeļi"
+subtitle: "Generalized linear model (GLM)"
+author: "Andris Avotiņš & Didzis Elferts"
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css","my-css.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:10'
+---
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+mono_accent(
+  base_color = "#43418A",
+  text_font_size = "25px",
+  text_slide_number_font_size = "0.5em",
+  outfile = "xaringan-themer.css"
+)
+options(htmltools.dir.version = FALSE)
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.height = 4.5, fig.width = 8, dev='svg')
+```
+
+
+## Dati - binārā loģistiskā regresija
+
+Piemēram izmantoti programmā R iekļauti dati `plasma` no paketes `HSAUR`.
+
+```{r,comment=NA}
+data(plasma, package = "HSAUR")
+head(plasma)
+```
+
+---
+## Dati - binārā loģistiskā regresija
+
+```{r,comment=NA}
+summary(plasma)
+```
+
+
+---
+## Datu grafiskā analīze
+
+.izm90[
+Ar funkciju `cdplot()` var attēlot kvalitatīva mainīgā sadalījumu atkarībā no nepārtraukti variējoša mainīgā.
+
+```{r eval=FALSE}
+layout(matrix(1:2, ncol = 2))
+cdplot(ESR ~ fibrinogen, data = plasma)
+cdplot(ESR ~ globulin, data = plasma)
+```
+
+```{r 10n_ESR,echo=FALSE,fig.align='center',fig.height=3,fig.width=8}
+par(ps=15,mar=c(5,5,3,3))
+layout(matrix(1:2, ncol = 2))
+cdplot(ESR ~ fibrinogen, data = plasma)
+cdplot(ESR ~ globulin, data = plasma)
+```
+]
+
+---
+## Modeļa definēšana
+
+GLM analīzes veikšanai izmanto funkciju `glm()`, kurai kā argumentus norāda modeļa formulu, datu objektu, kā arī atlikuma vērtību struktūru (`family =`) un saistības funkciju. Ja atlikuma struktūru nenorāda, tad tiek veikta parasta lineārā regresija.
+
+```{r,comment=NA}
+plasma_glm_1 <- glm(ESR ~ fibrinogen, data = plasma,
+                    family = binomial("logit"))
+```
+
+---
+## Modeļa rezultāts
+
+.izm85[
+```{r,comment=NA}
+summary(plasma_glm_1)
+```
+]
+
+---
+## Modeļa rezultāts
+
+Regresoru ietekmes skaidrošanai ir izmantojami eksponēti regresijas leņķa koeficientu - iespējamību attiecības jeb *Odds Ratio*
+
+```{r}
+koeficienti=exp(coefficients(plasma_glm_1))
+ticamibas_intervali=exp(confint(plasma_glm_1))
+cbind(koeficienti,ticamibas_intervali)
+```
+
+Šis rādītājs ir multiplikatīvs - tas attēlo cik reižu mainās izredzes iznākumam, neatkarīgajai pazīmei mainoties par vienu vienību. Ja interesē izmaiņas par vairākām vienībām, pārmaiņu apjoms ir jāizmanto par OR kāpinātāju
+
+---
+## Modeļa rezultāts
+
+**Secinājums:** pie būtiskuma līmeņa $\alpha=0,05$ pastāv statistiski būtiska pozitīva fibrinogēna daudzuma ietekme uz iespējamību, ka sedimentācijas pakāpe būs virs 20 $(z_{(1)}=2,028; p = 0,043)$. Fibrinogēna līmenim pieaugot par vienu vienību, izredzes eritoricītu sedimentācijai pārsniegt 20 mm/stundā pieaug 6,25 (95% TI 1,40 - 54,52) reizes.
+
+
+---
+## Modeļa definēšana 2 
+
+.izm80[
+```{r,comment=NA}
+plasma_glm_2 <- glm(ESR ~ fibrinogen+globulin, data = plasma,
+                    family = binomial("logit"))
+
+summary(plasma_glm_2)
+
+```
+]
+
+---
+## Modeļa rezultāts 2
+
+```{r}
+koeficienti2=exp(coefficients(plasma_glm_2))
+ticamibas_intervali2=exp(confint(plasma_glm_2))
+cbind(koeficienti2,ticamibas_intervali2)
+```
+
+Izredžu attiecība 1 nozīmē, ka nav ietekmes. OR=0,1 nozīmē desmit reizes mazākas izredzes. OR=10 nozīmē desmit reizes lielākas izredzes
+
+Ja ticamības intervāls ietver vērtību 1, tad rezultāts nav būtisks.
+
+
+
+---
+## Modeļa rezultāts 2
+
+**Secinājums:** arī pēc otra mainīgā (globulīns) iekļaušanas modelī pie būtiskuma līmeņa $\alpha=0,05$ pastāv statistiski būtiska pozitīva fibrinogēna daudzuma ietekme uz iespējamību, ka sedimentācijas pakāpe būs virs 20 $(z_{(1)} = 1,967; p = 0,049)$, toties globulīna daudzuma ietekme nav būtiska $(z_{(1)} = 1,303; p = 0,1925)$. Pieaugot fibrinogēna līmenim par vienu vienību, izredzes eritoricītu sedimentācijai pārsniegt 20 mm/stundā pieaug 6,76 (95% TI 1,40 - 73,00), savukārt globulīna ietekme ir neliela - pieaugums 1,17 (95% TI 0.94 - 1.53) reizes.
+
+
+---
+## Modeļu salīdzinājums - loģistiskā regresija
+
+.izm90[
+Veicot binārās loģistiskās regresijas vai Puasona regresijas modeļu salīdzinājumu ar funkciju `anova()`, kā papildus arguments jānorāda `test="Chisq"`.
+
+```{r,comment=NA}
+anova(plasma_glm_1, plasma_glm_2, test = "Chisq")
+library(MuMIn)
+AICc(plasma_glm_1,plasma_glm_2)
+```
+]
+
+---
+## Modeļu salīdiznājums - loģistiskā regresija
+
+**Secinājums:** Pēc informācijas kritērija vērtībām, abi modeļi ir uzskatāmi par konkurējošiem $(\Delta AICc= 0,57)$, starp tiem nepastāv statistiski būtiska atšķirība $(\chi^2_{(1;30)}= 1,8692; p = 0,17)$, tādēļ var izvēlēties vienkāršāko modeli, kas šajā gadījumā ir 1. modelis. 
+
+
+---
+## Iespējamību prognozēšana
+
+GLM vērtību prognozēšanai var izmantot funkciju `predict()`. Ja funkcijai nenorāda papildus argumentus, tad prognozētās vērtības ir lineārā vienādojuma skalā. Lai iegūtu prognozētās vērtības izejas datu skalā (iespējamības vērtības), jāpievieno arguments `type="response"`.
+
+.izm90[
+```{r, eval = FALSE}
+predict(plasma_glm_1)
+```
+]
+
+.izm75[
+```{r, echo = FALSE}
+round(predict(plasma_glm_1),3)
+```
+]
+
+.izm90[
+```{r, eval = FALSE}
+predict(plasma_glm_1, type = "response")
+```
+]
+
+.izm75[
+```{r, echo = FALSE}
+round(predict(plasma_glm_1, type = "response"),3)
+```
+]
+---
+## Izskaidrotā variācija
+
+GLM modeļiem determinācijas koeficientu tiešā veidā nevar aprēķināt, bet var aprēķināt pseudo-determinācijas koeficientu. Vairākus šādus koeficientus var aprēķināt ar funkciju `pR2()` no paketes `pscl`.
+
+.izm90[
+```{r,comment=NA,message=FALSE,warning=FALSE}
+library(pscl)
+pR2(plasma_glm_1)
+```
+]
+
+**Secinājums:** fibrinogēna daudzums izskaidro no 17,21 līdz 27,80% (atkarībā no metodes, kuru izvēlas) no iespējamības, ka sedimentācijas pakāpe būs virs 20. 
+
+---
+## Dati - 2. piemērs
+
+```{r,comment=NA}
+data("womensrole", package = "HSAUR")
+head(womensrole)
+```
+
+---
+## Dati - 2. piemērs
+
+```{r,comment=NA}
+summary(womensrole)
+```
+
+---
+## Modeļa definēšana - 2. piemērs
+
+Ja dati pirms analīzes jau ir apkopoti (ir atseviškas kolonnas ar pozitīviem/negatīviem rezultātiem (jā/nē rezultātiem)), tad kā atkarīgais ir jāliek abu kolonnu apvienojums izmantojot funkciju `cbind()`.
+
+```{r,comment=NA}
+womensrole_glm_1 <- glm(cbind(agree, disagree) ~ sex + 
+                          education,data = womensrole, 
+                        family = binomial("logit"))
+```
+
+---
+## Modeļa rezultāts - 2. piemērs
+
+.izm80[
+```{r,comment=NA}
+summary(womensrole_glm_1)
+```
+]
+
+
+---
+##  Modeļa rezultāts - 2. piemērs
+
+Iespējamību attiecības samērā ērti ir iegūt ar paketes `biostat3` funkciju `eform()`, kurā kā argumentu norāda modeļa objektu
+
+```{r,message=FALSE,warning=FALSE}
+library(biostat3)
+eform(womensrole_glm_1)
+```
+
+OR var izmantot procentuālai atšķirību apjoma raksturošanai: $|OR_i-1| \cdot 100$ par cik procentiem mainās izredzes iestāties notikumam
+
+---
+## Modeļa rezultāts - 2. piemērs
+
+**Secinājums:** uz iespējamību, ka respondenti piekrīt apgalvojumam, izglītības ilgumam ir statistiski būtisks negatīvs efekts $(z_{(1)}=-17,56; p<0,001)$, tas ir, jo ilgāk ir mācījies, jo mazāk piekrīt šādam apgalvojumam. Starp dzimumiem atšķirība nav statistiski būtiska $(z_{(1)}=-0,136; p<0,892)$. Sievietes apgalvojumam tiecās piekrist retāk kā vīrieši - izredžu attiecība ir 0,988 (95% TI 0,838 - 1,165), savukārt ar katru izglītības gadu izredzes piekrist apgalvojumam samazinās par 24% - izredžu attiecība ir 0,763 (95% TI 0,740 - 0,786).
+
+
+---
+## Grafiskais attēlojums
+
+.izm90[
+```{r}
+myplot <- function(role.fitted) {
+ f <- womensrole$sex == "Female"
+ plot(womensrole$education, role.fitted, type = "n", 
+      ylab = "Probability of agreeing",
+ xlab = "Education", ylim = c(0, 1))
+ lines(womensrole$education[!f], role.fitted[!f], lty = 1)
+ lines(womensrole$education[f], role.fitted[f], lty = 2)
+ lgtxt <- c("Fitted (Males)", "Fitted (Females)")
+ legend("topright", lgtxt, lty = 1:2, bty = "n")
+ y <- womensrole$agree/(womensrole$agree + womensrole$disagree)
+ text(womensrole$education, y, ifelse(f, "\\VE", "\\MA"),
+ family = "HersheySerif", cex = 1.25)
+ }
+```
+]
+
+Kods attēlam ņemts no Everitt, Hothorn, 2006. grāmatas, piemērots konkrēto datu vizualizēšanai.
+
+---
+## Grafiskais attēlojums
+
+```{r eval=FALSE}
+myplot(predict(womensrole_glm_1, type = "response"))
+```
+```{r 10nod_sex1,echo=FALSE,fig.align='center', fig.height=4}
+par(ps=15,mar=c(5,5,3,3))
+myplot(predict(womensrole_glm_1, type = "response"))
+```
+
+---
+## Modeļa definēšana - 2. piemērs
+
+Modelis, kurā iespējamība piekrist ir atkarīga ne tikai no dzimuma un izglītības, bet arī no šo faktoru mijiedarbības.
+
+.izm90[
+```{r eval=FALSE}
+womensrole_glm_2 <- glm(cbind(agree, disagree)~ sex * education,
+        data = womensrole, family = binomial("logit"))
+summary(womensrole_glm_2)
+```
+]
+
+---
+## Modeļa rezultāts - 2. piemērs
+
+.izm85[
+```{r echo=FALSE,comment=NA}
+womensrole_glm_2 <- glm(cbind(agree, disagree)~ 
+        sex * education,
+        data = womensrole, family = binomial("logit"))
+summary(womensrole_glm_2)
+```
+]
+
+
+---
+## Modeļa rezultāts - 2. piemērs
+
+```{r}
+eform(womensrole_glm_2)
+```
+
+
+
+---
+## Modeļa rezultāts - 2. piemērs
+
+**Secinājums:**  uz iespējamību, ka respondenti piekrīt apgalvojumam, izglītības ilgumam ir statistiski būtisks $(z_{(1)}=-11,592; p = <0,001)$ negatīvs efekts, tas ir, ar katru mācību gadu izredzes piekrist šādam apgalvojumam samazinās par 21% (OR=0,791; 95% TI 0,761 - 0,823). Izglītības ilguma ietekme statistiski būtiski atšķiras starp dzimumiem $(z_{(1)}=-2,617; p = 0,009)$ - sievietēm negatīvais efekts ir izteiktāts (OR=0,922; 95% TI 0,867 - 0,980). Arī pie vienāda izglītības līmeņa starp dzimumiem pastāv statistiski būtiska atšķirība $(z_{(1)}=2,513; p = 0,012)$ iespējamībās piekrist apgalvojumam - sivietēm tās ir augstākas (OR=2,471; 95% TI 1,220 - 5,005).
+
+
+---
+## Rezultātu grafiskais attēlojums - 2. piemērs
+
+```{r eval=FALSE}
+myplot(predict(womensrole_glm_2, type = "response"))
+```
+```{r 10n_sex2,echo=FALSE,fig.align='center',fig.height=4}
+par(ps=15,mar=c(5,5,3,3))
+myplot(predict(womensrole_glm_2, type = "response"))
+```
+
+---
+## Dati - Puasona regresija
+
+.izm90[
+```{r,comment=NA,echo=FALSE}
+library(readxl)
+sugas <- read_excel("../Dati/species.xlsx")
+```
+```{r,comment=NA,eval=FALSE}
+library(readxl)
+sugas <- read_excel("species.xlsx")
+```
+```{r,comment=NA}
+str(sugas)
+summary(sugas)
+```
+]
+
+---
+## Modeļa definēšana - Puasona regresija
+
+.izm80[
+```{r,comment=NA}
+model1 <- glm(Species ~ Biomass + pH, 
+              family=poisson("log"),data=sugas)
+summary(model1)
+```
+]
+
+---
+## Modeļa rezultāts - Puasona regresija
+
+Puasona regresijā efekta apjoms tiek raksturots kā relatīvais risks (RR). Tam ir tā pati multiplikatīvā daba kā OR
+
+```{r}
+eform(model1)
+```
+
+
+---
+## Modeļa rezultāts - Puasona regresija
+
+**Secinājums:** kopējai augu biomasai ir statistiski būtisks negatīvs efekts $(z_{(1)}=-12,579; p < 0,001)$ uz sugu skaitu parauglaukumā - ar katru biomasas vienības pieaugumu sugu skaits samazinās par 12% (RR=0,880; 95% TI 0,863 - 0,898). Sugu skaits statistiski būtiski atšķiras starp augsta pH laukiem (references līmenis) un zema pH laukiem $(z_{(1)}=-16,910; p<0,001; RR=0,321;\text{ 95% TI }0,281 - 0,366)$, kā arī starp augsta un vidējā pH laukiem $(z_{(1)}=-8,114; p<0,001; RR=0,641;\text{ 95% TI }0,575 - 0,713)$.
+
+
+---
+## Modeļa definēšana - Puasona regresija
+
+.izm80[
+```{r,comment=NA}
+model2 <- glm(Species ~ Biomass *pH, family=poisson("log"),data=sugas)
+summary(model2)
+```
+]
+
+---
+## Modeļa rezultāts - Puasona regresija
+
+```{r}
+eform(model2)
+```
+
+---
+## Modeļa rezultāts - Puasona regresija
+
+**Secinājums:** kopējai augu biomasai ir statistiski būtisks negatīvs efekts uz sugu skaitu augsta pH līmeņa parauglaukumos (references līmenis; $z_{(1)}=-8,577; p<0,001; RR=0,898;\text{ 95% TI }0,877 - 0,921$ ). Šis negatīvais efekts ir  vēl izteiktāks zema pH līmeņa laukos $(z_{(1)}=-3,873; p<0,001; RR=0,856;\text{ 95% TI }0,792 - 0,926)$, toties gan augsta, gan vidējā pH līmeņa laukos biomasas ietekme būtiski neatšķiras $(z_{(1)}=-1,383; p=0,167; RR=0,969;\text{ 95% TI }0,926 - 1,013)$. Sugu skaits statistiski būtiski atšķiras starp augsta pH laukiem (references līmenis) un zema pH laukiem $(z_{(1)}=-7,931; p<0,001; RR=0,442;\text{ 95% TI }0,362 - 0,541)$, kā arī starp augsta un vidējā pH laukiem $(z_{(1)}=-3,596; p<0,001; RR=0,718;\text{ 95% TI }0,599 - 0,860)$.
+
+
+---
+## Modeļa diagnostika
+
+.izm80[
+```{r eval=FALSE}
+par(mfrow=c(2,2))
+plot(model2)
+par(mfrow=c(1,1))
+```
+]
+```{r 10n_dig,echo=FALSE,fig.align='center',fig.height=3.5,fig.width=8}
+par(ps=12,mar=c(3,3,2,1))
+par(mfrow=c(2,2))
+plot(model2)
+```
+
+---
+## Modeļu salīdzinājums
+
+```{r,comment=NA}
+anova(model1, model2, test = "Chisq")
+AICc(model1,model2)
+```
+
+---
+## Modeļu salīdzinājums
+
+**Secinājums:** Saskaņā ar informācijas kritērija vērtību $(\Delta AICc=11,499)$, otrais modelis ir labāks vispārinājums, turklāt tas ir statistiski nozīmīgi labāks $(\chi^2_{(1;42)}=16,04; p<0,001)$, tādēļ jāizvēlas 2. modelis, kurā iekļauta faktoru kombinācija.
+
+---
+## Rezultātu parādīšana
+
+Arī glm modeļa rezultātus var parādīt izmantojot `ggplot2` pieeju. Funkcijā `geom_smooth()` jānorāda arguments `method = "glm"`, kā arī papildus jāliek arguments `method.args =` un jānorāda pareizais `family =` veids.
+
+.izm90[
+```{r, eval = FALSE}
+library(ggplot2)
+ggplot(sugas, aes(Biomass, Species, color = pH)) + geom_point()+
+  geom_smooth(method = "glm", method.args = list(family = "poisson"))
+```
+]
+
+---
+## Rezultātu parādīšana
+
+
+```{r, echo = FALSE}
+library(ggplot2)
+ggplot(sugas,aes(Biomass, Species, color = pH)) + geom_point()+
+  geom_smooth(method = "glm", method.args = list(family = "poisson"))
+```
+
+
+
+---
+class: center, inverse, middle
+# Kādi būtu jautājumi?

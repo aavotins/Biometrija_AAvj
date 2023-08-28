@@ -1,0 +1,238 @@
+---
+title: "Datu grafiskā analīze"
+author: "Andris Avotiņš & Didzis Elferts"
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css","my-css.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:10'
+---
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+mono_accent(
+  base_color = "#43418A",
+  text_font_size = "25px",
+  text_slide_number_font_size = "0.5em",
+  outfile = "xaringan-themer.css"
+)
+options(htmltools.dir.version = FALSE)
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.height = 3, fig.width = 8, dev='svg', fig.align = "center")
+```
+
+
+
+
+## Lekcijas tēmas
+
+* Paraugkopas grafiskā analīze
+
+* Paraugkopas atbilstība normālajam sadalījumam
+
+---
+## Paraugkopas grafiskā analīze
+
+Pirms datu analīzes vienmēr ieteicams veikt datu grafisko analīzi, jo:
+
+* tas ļauj atrast kļūdainas vai ekstrēmas vērtības, kuras nav redzamas vienkārši apskatot datus
+
+* ļauj novērtēt vai datos redzamas kādas grupēšanās
+
+* ļauj novērtēt saistības starp mainīgajiem
+
+---
+## Dati
+
+Dati par niedru lapu platumu un garumu trīs paraglaukumos.
+
+```{r,echo=FALSE}
+library(readxl)
+niedr <- read_excel("../Dati/niedres2.xlsx")
+```
+```{r,eval=FALSE}
+library(readxl)
+niedr <- read_excel("niedres2.xlsx")
+```
+```{r}
+str(niedr)
+```
+
+---
+## Grafiskā analīze
+
+```{r}
+library(ggplot2)
+ggplot(niedr, aes(npk, garums)) + geom_point()
+```
+
+
+---
+## Grafiskā analīze
+
+```{r}
+ggplot(niedr, aes(garums, platums)) + geom_point()
+```
+
+---
+## Grafiskā analīze
+
+```{r}
+ggplot(niedr, aes(garums, platums, 
+                  colour = paraug, shape = paraug)) + 
+      geom_point()
+```
+
+
+---
+## Grafiskā analīze
+
+```{r}
+ggplot(niedr, aes(paraug, garums)) + geom_point()
+```
+
+---
+## Grafiskā analīze
+
+`geom_jitter()` datu punktus nejauši pārvieto pa labi un kreisi, lai novērstu pārklāšanos.
+
+```{r}
+ggplot(niedr, aes(paraug, garums)) + 
+      geom_jitter(width = 0.1)
+```
+
+
+
+---
+## Grafiskā analīze
+
+```{r}
+ggplot(niedr, aes(paraug, garums)) + geom_boxplot()
+```
+
+---
+## Grafiskā analīze
+
+Boxplot attēlā ir parādīts: 
+
+* mediāna - vidējā tumšā līnija; 
+
+* 1. un 3. kvartile - taisnstūra apakšējā un augšējā mala; 
+
+* minimālā un maksimālā vērtība - apakšējais un augšējais nogrieznis (ja nav ekstrēmu vērtību); 
+
+* ja kādas vērtības ir tālāk nekā 1,5 reizes par 3. un 1. kvartiles starpību (taisnstūra augstums), tad šīs vērtības parādās kā atsevišķi punkti.
+
+
+---
+## Grafiskā analīze 
+
+```{r}
+ggplot(niedr, aes(garums)) + geom_histogram()
+```
+
+---
+## Neraksturīgās vērtības
+
+Ja datos tiek konstatēta nerakturīga vērtība ("izlēcējs"):
+
+* Jāpārliecinās, ka tā nav ievadīšanas kļūda (piemēram, **1,80** vietā uzrakstīts **18,0**)
+
+* Varbūt tas tiešām ir tikai ekstrēms, bet reāls novērojums. Šādā gadījumā ir vērts analīzes uztaisīt ar un bez šīs vērtības
+
+* Ja vērtība tiešām ir kļūdaina ("izlēcējs") un to ir jāizdzēšs, tad šis process ir arī jāpiemin metodēs pie datu apstrādes
+
+---
+## Atbilstība normālajam sadalījumam
+
+* Grafiskā pārbaude
+
+* Analītiskā pārbaude
+
+---
+## Grafiskā pārbaude - histogramma
+
+Jāskatās, vai histogramma veido zvanveidīgu izskatu.
+
+.pull-left[
+.izm85[
+```{r, fig.height=4}
+ggplot(niedr, aes(garums)) + 
+      geom_histogram(binwidth = 5)
+```
+]
+]
+
+.pull-right[
+.izm85[
+```{r, fig.height=4}
+ggplot(niedr, aes(garums)) + 
+      geom_histogram(binwidth = 2.5)
+```
+]
+]
+
+---
+## Grafiskā pārbaude - QQplot
+
+Punktiem jāatrodas apmēram ap līniju.
+
+Lai izmanto funkciju `geom_qq()`, jāizmanto arguments `sample = `.
+
+```{r}
+ggplot(niedr, aes(sample = garums)) + geom_qq() + 
+      geom_qq_line()
+```
+
+
+---
+## Grafiskā pārbaude - QQplot
+
+Izmantojot R paketi `qqplotr`, var izveidot attēlu, kurā parādās arī ticamības intervāls (datu punktiem jāatrodas šajā intervālā, lai atbilstu sadalījumam).
+
+```{r, message=FALSE}
+library(qqplotr)
+ggplot(niedr, aes(sample = garums)) + geom_qq_band() +
+  stat_qq_line() +   stat_qq_point() +
+  labs(x = "Teorētiskās kvantiles", y = "Paraugkopas kvantiles")
+```
+
+---
+## Analītiskā pārbaude - Šapīro tests 1
+
+```{r}
+shapiro.test(niedr$garums)
+```
+
+**Secinājums:** pie būtiskuma līmeņa $\alpha=0,05$ niedru garuma datu sadalījums būtiski neatšķiras no normālā sadalījuma, jo iegūtā p vērtība ir lielāka par būtiskuma līmeni.
+
+---
+## Analītiskā pārbaude - Šapīro tests 2
+
+Lai veiktu aprēķinu vienam vektoram (kolonnai), kas sadalīts līmeņos balstoties uz citu vektoru (kolonnu), var izmantot funkciju `tapply()`, kurai jānorāda trīs argumenti:
+
+* vektors, kuram jāveic aprēķins, 
+
+* vektors, kas sadala līmeņos, 
+
+* funkcija (bez iekavām), kas jāpiemēro katram dalījuma līmenim.
+
+
+---
+## Analītiskā pārbaude - Šapīro tests 3
+
+
+.izm85[
+```{r}
+tapply(niedr$garums,niedr$paraug,shapiro.test)
+```
+]
+
+
+---
+class: center, inverse, middle
+# Kādi būtu jautājumi?

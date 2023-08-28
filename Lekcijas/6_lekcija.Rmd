@@ -1,0 +1,914 @@
+---
+title: "Dispersijas un Kovariācijas analīze"
+author: "Didzis Elferts"
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css","my-css.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:10'
+---
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+mono_accent(
+  base_color = "#43418A",
+  text_font_size = "25px",
+  text_slide_number_font_size = "0.5em",
+  outfile = "xaringan-themer.css"
+)
+options(htmltools.dir.version = FALSE)
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.height = 4.5, fig.width = 8, dev='svg', message = FALSE)
+```
+
+
+class: inverse, middle, center
+# Dispersijas analīze
+
+---
+## Pētījums
+
+Mērķis: Noskaidrot vai smēķēšana ietekmē izelpas tilpumu cilvēkiem.
+
+Parametrs (regresents): forsētais izelpas tilpums 1 sekundē (FEV1)
+
+Ietekmējošais faktors (regresors): piederība vienai no pētījumu grupām - nesmēķē, pasīvi smēķē, smēķē
+
+---
+## Pētījums
+
+```{r 6l_smeke,echo=FALSE,fig.align='center',warning=FALSE}
+df<-data.frame(grupa=rep(c("Nesmēķē","Pasīvi","Smēķē"),each=5),dat=c(3.5, 3.9, 3.6, 4.3, 4.2, 3.6, 3.1, 3.1, 3.6, 3.0, 3.2, 3.1, 2.6, 2.8, 2.9))
+library(ggplot2)
+library(grid)
+ggplot(df,aes(grupa,dat,color=grupa))+geom_point(size=10,position="jitter")+
+  labs(x="Grupa",color="",y="FEV (L/s)")+
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="none",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+
+
+---
+## Pamatojums
+
+**Dispersijas analīzi** (ANOVA - analysis of variance) izmanto tādos gadījumos, ja visi ietekmējošie mainīgie (regresori) ir kategorijas mainīgie (faktori) un atkarīgais mainīgais (regresents) ir nepārtraukti variējošs mainīgais.
+
+Dispersijas analīzi izmanto, ja ir vairāk kā divas kategorijas, kas jāsalīdzina (ja ir tikai divas, tad atkarīgu vai neatkarīgu paraugkopu t-tests), vai arī ir divi un vairāk ietekmējošie mainīgie.
+
+
+---
+## Dispersijas analīzes piemēri
+
+* Eksperiments, kurā augus apstrādā ar vairākiem augu aizsardzības līdzekļiem un noskaidro to rezistenci pret kaitēkļiem. Grupas: kontrole, līdzeklis 1, līdzeklis 2
+
+* IQ atšķirības cilvēkiem atkarībā no to izglītības. Grupas: pamatskolas, viduskolas, tehnikuma, augstskolas
+
+* Koku diametru atšķirības mežu tipos. Grupas: sils, mētrājs, lāns,...
+
+
+---
+## Kāpēc vienkārši nelietot t-testus?
+
+* Ja ir daudz grupu, jāveic liels skaits atkārtotu testu
+
+* Lietojot visus datus, novērtē kopējo variēšanu
+
+* Veicot daudzus salīdzinājumus, daži var būt būtiski tikai nejaušības pēc (palielinās I tipa kļūdas iespējamība)
+
+
+---
+## Viena faktora dispersijas analīze
+
+$$y_{ij}=\mu + a_j + e_{ij}$$
+
+
+$y_{ij}$ - ir konkrētais novērojums i-tajā grupā
+
+$\mu$ - ir konstante, kas raksturo vispārējo vidējo vērtību
+
+$a_j$ - ir konstante, kas raksturo faktora efektu (starpība starp konkrētās grupas vidējo un kopējo vidējo vērtību)
+
+$e_{ij}$ - raksturo kļūdu ap vidējo vērtību, šis lielums nāk no normālā sadalījuma ar vidējo vērtību 0 un dispersiju $\sigma^2$
+
+
+
+---
+## Uzdevumi
+
+Dispersijas analīzes uzdevumi:
+
+* noskaidrot katra  pētāmā faktora ietekmes būtiskumu
+
+* aprēķināt pētāmā faktora vai  arī vairāku faktoru summārās  ietekmes īpatsvaru
+
+* noteikt, cik  ir būtisko starpību  un starp kurām  gradācijas klasēm tās pastāv
+
+
+
+---
+## Priekšnosacījumi
+
+Dispersijas analīzi var veikt, ja statistiskais  komplekss atbilst šādiem noteikumiem:  
+
+* Atsevišķās gradācijas klases ir savstarpēji  neatkarīgas
+
+* Atlikuma vērtības atbilst normālajam sadalījumam
+
+* Dispersijas starp gradācijas klasēm ir homogēnas (vienādas)
+
+
+
+---
+## Viena faktora dispersijas analīze
+$$
+\sigma^2=\sigma_A^2+\sigma_z^2
+$$
+
+$\sigma^2$ - statistiskā kompleksa kopējā dispersija
+ 
+$\sigma_A^2$ - pētāmā faktora A ietekmes dispersija
+
+$\sigma_z^2$ - summārā nejaušo faktoru izraisītā jeb fona dispersija
+
+
+---
+## Statistiskais komplekss
+
+.izm80[
+Gradācijas klases | Variantes | Gradācijas klašu varianšu skaits  | Gradācijas klašu varianšu summa  | Gradācijas klašu vidējais aritmētiskais
+------------|:-----------------------:|:------------------:|:-----------------:|:------------------------:
+ $A_j$      | $x_{ji}$              | $n_j$            | $S_j$           | $\overline{x}_j$
+ $A_1$      | $x_{11} ... x_{1n_1}$ | $n_1$            | $S_1$           | $\overline{x}_1$
+ $A_k$      | $x_{k1} ... x_{kn_k}$ | $n_k$            | $S_k$           | $\overline{x}_k$
+            |                       | N	               | S               | $\overline{x}$      
+]
+
+kur i - katrs novērojums, j - gradācijas klase, k - klašu skaits, n - novērojumu skaits
+
+
+---
+## Statistiskais komplekss
+
+.izm80[
+Gradācijas klases | Variantes | Gradācijas klašu varianšu skaits  | Gradācijas klašu varianšu summa  | Gradācijas klašu vidējais aritmētiskais
+------------|:-----------------------:|:------------------:|:-----------------:|:------------------------:
+Nesmēķē    | 3,5 3,9 3,6 4,3 4,2   | 5                | 19,5            | 3,90                  
+Pasīvi     | 3,6 3,1 3,1 3,6 3,0   | 5                | 16,4            | 3,28                  
+Smēķē      | 3,2 3,1 2,6 2,8 2,9   | 5                | 14,6            | 2,92                  
+Kopā       |                       | 15               | 50,5            | 3,37                 
+]
+
+---
+## Faktora ietekmes būtiskuma novērtēšana
+
+.izm85[
+Noviržu kvadrātu summas
+
+ 
+* Q - kopējā noviržu kvadrātu summa (Total Sum of Squares)
+
+$$Q=\sum\limits_{ji} (x_{ji}-\overline{x})^2=\sum\limits_{ji} x_{ji}^2-\frac{S^2}{N}$$
+
+* $Q_A$ - faktora A noviržu kvadrātu summa (Between Sum of Squares)
+
+$$Q_A=\sum\limits_j n_j (\overline{x}_j - \overline{x})^2=\sum\limits_j \frac{S_j^2}{n_j}-\frac{S^2}{N}$$
+
+* $Q_z$ - nekontrolēto faktoru noviržu kvadrātu summa (Within Sum of Squares)
+
+$$Q_z=\sum\limits_{ij} (x_{ij}-\overline{x}_j)^2=Q-Q_A$$
+]
+
+
+
+---
+## Faktora ietekmes būtiskuma novērtēšana
+
+.izm90[
+Noviržu kvadrātu summas
+
+ 
+* Q - kopējā noviržu kvadrātu summa
+$$
+Q=(3,5-3,37)^2+(3,9-3,37)^2+\ldots +(2,9-3,37)^2=3,533
+$$
+
+* $Q_A$ - faktora A noviržu kvadrātu summa
+$$
+Q_A=5 \cdot (3,90-3,37)^2+5 \cdot (3,28-3,37)^2+5 \cdot (2,92-3,37)^2=2,457
+$$
+
+* $Q_z$ - nekontrolēto faktoru noviržu kvadrātu summa
+
+$$
+Q_z=3,533-2,457=1,076
+$$ 
+]
+
+
+---
+## Faktora ietekmes būtiskuma novērtēšana
+
+Brīvības pakāpju skaits:
+
+$\nu_A=k-1$ - faktora A (izskaidrotās dispersijas) brīvības pakāpju skaits (klašu skaits mīnus 1)
+
+$\nu_z=n-k$ - nekontrolēto faktoru/atlikuma (neizskaidrotās dispersijas) brīvības pakāpju skaits (novērojumu skaits mīnus gradācijas klašu skaits)
+
+$\nu=n-1$ - kopējais brīvības pakāpju skaits (novērojumu skaits mīnus 1)
+
+
+
+---
+## Faktora ietekmes būtiskuma novērtēšana
+
+Brīvības pakāpju skaits:
+
+$\nu_A=k-1=3-1=2$ 
+
+$\nu_z=n-k=15-3=12$ 
+
+$\nu=n-1=15-1=14$ 
+
+
+---
+## Faktora ietekmes būtiskuma novērtēšana
+
+Nulles hipotēze par atsevišķu gradācijas klašu piederību vienai ģenerālkopai
+(atsevišķu gradācijas klašu vidējie aritmētiskie būtiski neatšķiras) paliek spēkā, ja $F\leq F_{1-\alpha,\nu_1,\nu_2}$ , kur $\alpha$ - būtiskuma līmenis, $\nu_1 =\nu_A, \nu_2 = \nu_z$.
+Ja testa rezultātā parādās p-vērtības, tad tā jāsalīdzina ar būtiskuma līmeni.
+
+
+---
+## Faktora ietekmes būtiskuma novērtēšana
+
+Empīriskā F vērtība
+$$
+F=\frac{\overline{Q}_A}{\overline{Q}_z}
+$$
+
+Vidējā faktora A kvadrātu summa
+$$
+\overline{Q}_A=\frac{Q_A}{\nu_A}
+$$
+
+Vidējā atlikuma kvadrātu summa
+$$
+\overline{Q}_z=\frac{Q_z}{\nu_z}
+$$
+
+
+---
+## Faktora ietekmes būtiskuma novērtēšana
+
+Vidējā faktora A kvadrātu summa
+$$
+\overline{Q}_A=\frac{Q_A}{\nu_A}=\frac{2,457}{2}=1,2287
+$$
+
+Vidējā atlikuma kvadrātu summa
+$$
+\overline{Q}_z=\frac{Q_z}{\nu_z}=\frac{1,076}{12}=0,0897
+$$
+
+Empīriskā F vērtība
+$$
+F=\frac{\overline{Q}_A}{\overline{Q}_z}=\frac{1,2287}{0,0897}=13,698
+$$
+
+
+
+---
+## Faktora ietekmes būtiskuma novērtēšana
+
+Empīriskā F vērtība ir 13,698
+
+Kritiskā F vērtība $F_{1-0.05,2,12}=3,885$
+
+**Secinājums:** tā kā empīriskā (iegūtā) F vērtība (F = 13,698) ir lielāka par kritisko F vērtību ( $F_{1-0.05,2,12}=3,885$), tad nulles hipotēze ir noraidīta un starp gradāciju klašu vidējiem aritmētiskajiem pastāv statistiski būtiska atšķirība - gradācijas klases nepieder vienai ģenerālkopai jeb populācijai (p-vērtība ir 0,0008, kas mazāka par būtiskuma līmeni $\alpha = 0,05$).
+
+
+---
+## Dispersijas analīzes tabula
+
+.izm85[
+ Izkliede  | Noviržu kvadrātu summa| Brīvības pakāpju skaits| Noviržu kvadrātu vidējās vērtības| F - vērtība (empīriskā) | F - vērtība (teorētiskā)                
+-----------|:------------------:|:------------------:|:------------------:|:-------------:|:----------------------------:
+ Kopējā    | Q                | $\nu$            |                  |             |                            
+ A faktora | $Q_A$            | $\nu_A$          | $\overline{Q}_A$ | F           | $F_{1-\alpha,\nu_1,\nu_2}$
+ Atlikuma  | $Q_z$            | $\nu_z$          | $\overline{Q}_z$ |             |                          
+]
+
+
+---
+## Dispersijas analīzes tabula
+
+.izm85[
+ Izkliede  | Noviržu kvadrātu summa| Brīvības pakāpju skaits| Noviržu kvadrātu vidējās vērtības| F - vērtība (empīriskā) | F - vērtība (teorētiskā) (p-vērtība)                
+-----------|:------------------:|:------------------:|:------------------:|:-------------:|:----------------------------:
+ Kopējā    | 3,533            | 14               |                  |             |                            
+ A faktora | 2,457            | 2                | 1,2287           | 13,697        |  3,885 (0,0008\*\*\*)        
+ Atlikuma  | 1,067            | 12               | 0,0897           |             |                            
+]
+
+
+
+---
+## Faktora ietekmes īpatsvara noteikšana
+
+Faktora A ietekmes īpatsvara rādītāju aprēķina pēc formulas
+$$
+\eta_A^2=\frac{Q_A}{Q}
+$$
+
+Nekontrolēto faktoru ietekmes īpatsvara rādītāju - pēc formulas 
+$$
+\eta_z^2=\frac{Q_z}{Q}
+$$
+
+
+
+---
+## Faktora ietekmes īpatsvara noteikšana
+
+Faktora A ietekmes īpatsvara rādītāju aprēķina pēc formulas
+$$
+\eta_A^2=\frac{Q_A}{Q}=\frac{2,457}{3,533}=0,695
+$$
+
+Nekontrolēto faktoru ietekmes īpatsvara rādītāju - pēc formulas 
+$$
+\eta_z^2=\frac{Q_z}{Q}=\frac{1,076}{3,533}=0,305
+$$
+
+**Secinājums:** 69,5% no izelpas tilpuma atšķirībām var izskaidrot ar pētāmā faktora (piederība pie vienas no  grupām) ietekmi.
+
+---
+## Gradācijas klašu salīdzināšana
+
+Ja dispersijas analīzē konstatēts, ka pastāv statistiski būtiska faktora ietekme (atšķirības starp gradācijas klašu vidējiem), tad jāveic tests, lai salīdzinātu gradācijas klases
+savā starpā un konstatētu starp kurām gradācijas klasēm tieši ir šīs būtiskās atšķirības (tā saucamie Post-Hoc testi).
+
+Iespējamie testi:
+
+* LSD (Least significant difference) tests
+
+* Tukey HSD tests
+
+* Scheffe tests
+* ...
+
+
+---
+## Gradācijas klašu salīdzināšana
+
+.izm90[
+Gradācijas klašu salīdzināšanas gaita (LSD tests):
+
+* Kopējā dispersijas vērtība, kas vienāda ar vidējo atlikuma kvadrātu summu ( $s^2$)
+* Aprēķina t-vērtību savā starpā salīdzināmajām klasēm
+$$
+t=\frac{\overline{x}_1 - \overline{x}_2}{\sqrt{s^2 (\frac{1}{n_1}+\frac{1}{n_2})}}
+$$
+* Salīdzina t vērtību ar kritisko t-vērtību
+* Ja $t>t_{n-k,1-\alpha/2}$ vai $t < t_{n-k,\alpha/2}$, nulles hipotēzi jānoraida - starp gradācijas klasēm ir būtiska atšķirība
+* Ja $t_{n-k,\alpha/2} \leq t \leq t_{n-k,1-\alpha/2}$, nulles hipotēze nav noraidīta - starp gradācijas klasēm nav būtiskas atšķirības
+]
+
+
+---
+## Gradācijas klašu salīdzināšana
+
+.izm90[
+Nesmēķē:Pasīvi
+$$
+t=\frac{3,90 - 3,28}{\sqrt{0,0897 (\frac{1}{5}+\frac{1}{5})}}=\frac{0,62}{0,1894}=3,27
+$$
+
+Nesmēķē:Smēķē
+$$
+t=\frac{3,90 - 2,92}{\sqrt{0,0897 (\frac{1}{5}+\frac{1}{5})}}=\frac{0,98}{0,1894}=5,17
+$$
+
+Pasīvi:Smēķē
+$$
+t=\frac{3,28 - 2,92}{\sqrt{0,0897 (\frac{1}{5}+\frac{1}{5})}}=\frac{0,36}{0,1894}=1,90
+$$
+]
+
+---
+## Gradācijas klašu salīdzināšana
+
+Kritiskā $t_{12,1-0.05/2}=2,17$
+
+**Secinājumi:**
+
+* Nesmēķē:Pasīvi - atšķirības ir statistiski būtiska, jo empīriskā t vērtība ir lielāka par kritisko (3,27 >,2,17)
+
+* Nesmēķē:Smēķē - atšķirības ir statistiski būtiska, jo empīriskā t vērtība ir lielāka par kritisko (5,17 > 2,17)
+
+* Pasīvi:Smēķē - atšķirības nav statistiski būtiska, jo empīriskā t vērtība ir mazāka par kritisko (1,90 < 2,17)
+
+
+
+---
+## Kas nosaka vai vidējie aritmētiskie starp grupām atšķirsies
+
+* Starpība starp vidējiem aritmētiskiem
+
+* Katras grupas variācija (standartnovirze)
+
+* Novērojumu skaits katrā grupā
+
+
+---
+## Daudzfaktoru dispersijas analīze
+
+Daudzfaktoru dispersijas analīzi veic, lai noskaidrotu divu vai vairāku faktoru un to kombinācijas (mijiedarbības) ietekmi uz pētāmo pazīmi. 
+
+
+---
+## Daudzfaktoru dispersijas analīze
+
+$$y_{ijk}=\mu + a_j + b_k + \gamma_{jk}+e_{ijk}$$
+
+$y_{ijk}$ - ir konkrētais novērojums j-tajā pirmā faktora grupā un k-tajā otrā faktora grupā
+
+$\mu$ - ir konstante, kas raksturo vispārējo vidējo vērtību
+
+$a_j$ - ir konstante, kas raksturo pirmās faktora efektu
+
+$b_k$ - ir konstante, kas raksturo otrā faktora efektu
+
+$\gamma_{jk}$ - ir konstante, kas raksturo pirmā un otrā faktora mijiedarbības efektu
+
+$e_{ijk}$ - raksturo kļūdu, šis lielums nāk no normālā sadalījuma ar ar vidējo vērtību 0 un dispersiju $\sigma^2$
+
+
+---
+## Petījuma piemērs
+
+.izm90[
+Eksperiments ar augiem (to garumu) - tiek pārbaudīts kā augu garums atšķiras atkarībā no gaismas daudzuma (kontrole un papildus apgaismojuma) un barības vielu daudzuma (laista tikai ar ūdeni, vai arī ūdenim pievienoti mikroelementi).
+
+Datu piemērs:
+]
+
+.izm80[
+NPK | Gaisma | Bariba | Garums 
+:---:|:---:|:---:|:---: 
+1 | Kontrole (A1) | Ūdens (B1) | 11,00  
+  2 | Kontrole (A1) | Ūdens (B1) | 12,00 
+  3 | Kontrole (A1) | Elementi (B2) | 10,00  
+  4 | Kontrole (A1) | Elementi (B2) | 9,00  
+  5 | Papildus (A2) | Ūdens (B1) | 12,00  
+  6 | Papildus (A2) | Ūdens (B1) | 14,00  
+  7 | Papildus (A2) | Elementi (B2) | 7,00  
+  8 | Papildus (A2) | Elementi (B2) | 10,00 
+]
+
+---
+## Pārbaudāmās hipotēzes
+
+Šajā gadījumā ir iespējams pārbaudīt trīs dažādas hipotēzes:
+
+* Gaismas daudzums ietekmē augu garumu
+
+* Barības vielu daudzums ietekmē augu garumu
+
+* Barības vielu un gaismas daudzuma kombinācija ietekmē augu garumu
+
+
+---
+## Novērtējamie efekti
+
+* Galvenie efekti - viena regresora (neatkarīgā mainīgā) ietekme uz regresentu (atkarīgo mainīgo), neatkarīgi no otra regresora
+
+* Kombinācijas (mijiedarbības) efekts - viena regresora ietekme atkarībā no otra regresora
+
+* Vienkāršs efekts - viena regresora ietekme pie noteikta otra regresora līmeņa
+
+
+---
+## Novērtējamie efekti
+
+Galvenie efekti un kombinācijas efekts ir neatkarīgi viens no otra, ja ir veikts randomizēts eksperiments.
+
+Daļa statistiķu uzskata, ka, ja konstatēts būtisks kombinācijas (mijiedarbības efekts), tad galvenos efektus vairs neinterpretē.
+
+---
+## Iespējamie rezultāti dispersijas analīzē (grafiskais attēlojums)
+
+
+```{r 6l_A_B_neietekme,echo=FALSE,fig.align='center',warning=FALSE}
+df1<-data.frame(Gaisma=c("Kontrole (A1)","Kontrole (A1)","Papildus (A2)","Papildus (A2)"),
+                Bariba=c("Ūdens (B1)","Elementi (B2)","Ūdens (B1)","Elementi (B2)"),
+                Videjais=c(1,1.01,1,1.01))
+
+ggplot(df1,aes(Gaisma,Videjais,group=Bariba,linetype=Bariba))+geom_point(size=5)+geom_line()+
+  annotate("text",x=c(2.1,2.1),y=c(0.95,1.05),label=c("Ūdens (B1)","Elementi (B2)"),hjust=0)+ylim(c(0,2))+
+  labs(y = "Vidējais") +
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="none",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+
+
+---
+## Iespējamie rezultāti dispersijas analīzē (grafiskais attēlojums)
+
+```{r 6l_A_ietekme,echo=FALSE,fig.align='center',warning=FALSE}
+df3<-data.frame(Gaisma=c("Kontrole (A1)","Kontrole (A1)","Papildus (A2)","Papildus (A2)"),
+                Bariba=c("Ūdens (B1)","Elementi (B2)","Ūdens (B1)","Elementi (B2)"),
+                Videjais=c(1,1.01,1.7,1.71))
+
+ggplot(df3,aes(Gaisma,Videjais,group=Bariba,linetype=Bariba))+geom_point(size=5)+geom_line()+
+      annotate("text",x=c(2.1,2.1),y=c(1.65,1.75),label=c("Ūdens (B1)","Elementi (B2)"),hjust=0)+ylim(c(0,2))+
+  labs(y = "Vidējais") +
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="none",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+
+
+---
+## Iespējamie rezultāti dispersijas analīzē (grafiskais attēlojums)
+
+```{r 6l_B_ietekme,echo=FALSE,fig.align='center',warning=FALSE}
+df2<-data.frame(Gaisma=c("Kontrole (A1)","Kontrole (A1)","Papildus (A2)","Papildus (A2)"),
+                Bariba=c("Ūdens (B1)","Elementi (B2)","Ūdens (B1)","Elementi (B2)"),
+                Videjais=c(1,1.8,1,1.8))
+
+ggplot(df2,aes(Gaisma,Videjais,group=Bariba,linetype=Bariba))+geom_point(size=5)+geom_line()+
+  geom_text(aes(x=2.1,y=Videjais,label=Bariba),hjust=0)+ylim(c(0,2))+
+  labs(y = "Vidējais") +
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="none",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+
+---
+## Iespējamie rezultāti dispersijas analīzē (grafiskais attēlojums)
+
+```{r 6l_A_B_ietekme,echo=FALSE,fig.align='center',warning=FALSE}
+df4<-data.frame(Gaisma=c("Kontrole (A1)","Kontrole (A1)","Papildus (A2)","Papildus (A2)"),
+                Bariba=c("Ūdens (B1)","Elementi (B2)","Ūdens (B1)","Elementi (B2)"),
+                Videjais=c(1,1.5,1.5,1.9))
+
+ggplot(df4,aes(Gaisma,Videjais,group=Bariba,linetype=Bariba))+geom_point(size=5)+geom_line()+
+  geom_text(data=df4[3:4,],aes(x=2.1,y=Videjais,label=Bariba),hjust=0)+ylim(c(0,2))+
+  labs(y = "Vidējais") +
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="none",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+
+---
+## Iespējamie rezultāti dispersijas analīzē (grafiskais attēlojums)
+
+```{r 6l_komb_ietekme,echo=FALSE,fig.align='center',warning=FALSE}
+df5<-data.frame(Gaisma=c("Kontrole (A1)","Kontrole (A1)","Papildus (A2)","Papildus (A2)"),
+                Bariba=c("Ūdens (B1)","Elementi (B2)","Ūdens (B1)","Elementi (B2)"),
+                Videjais=c(1,1.5,1.5,1))
+
+ggplot(df5,aes(Gaisma,Videjais,group=Bariba,linetype=Bariba))+geom_point(size=5)+geom_line()+
+  geom_text(data=df5[3:4,],aes(x=2.1,y=Videjais,label=Bariba),hjust=0)+ylim(c(0,2))+
+  labs(y = "Vidējais") +
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="none",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+
+
+---
+## Iespējamie rezultāti dispersijas analīzē (grafiskais attēlojums)
+
+```{r 6l_visu_ietekme,echo=FALSE,fig.align='center',warning=FALSE}
+df6<-data.frame(Gaisma=c("Kontrole (A1)","Kontrole (A1)","Papildus (A2)","Papildus (A2)"),
+                Bariba=c("Ūdens (B1)","Elementi (B2)","Ūdens (B1)","Elementi (B2)"),
+                Videjais=c(1,1.2,0.9,1.8))
+
+ggplot(df6,aes(Gaisma,Videjais,group=Bariba,linetype=Bariba))+geom_point(size=5)+geom_line()+
+  geom_text(data=df6[3:4,],aes(x=2.1,y=Videjais,label=Bariba),hjust=0)+ylim(c(0,2))+
+  labs(y = "Vidējais") +
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="none",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+---
+## Daudzfaktoru dispersijas analīzes iespējamie rezultāti (iepriekšējie attēli)
+
+* Neietekmē neviens faktors
+
+* Ietekmē gaisma
+
+* Ietekmē barība vielas
+
+* Ietekmē gan gaisma, gan barības vielas
+
+* Ietekmē tikai faktoru kombinācija (mijiedarbība)
+
+* Ietekmē gan katrs faktors atsevišķi, gan arī to mijiedarbība
+
+---
+## Problēma ar dispersiju homogenitāti
+
+Ja ir konstatēts, ka dispersijas nav homogēnas, tad iespējamie risinājumi ir:
+
+* veikt datu transformāciju (piemēram, logaritmisko vai kvadrātsaknes)
+
+* izvēlēties dispersijas analīzes testus un post-hoc testus, kas paredzēti situācijām, kad dispersijas nav homogēnas (piemēram, dispersijas analīze ar Velča pielāgojumu)
+
+---
+## Kruskola-Volisa tests
+
+Ja ir nepieciešams salīdzināt vairāk kā divas grupas, bet dati izteikti neatbilst normālajam sadalījumam, ir jāizmanto neparametriskos testus vai GLM analīze. 
+
+Neparametriskā alternatīva viena faktora dispersijas analīzei -  Kruskola-Volisa tests (Kruskal-Wallis test).
+
+
+Līdzīgi kā citos neparametriskos testos, novērtē vērtību rangus.
+
+Testā iegūst H vērtību, ko salīdzina ar kritisko $H_c$ vērtību.
+
+---
+## Kruskola-Volisa tests
+
+Analīzes gaita:
+
+* Saliek visas vērtības kopā un piešķir rangus (kārtas numurus)
+
+* Saskaita rangu summu katrā no grupām $R_i$
+
+* Ja nav vienādu vērtību, tad:
+
+$$H=\frac{12}{N(N+1)}x \sum \limits_{i=1}^{k}R_i^2 n_i-3(N+1)$$
+
+---
+## Kruskola-Volisa tests
+
+Ja ir vienādas vērtības, tad:
+$$
+H*=\frac{H}{1-\frac{\sum \limits_{j=1}^{g}(t_j^3-t_j)}{N^3-N}}
+$$
+
+$t_j$ - vienādo vērtību skaits, g - grupu skaits, ar vienādām vērtībām
+
+
+
+---
+class: inverse, middle, center
+# Kovariācijas analīze
+
+
+
+---
+## Datu piemērs
+
+Dzīvnieku mazuļu svara pieaugums pirmajos 12 to dzīves mēnešos.
+
+Jautājums: vai svara pieaugums laikā ir atšķirīgs starp tēviņiem un mātītēm?
+
+
+
+---
+## Iespējamie modeļi
+
+```{r 6l_anco1,echo=FALSE,fig.align='center',warning=FALSE}
+ll<-0:12
+svars.t<-107+100*ll
+svars.m<-100+100*ll
+df1<-data.frame(Dzimums=rep(c("Tēviņi","Mātītes"),each=13),Laiks=c(0:12,0:12),Svars=c(svars.t,svars.m))
+ggplot(df1,aes(Laiks,Svars,color=Dzimums))+geom_line(size=2)+
+  scale_x_continuous(breaks=seq(0,12,2))+
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="top",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+
+
+---
+## Iespējamie modeļi
+
+```{r 6l_anco2,echo=FALSE,fig.align='center',warning=FALSE}
+ll<-0:12
+svars.t<-300+100*ll
+svars.m<-100+100*ll
+df1<-data.frame(Dzimums=rep(c("Tēviņi","Mātītes"),each=13),Laiks=c(0:12,0:12),Svars=c(svars.t,svars.m))
+ggplot(df1,aes(Laiks,Svars,color=Dzimums))+geom_line(size=2)+
+  scale_x_continuous(breaks=seq(0,12,2))+
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="top",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+
+
+---
+## Iespējamie modeļi
+
+```{r 6l_anco3,echo=FALSE,fig.align='center',warning=FALSE}
+ll<-0:12
+svars.t<-100+120*ll
+svars.m<-100+100*ll
+df1<-data.frame(Dzimums=rep(c("Tēviņi","Mātītes"),each=13),Laiks=c(0:12,0:12),Svars=c(svars.t,svars.m))
+ggplot(df1,aes(Laiks,Svars,color=Dzimums))+geom_line(size=2)+
+  scale_x_continuous(breaks=seq(0,12,2))+
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="top",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+
+
+---
+## Iespējamie modeļi
+
+```{r 6l_anco4,echo=FALSE,fig.align='center',warning=FALSE}
+ll<-0:12
+svars.t<-300+150*ll
+svars.m<-100+80*ll
+df1<-data.frame(Dzimums=rep(c("Tēviņi","Mātītes"),each=13),Laiks=c(0:12,0:12),Svars=c(svars.t,svars.m))
+ggplot(df1,aes(Laiks,Svars,color=Dzimums))+geom_line(size=2)+
+  scale_x_continuous(breaks=seq(0,12,2))+
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="top",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+---
+## Iespējamie rezultāti kovariācijas analīzē (iepriekšējie attēli)
+
+* Laikam ir būtiska ietekme, dzimumam nav
+
+* Sākotnējā vērtība atšķiras starp dzimumiem, pieaugums laikā neatšķiras
+
+* Sākotnējā vērtība neatšķiras, bet atšķiras pieauguma temps starp dzimumiem
+
+* Starp dzimumiem atšķiras gan sākotnējā vērtība, gan pieauguma temps
+
+---
+## ANCOVA
+
+**Kovariācijas analīzes** (ANCOVA - analysis of covariance) mērķis ir salīdzināt nepātraukti variējoša mainīgā vidējo vērtību starp divām vai vairāk grupām, ņemot vērā cita nepārtraukti variējoša mainīgā ietekmi. 
+
+
+
+---
+## ANCOVA pieņēmumi
+
+* Y normalitāte pie katras X vērtības
+
+* Dispersiju homogenitāte
+
+* Neatkarīgas grupas un novērojumi
+
+* Linearitāte
+
+
+---
+## Dati
+
+.izm75[
+```{r,comment=NA,echo=FALSE}
+set.seed(345)
+ll<-0:12
+svars.t<-round(300+150*ll+rnorm(13,0,50),0)
+svars.m<-round(100+80*ll+rnorm(13,0,50),0)
+df1<-data.frame(Dzimums=rep(c("Tevini","Matites"),each=13),Laiks=c(0:12,0:12),Svars=c(svars.t,svars.m))
+df1
+```
+]
+
+---
+## ANCOVA analīzes rezultāts
+
+.izm85[
+```{r,comment=NA,echo=FALSE}
+mod<-lm(Svars~Laiks*Dzimums,data=df1)
+summary(mod)
+```
+]
+
+---
+## ANCOVA modeļa matrice 
+
+.izm75[
+```{r,comment=NA,echo=FALSE}
+model.matrix(mod)
+```
+]
+
+
+---
+## ANCOVA modeļa secinājumi
+
+* Intercept vērtība (Svars, kad Laiks ir vienāds ar 0) Mātītēm ir `r round(unname(coef(mod)[1]),2)`
+
+* Intercept vērtība Tēviņiem ir par `r round(unname(coef(mod)[3]),2)` lielāka (kopā `r round(coef(mod)[1]+coef(mod)[3],2)`)
+
+* Slīpuma koeficients (pieauguma temps) Mātītēm ir `r round(unname(coef(mod)[2]),2)` (katru mēnesi svars pieaug par `r round(unname(coef(mod)[2]),2)` vienībām)
+
+* Slīpuma koeficients Tēviņiem ir par `r round(unname(coef(mod)[4]),2)` lielāks (kopā `r round(coef(mod)[2]+coef(mod)[4],2)`)
+
+
+
+---
+## Modeļi
+
+**Kopējais:**
+
+Svars=`r round(unname(coef(mod)[1]),2)`+`r round(unname(coef(mod)[2]),2)` x Laiks+`r round(unname(coef(mod)[3]),2)` x DzimumsTevini+`r round(unname(coef(mod)[4]),2)` x Laiks:DzimumsTevini
+
+
+**Mātītes:**
+
+Svars=`r round(unname(coef(mod)[1]),2)`+`r round(unname(coef(mod)[2]),2)` x Laiks 
+
+
+**Tēviņi:**
+
+Svars=`r round(coef(mod)[1]+coef(mod)[3],2)`+`r round(coef(mod)[2]+coef(mod)[4],2)` x Laiks
+
+
+---
+class: center, inverse, middle
+# Kādi būtu jautājumi?

@@ -1,0 +1,674 @@
+---
+title: "Vispārējie lineārie modeļi"
+subtitle: "Generalized linear model (GLM)"
+author: "Didzis Elferts"
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css","my-css.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:10'
+---
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+mono_accent(
+  base_color = "#43418A",
+  text_font_size = "25px",
+  text_slide_number_font_size = "0.5em",
+  outfile = "xaringan-themer.css"
+)
+options(htmltools.dir.version = FALSE)
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.height = 4.2, fig.width = 8, dev='svg', message = FALSE)
+```
+
+
+## Lineārā regresija
+
+Lineārās regresijas vienādojums ir $Y = b_0 + b_1*X+\epsilon$.
+
+$b_0$ - regresijas taisnes brīvais loceklis (intercept)
+
+$b_1$ - regresijas taisnes virziena koeficients (slope)
+
+$\epsilon$ - gadījuma kļūda (atbilst normālajam sadalījumam, ar vidējo vērtību 0 un dispersiju $\sigma^2$)
+
+
+---
+## Viena faktora dispersijas analīze
+
+$$y_{ij}=\mu + \alpha_i + \epsilon_{ij}$$
+
+
+$y_{ij}$ - ir konkrētais novērojums i-tajā grupā
+
+$\mu$ - ir konstante, kas raksturo vispārējo vidējo vērtību
+
+$\alpha_i$ - ir konstante, kas raksturo faktora efektu (starpība starp konkrētās grupas vidējo un kopējo vidējo vērtību)
+
+$\epsilon_{ij}$ - raksturo kļūdu ap vidējo vērtību, šis lielums nāk no normālā sadalījuma ar vidējo vērtību 0 un dispersiju $\sigma^2$
+
+
+---
+## Lineārā regresija un dispersijas analīze
+
+Kas ir kopīgs abām analīzēm?
+
+
+---
+## Lineārā regresija un dispersijas analīze
+
+Gan lineārās regresijas analīzē, gan dispersijas analīzē viens no pieņēmumiem ir, ka pie katras x vērtības y vērtības veido normālo sadalījumu jeb atlikuma vērtības veido normālo sadalījumu
+
+
+---
+## Datu piemērs
+
+Katram kokam noteikts tā diametrs un noteikts vai uz konkrētā koka ir sastopama kāda aizsargājam suga vai nav.
+```{r 7l_lin_piem,echo=FALSE,fig.align='center',warning=FALSE}
+set.seed(123)
+diametrs=round(runif(25,10,50),1)
+retums=rbinom(25,1,diametrs/50)
+df<-data.frame(diametrs,retums)
+library(ggplot2)
+library(grid)
+ggplot(df,aes(diametrs,retums))+geom_point(size=3)+geom_smooth(method="lm",se=FALSE,size=2)+
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="none",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+
+
+---
+## Datu piemērs - lineārā regresija
+
+.izm90[
+```{r,comment=NA,echo=FALSE}
+mod<-lm(retums~diametrs,data=df)
+summary(mod)
+```
+]
+
+---
+## Prognozētā vērtība pie dažādiem koku diametriem:
+
+* 5 cm = `r coef(mod)[1]+coef(mod)[2]*5` (negatīvs)
+
+* 75 cm = `r coef(mod)[1]+coef(mod)[2]*75` (lielāks par 1)
+
+
+
+
+---
+## Rezultatīvā pazīme (regresents) (RP)
+
+* Nepārtraukti variējošas
+
+* Diskrētas
+
+* Dihotomi
+
+* Politomi
+
+* Kategorijas
+
+* Skaita
+
+
+
+
+---
+## Vispārīgs lineārais modelis (General linear model)
+
+Nepārtraukti variējošas RP: 
+
+* lineārā regresija
+
+* ANOVA
+
+* t-tests
+
+
+
+---
+## Vispārējie lineārie modeļi (Generalized linear models)
+
+Nepārtraukti variējošas RP $\Rightarrow$ lineārā regresija
+
+
+Dihotomas RP $\Rightarrow$ binārā loģistiskā regresija
+
+
+Politomas RP $\Rightarrow$ daudzfaktoru loģistiskā regresija
+
+
+Kategorijas RP $\Rightarrow$ kategorijas loģistiskā regresija
+
+Skaita RP $\Rightarrow$ Puasona vai negatīvā binomiālā regresija
+
+
+
+---
+## Vispārējie lineārie modeļi (Generalized linear models)
+
+GLM modeļi ļauj analizēt lineārās saistības starp regresoriem un regresenta vidējo vērtību gadījumos, kad nevar pieņemt datu normalitāti.
+
+
+
+---
+## Kādā veidā vispārināti
+
+* RP nepārtraukti vai diskrēti variējoša pazīme
+
+* Atlikuma vērtības normāli vai ne-normāli sadalītas
+
+* Konstanta vai ne-konstante variēšana (dispersija)
+
+---
+## GLM ir trīs soļi:
+
+* Atbildes mainīgā sadalījuma veids
+
+* Funkcija, kas apraksta ietekmējošo mainīgo struktūru (ietekmējošo formula)
+
+* Saistības funkcija (link function)
+
+---
+## Atbildes mainīgā sadalījuma veids
+
+Daudziem datiem nav normāli sadalītas pamatdatu vai atlikuma vērtības, piemēram:
+
+* Atlikuma vērtības, kas ir stipri ekscesīvas vai asimetriskas
+
+* Atlikuma vērtības ar precīzām robežvērtībām
+
+* Atlikuma vērtības, kas nevar būt negatīvi skaitļi
+
+
+---
+## Atbildes mainīgā sadalījuma veids
+
+GLM ļauj definēt dažādus atbildes mainīgā vērtību sadalījumus:
+
+* Puasona atlikuma vērtības, noderīgas skaita datiem
+
+* Binomiālās atlikuma vērtības, noderīgas proporciju datiem
+
+* Gamma atlikuma vērtības, noderīgas datiem, kuriem ir konstanta variācijas koeficienta vērtība
+
+* Eksponenciālās atlikuma vērtības, noderības datiem par laika līdz bojāejai (izdzīvošanas analīzes)
+
+
+---
+## Funkcija, kas apraksta ietekmējošo mainīgo struktūru (ietekmējošo formula)
+
+Tā ir formula, pēc kuras apraksta regresoru ietekmi uz atbildes mainīgo
+
+
+
+---
+## Saistības funkcija
+ 
+* Saista rezultatīvas pazīmes vidējo vērtību ar mainīgo (regresoru) lineāro kombināciju
+
+* Transformē saistību starp vienādojuma atsevišķām komponentēm tā, lai tā būtu lineāra
+
+* Dažādiem GLM modeļiem ir dažādas saistības funkcijas
+
+---
+## GLM pieņēmumi
+Papildus klasiskās lineārās regresijas pieņēmumiem, vēl jāņem vērā:
+
+* Variācijas funkcijas pareiza definēšana
+
+* Pareiza saistības funkcijas definēšana
+
+
+
+---
+## Regresori (neatkarīgie manīgie) GLM
+ 
+* Nepārtraukti variējoši mainīgie
+
+      - Piemērs, garums, svars, laiks, koncentrācija,... 
+
+* Kategorijas mainīgie
+
+      - Piemērs, dzimums, meža augšanas tips, suga,...
+
+      - Viena kategorija izvēlēta kā references līmenis, ar kuru salīdzina visas pārējās
+
+
+
+---
+## Binārā loģistiskā regresija
+
+Atbildes mainīgais (regresents):
+
+* Mainīgais ar diviem iespējamiem iznākumiem
+
+* Viens iznākums atbilst 1, otrs 0, bet var būt kodēts arī savādāk, piemēram, Jā/Nē, Yes/No
+
+* Piemēri:
+      - Vai cilvēkam ir konstatēta slimība?
+      - Vai sēkla ir uzdīgusi vai nē?
+      - Vai parauglaukumā ir sastopama retā suga?
+      - Vai cilvēks piekrīt/nepiekrīt kādam apgalvojumam?
+
+
+
+
+---
+## Loģistiskā regresija
+Atbildes mainīgais:
+$$
+Y_i \sim B(1,\pi_i)
+$$
+
+Sagaidāmā vērtība (iespējamība) un dispersija
+$$
+E(Y_i)=\pi_i \hspace{10 pt} un \hspace{10 pt} var(Y_i)=\pi_i \cdot (1-\pi_i)
+$$
+
+Lineārā saistība starp iespējamību un regresoru (saistības funkcija ir logit)
+$$
+logit(\pi_i)=\alpha+\beta \cdot X_i \hspace{10 pt} jeb \hspace{10 pt} \pi_i=\frac{e^{\alpha+\beta \cdot X_i}}{1+e^{\alpha+\beta \cdot X_i}}
+$$
+
+
+---
+## Datu piemērs - loģistiskā regresija
+
+.izm80[
+```{r,comment=NA,echo=FALSE}
+mod2<-glm(retums~diametrs,data=df,family=binomial("logit"))
+summary(mod2)
+```
+]
+
+
+---
+## Datu piemērs - loģistiskā regresija
+Secinājumi:
+
+* Diametra ietekme uz reto sugu sastopamību ir būtiska un tā ir pozitīva
+
+* Lineārais vienādojums ir `r round(coef(mod2)[1],4)`+`r round(coef(mod2)[2],4)` x Diametrs
+
+* Iespējamību aprēķina pēc vienādojuma
+
+ 
+$$p=\frac{e^{-3,6109+0,1304*Diametrs}}{1+e^{-3,6109+0.1304*Diametrs}}$$
+
+
+
+
+---
+## Datu piemērs - loģistiskā regresija
+
+```{r 7l_binom_piem,echo=FALSE,fig.align='center',warning=FALSE}
+ggplot(df,aes(diametrs,retums))+geom_point(size=3)+geom_smooth(method="glm",se=FALSE,size=2,method.args = list(family = "binomial"))+
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="none",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+
+
+
+---
+## Iespējamību attiecība
+
+Iespējamību attiecība jeb Odds ratio
+$$
+\frac{p_1/q_1}{p_2/q_2}
+$$
+kur $p_1$ un $q_1$ attiecīgi labvēlīgā notikuma un pretējā notikuma skaits pirmajā grupā
+
+kur $p_2$ un $q_2$ attiecīgi labvēlīgā notikuma un pretējā notikuma skaits otrajā grupā
+
+
+---
+## Iespējamību attiecība
+
+* Iespējamību attiecība no 0 līdz 1 nozīmē, ka otrā notikuma iespējamība ir lielāka
+
+* Iespējamību attiecība no 1 līdz bezgalībai nozīmē, ka pirmā notikuma iespējamība ir lielāka
+
+* Iespējamību attiecība 1 nozīmē, ka abu notikumu iespējamības ir vienādas
+
+
+---
+## Iespējamību attiecība
+
+
+Grupas |    | Slims | Slims 
+-------|----|-------|-------
+       |    | Jā    | Nē    
+ Smēķē | Jā | 45    | 15    
+ Smēķē | Nē | 10    | 30    
+
+Iespējamību attiecība - smēķētāji pret nesmēķētājiem:
+
+$$
+\frac{p_1/q_1}{p_2/q_2}=\frac{45/15}{10/30}=\frac{3}{0.33}=9
+$$
+
+
+
+---
+## Loģistiskā regresija - 2. piemērs
+
+.izm90[
+```{r,comment=NA,echo=FALSE}
+df3<-data.frame(slims=c(45,10),vesels=c(15,30),smeke=factor(c("Ja","Ne"),levels =c("Ne","Ja")))
+summary(glm(cbind(slims, vesels) ~ smeke, family = "binomial",data=df3))
+```
+]
+
+
+---
+## Loģistiskā regresija - 2. piemērs
+
+Attiecība starp notikumiem (Odds) nesmēķētājiem = exp(-1.0986)=0.3333
+
+
+Attiecība starp notikumiem (Odds) smēķētājiem = exp(-1.0986+2.1972)=2.999963
+
+
+Iespējamību attiecība (Odds ratio) starp smēķētājiem/nesmēķētājiem = exp(2.1972)=8.999779
+
+
+
+---
+## Puasona regresija
+
+* Atbildes mainīgais ir reāli skaita dati
+
+* Iespējamās vertības ir 0, 1, 2, 3,...
+
+* Piemēri:
+      - Sugu skaits parauglaukumā
+      
+      - Saslimušo skaits vienā mēnesī 
+
+
+---
+## Puasona regresija
+Atbildes mainīgais
+$$
+Y_i \sim P(\mu_i)
+$$
+
+Sagaidāmā (vidējo) vērtība  un dispersija
+$$
+E(Y_i)=\mu_i \hspace{10 pt} un \hspace{10 pt} var(Y_i)=\mu_i
+$$
+
+Lineārā saistība starp sagaidām vidējo vērtību un regresoru (saistības funkcija ir log)
+$$
+log(\mu_i)=\alpha+\beta \cdot X_i \hspace{10 pt} jeb \hspace{10 pt} \mu_i=e^{\alpha+\beta \cdot X_i}
+$$
+
+
+
+---
+## Puasona regresija
+
+$E(Y_i)=exp(\alpha+\beta \cdot X_i)$
+
+
+$E(Y_i)=exp(\alpha) \cdot exp(\beta \cdot X_i)$
+
+
+X vērtības pieaugums par vienu vienību nozīmē, ka sagaidāmā vērtība palielinās $exp(\beta)$ reizes.
+
+
+
+
+---
+## Puasona regresija - pieņēmumi
+
+Puasona regresijas analīzei ir sekojošie pieņēmumi:
+ 
+* Regresenta vērtību logaritms ir lineāri saistīts ar regresoru
+
+* Pie katra regresora līmeņa regresenta vērtību vidējais aritmētiskais ir vienāds ar dispersiju
+
+* Novērojumi ir neatkarīgi
+
+
+
+---
+## Puasona regresija - piemērs
+```{r,comment=NA,echo=FALSE}
+dati<-read.table(file="../Dati/nezales.txt",header=T,sep="\t")
+head(dati)
+```
+
+
+---
+## Puasona regresija - piemērs
+
+```{r 7l_puas_dati,echo=FALSE,fig.align='center',warning=FALSE}
+ggplot(dati,aes(as.factor(skaits)))+geom_bar()+labs(x="Sugu skaits",y="Parauglaukumu skaits")+
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="none",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+
+---
+## Puasona regresija
+
+.izm85[
+```{r,comment=NA,echo=FALSE}
+mod1<-glm(skaits~grupa+pH,data=dati,family=poisson("log"))
+summary(mod1)
+```
+]
+
+---
+## Puasona regresija - piemērs
+
+Lai gan pH ietekme šajā gadījumā nav būtiska, koeficients pie pH nozīmē, ka palielinoties pH par vienu vienību, sugu skaits mainās exp(0,03887) reizēm jeb 1,039.
+
+
+---
+## Puasona regresija - piemērs
+
+.izm85[
+```{r,comment=NA,echo=FALSE}
+mod1<-glm(skaits~grupa,data=dati,family=poisson("log"))
+summary(mod1)
+```
+]
+
+---
+## Puasona regresija - piemērs
+
+Secinājumi: 
+
+* Prognozētā vidējā vērtība kontroles grupai būtiski atšķiras no 0
+
+* Gan lidzeklis1, gan lidzeklis2 prognozētā vidējā vērtība ir mazāka nekā kontroles grupai
+
+
+
+---
+## Puasona regresija - piemērs
+
+Koeficientu interpretācija:
+
+* Koeficienti parāda starpību starp grupām lineārā vienādojuma gadījumā
+
+* Prognozētā intercept vērtība grupai kontrole ir exp(1,59737)=4,94
+
+* Prognozētā intercept vērtība grupai lidzeklis1 ir  exp(1,59737-1,44895)=1,16
+
+* Prognozētā intercept vērtība grupai lidzeklis2 ir exp(1,59737-2,7368)=0,32
+
+
+
+
+---
+## Puasona regresija - 2. piemērs
+
+Dati par kopējā augu biomasu parauglaukumā un augu sugu skaitu šajā parauglaukumā.
+
+```{r,comment=NA,echo=FALSE}
+set.seed(12345)
+n<-100
+beta0<-3.78
+beta1<- -0.7
+x<-round(runif(n=n,min=0,max=5),2)
+mu<-exp(beta0+beta1*x)
+y<-rpois(n=n,lambda=mu)+1
+dati2<-data.frame(Biomasa=x,Skaits=y)
+summary(dati2)
+```
+
+
+---
+## 2. piemērs - dati analizēti ar lineāro regresiju
+
+.izm90[
+```{r,comment=NA,echo=FALSE}
+mod<-lm(Skaits~Biomasa,data=dati2)
+summary(mod)
+```
+]
+
+
+---
+## 2. piemērs - dati analizēti ar puasona regresiju 
+
+.izm85[
+```{r,comment=NA,echo=FALSE}
+mod<-glm(Skaits~Biomasa,data=dati2,family="poisson")
+summary(mod)
+```
+]
+
+---
+## Lineārā un puasona modeļa salīdzinājums
+
+* Abi modeļi ir statistiski būtiski
+
+* Abi modeļi norāda uz negatīvu biomasas ietekme uz sugu skaitu
+
+* Veicot prognozēšanu ar lineārās regresijas modeli, pie lielām biomasas vērtībām iegūst negatīvu sugu skaitu
+
+* Salīdzinot grafiski skaidri parādās abu modeļu atšķirības
+
+
+---
+## Puasona regresija - 2. piemērs
+
+```{r 7l_model_sal,echo=FALSE,fig.align='center',warning=FALSE}
+ggplot(dati2,aes(Biomasa,Skaits))+geom_point()+
+  geom_smooth(method="lm",aes(color="Lineārā regresija"),se=FALSE,size=2)+
+    geom_smooth(method="glm",aes(color="Puasona regresija"),se=FALSE,size=2,method.args = list(family = "poisson"))+
+    theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="top",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+---
+## Puasona regresija
+Būtiski: Puasona regresija ir pieņēmums, ka dispersija ir vienāda ar vidējo. Ja tā nav, tad jāizmanto kāds cits modelis (quasipoisson, negative binomial)
+
+Par to var pārliecināties izdalot Residual deviance ar brīvības pakāpju skaitu - dalījumam jābūt tuvu 1.
+
+---
+## Quasipoisson
+
+Quasiposson modelis no Puasona modeļa atšķiras tikai ar to, ka pie dispersijas funkcijas nāk papildus parametrs $\phi$ ar ko tiek reizināta vidējā vērtība.
+
+$$
+Y_i \sim P(\mu_i)
+$$
+$$
+E(Y_i)=\mu_i \hspace{10 pt} un \hspace{10 pt} var(Y_i)=\phi \cdot \mu_i
+$$
+$$
+log(\mu_i)=\alpha+\beta \cdot X_i \hspace{10 pt} jeb \hspace{10 pt} \mu_i=e^{\alpha+\beta \cdot X_i}
+$$
+
+---
+## Negatīvais binomiālais modelis
+
+Negatīvajā binomiālajā modelī dispersija ir atkarīga gan no vidējā, gan no parametra $\kappa$
+
+
+$$
+Y_i \sim NB(\mu_i,\kappa)
+$$
+$$
+E(Y_i)=\mu_i \hspace{10 pt} un \hspace{10 pt} var(Y_i)=\mu_i + \frac{\mu_i^2}{\kappa}
+$$
+$$
+log(\mu_i)=\alpha+\beta \cdot X_i \hspace{10 pt} jeb \hspace{10 pt} \mu_i=e^{\alpha+\beta \cdot X_i}
+$$
+
+---
+class: inverse, middle, center
+# Kopsavilkums
+
+---
+## Kopsavilkums
+
+Statistisko testu izvēle:
+
+* Kāda veida atbildes mainīgais (binārs, kategorijas, nepārtraukti variējošs)?
+
+* Kāda veida ietekmējošais mainīgais (binārs, kategorijas, nepātraukti variējošs, vairāku veidu kombinācija)?
+
+* Kādi pieņēmumi ir izraudzītajam testam, vai mani dati tam atbilst?
+
+
+---
+## Kopsavilkums
+
+Testu izvēle (aptuvena):
+
+Mainīgie               | Atbildes mainīgais     | Atbildes mainīgais | Atbildes mainīgais
+-----------------------|------------------------|--------------------|-----------------------
+Ietekmējošais mainīgais| Binārs                 | Kategorijas        | Nepātraukti variējošs 
+Binārs                 | 2x2 tabulas $\chi^2$ Loģistiskā regresija | $\chi^2$ tests     | t-tests Vilkoksona tests              
+Kategorijas            | Loģistiskā regresija   | $\chi^2$ tests     | ANOVA                 
+Nepārtraukti variējošs | Loģistiskā regresija   | No situācijas      | Regresija             
+Kombinācija            | Loģistiskā regresija   | No situācijas      | ANCOVA                
+
+---
+class: center, inverse, middle
+# Kādi būtu jautājumi?

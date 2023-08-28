@@ -1,0 +1,13 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.html
+*.pdf
+*_files
+libs/
+*.Rproj
+.DS_Store
+.Rdata
+.httr-oauth
+.quarto

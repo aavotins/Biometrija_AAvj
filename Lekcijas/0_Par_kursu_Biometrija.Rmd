@@ -1,0 +1,179 @@
+---
+title: "Biometrija"
+author: "Andris Avotiņš & Didzis Elferts"
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css","my-css.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:10'
+---
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+mono_accent(
+  base_color = "#43418A",
+  text_font_size = "25px",
+  text_slide_number_font_size = "0.5em",
+  outfile = "xaringan-themer.css"
+)
+options(htmltools.dir.version = FALSE)
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.height = 4.5, fig.width = 8, dev='svg', echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+## Biometrija
+
+* Kursa apjoms: 3 kredītpunkti
+
+* Kursu veido:
+      - Teorētiskās lekcijas
+      
+      - Praktiskās nodarbības un uzdevumi
+      
+      - Kontroldarbi
+      
+      - Eksāmens
+
+---
+## Kursa formāts
+
+* Kontaktlekcijas
+
+* e-kurss
+
+* Visi uzdevumi un kontroldarbi iesniedzami e-studiju vidē
+
+---
+## Vērtējuma iegūšana
+
+* Laicīgi nokārtoti visi praktiskie darbi (ja nekārto, tad
+novērtējums ir 0 par attiecīgo darbu)
+
+* Laicīgi nokārtoti visi kontroldarbi (ja nekārto, tad novērtējums
+ir 0 par attiecīgo kontroldarbu)
+
+* Eksāmens
+
+* Rezultāts veidojas kā 15% praktisko darbu vidējā atzīme, 60%
+kontroldarbu vidējā atzīme un 25% eksāmena atzīme
+
+* Lai sekmīgu beigtu kursu, gala atzīmei ir jābūt sekmīgai (drīkst būt nesekmīga atzīme kādā no atsevišķiem pārbaudījumiem)
+
+---
+## Pārbaudījumi
+
+* **Praktiskie darbi** – pēc katras praktiskās nodarbības jāizpilda daži mazi uzdevumi un jāiesniedz līdz
+noteiktajam laikam
+
+* **Kontroldarbi** – par katrām 2 tēmām, sastāv no teorijas testa
+(veido 50% no atzīmes) un praktiskajiem uzdevumiem (veido
+50% no atzīmes)
+
+* **Eksāmens** – teorija un praktiskie uzdevumi par jebkuru no
+tēmām, kas ir bijusi kursa laikā
+
+---
+## Nodarbību laiki
+
+* Lekcijas
+  1. Trešdiena, 8.30 - 10.00 (kopā 8 lekcijas)
+  
+* Praktiskās nodarbības/darbi
+  1. Pirmdiena, 14.30 - 16.00
+  
+  2. Otrdiena, 12.30 - 14.00
+  
+  3. Otrdiena, 14.30 - 16.00
+  
+  4. Trešdiena, 14.30 - 16.00
+
+.defin[
+Citas grupas laikā var ierasties tikai iepriekšs saskaņojot ar pasniedzēju!
+]
+
+---
+## Lekcijas
+
+* 07.09.2022. - Biometrija. Dati.
+
+* 21.09.2022. - Eksperimentu dizains. Teorētiskie sadalījumi
+
+* 05.10.2022. - Statistiskie rādītāji un Ticamības intervāli
+
+* 19.10.2022. - Paraugkopu salīdzināšana
+
+* 26.10.2022. - Korelācijas analīze un Regresijas analīze
+
+* 16.11.2022. - Dispersijas un Kovariācijas analīze
+
+* 07.12.2022. - Vispārējie lineārie modeļi
+
+* 14.12.2022. - Rezultātu prezentēšana. Labs attēls
+
+---
+## Konsultācijas - Didzis Elferts
+
+* Ceturtdiena, 14:30-16:00 vai iepriekš vienojoties citā laikā
+
+* Telpa attālināti
+
+* e-pasts: didzis.elferts@lu.lv
+
+* e-studiju vide
+
+* Pieteikšanās iespēja: https://calendly.com/delferts/ 
+
+
+---
+## Konsultācijas - Andris Avotiņš
+
+* Iepriekš piesakoties
+
+* Telpa 205.
+
+* e-pasts: andris.avotins@lu.lv
+
+* e-studiju vide
+
+
+---
+## Kursa materiāli
+
+* e-studiju vidē:
+
+      * Prezentācijas
+
+      * Datu faili
+
+      * Kodu faili
+
+---
+## Literatūra
+
+.izm75[
+* Liepa I., 1974. Biometrija.
+
+* Sokal R.R., Rohlf, F.J. 1995. Biometry: the principles and practice of statistics in biological research. New Yourk, W.H. Freeman and Company, 887 pp 
+
+* Quinn G.P., Keough M.J., 2002. Experimental design and data analysis for biologists. Cambridge, UK, Cambridge University Press 537 pp.
+
+* Verzani, J., 2005. Using R for introductory statistics. Boca Raton : Chapman & Hall/CRC 414 pp.
+
+* Zuur, A.F., Ieno, E.N., Smith, G.M., 2007. Analysing ecological data. Springer, 672 p.
+
+* Ieno, E.N., Zuur, A.F., 2015. A beginner’s guide to data exploration and visualization with R. Highland Statistics, 164 p
+
+* Elferts, D., 2016. Praktiskā biometrija. Pieejama
+http://delferts.github.io/gramatas/praktiska_biometrija/index.html
+
+* Elferts, D., 2016. ggplot2 grafiskā sistēma. Pieejama http://delferts.github.io/gramatas/ggplot2_gramata/index.html
+]
+
+---
+class: center, inverse, middle
+# Kādi būtu jautājumi?

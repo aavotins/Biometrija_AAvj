@@ -1,0 +1,22 @@
+.izm10 {font-size: 10%}
+
+.izm50 {font-size: 50%}
+
+.izm75 {font-size:75%}
+
+.izm80 {font-size:80%}
+
+.izm85 {font-size:85%}
+
+.izm90 {font-size:90%}
+
+.izm75 .remark-code {
+  font-size: 0.675em;
+}
+
+.izm80 .remark-code, .izm80 .remark-code * {
+  font-size: 80%}
+.izm90 .remark-code, .izm90 .remark-code * {
+  font-size: 90%}
+.izm85 .remark-code, .izm85 .remark-code * {
+  font-size: 85%}

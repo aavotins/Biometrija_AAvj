@@ -1,0 +1,1007 @@
+---
+title: "Paraugkopu salīdzināšana"
+author: "Didzis Elferts"
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css","my-css.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:10'
+---
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+mono_accent(
+  base_color = "#43418A",
+  text_font_size = "25px",
+  text_slide_number_font_size = "0.5em",
+  outfile = "xaringan-themer.css"
+)
+options(htmltools.dir.version = FALSE)
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.height = 4.5, fig.width = 8, dev='svg', message = FALSE, fig.align = "center")
+```
+
+
+
+## Risināmās problēmas
+
+* Vai zēni ir garāki par meitenēm?
+
+* Vai labā roka ir spēcīgāka par kreiso roku?
+
+* Vai mikroorganismu skaits atšķiras dažādos augsnes tipos?
+
+* Vai D pusē augošie augi ir garāki nekā Z pusē augošie augi?
+
+
+---
+## Atbilstošo testu izvēlēšanās
+
+Lai izvēlētos atbilstošo testu datu analīzei, jāatbild uz sekojošiem jautājumiem:
+
+* Kāda veida dati jāanalizē - kvantitatīvi vai kvalitatīvi?
+
+* Vai dati ir no populācijas, kuras dati atbilst normālajam sadalījumam?
+
+* Vai novērojumi ir savstarpēji atkarīgi vai neatkarīgi?
+
+
+---
+## Parametriskās un neparametriskās metodes
+
+Pirms uzsākt statistiskās analīzes, ir jānoskaidro, kādas metodes izmantot - **parametriskās** vai **neparametriskās**.
+
+Viens no **parametrisko** metožu pieņēmumiem ir, ka populācijas dati atbilst normālajam sadalījumam.
+
+
+---
+## Parametriskās un neparametriskās metodes
+
+* Parametriskās
+
+      * t-tests
+
+      * F-tests
+
+* Neparametriskās
+
+      * Vilkoksona tests
+
+      * $\chi^2$ tests (Kvalitatīviem datiem)
+
+
+---
+## T-tests vienai paraugkopai
+
+* 1.piemērs (iedzimtība, sirds slimības) - ir pieejami dati par holesterīna līmeni asinīs bērniem, kuru tēviem ir sirds slimības. Vai šo bērnu holesterīna līmenis
+ir tāds pats kā vidēji valstī starp citiem bērniem?
+
+* 2.piemērs (morfometrija) - vai kādas putnu pasugas spārna garums atšķiras no iepriekš zināma šīs sugas vidējā spārna garuma?
+
+
+---
+## T-tests vienai paraugkopai
+
+.defin[
+Vienas paraugkopas t-testa mērķis ir noskaidrot vai analizējamo datu (kas populācijas gadījumā veido normālo sadalījumu) vidējā vērtība būtiski atšķiras no kādas iepriekš zināmas vērtības.
+]
+
+Pārbaudīt vai paraugkopa varētu piederēt pie populācijas (ģenerālkopas) ar zināmu vidējo aritmētisko vērtību. 
+
+
+---
+## T-tests vienai paraugkopai
+Pirms testa veikšanas izvirzīti šādi pieņēmumi:
+
+* Ir iegūts nejaušs paraugs no zināmas populācijas
+
+* Dati ir kvantitatīvi
+
+* Populācijas dati atbilst normālajam sadalījumam
+
+---
+## T-tests vienai paraugkopai
+Veicot vienas paraugkopas t-testu, aprēķina rādītāju t:
+$$
+t=\frac{\overline{x}-\mu_0}{s/\sqrt{n}}
+$$
+,kur
+
+$\overline{x}$ - paraugkopas vidējais aritmētiskais,
+
+$\mu_0$ - ģenerālkopas vidējais aritmētiskais (vērtība, ar kuru salīdzina),
+
+s - paraugkopas standartnovirze,
+
+n - paraugkopas apjoms (novērojumu skaits)
+
+
+---
+## T-tests vienai paraugkopai
+
+Vienas paraugkopas t-testā izvirza nulles hipotēzi, ka paraugkopas vidējais aritmētiskais ir vienāds ar pārbaudāmo vērtību.
+
+Nulles hipotēze: $H_0: \overline{x}=\mu$
+
+Alternatīvā hipotēze $H_1: \overline{x} \neq \mu$
+
+
+---
+## T-tests vienai paraugkopai
+
+T-testa būtiskumu novērtē salīdzinot iegūto t vērtību ar teorētisko t vērtību, atkarībā no testa veida (vienpusējs vai divpusējs tests) un alternatīvās hipotēzes.
+
+Veicot salīdzinājumu statistiskajās programmās, rezultātu raksturo arī p-vērtība. 
+
+**Vienpusējs tests (one-tailed test) - $\overline{x} < \mu$**
+
+Ja $t < t_{n-1,\alpha}$, nulles hipotēze jānoraida.
+
+
+Ja $t \ge t_{n-1,\alpha}$, nulles hipotēze jāakceptē.
+
+
+**Vienpusējs tests (one-tailed test) - $\overline{x} > \mu$**
+
+Ja $t>t_{n-1,1-\alpha}$, nulles hipotēze jānoraida.
+
+Ja $t \le t_{n-1,1-\alpha}$, nulles hipotēze jāakceptē.
+
+
+---
+## T-tests vienai paraugkopai
+
+**Divpusējs tests (two-tailed test)**
+
+Ja $|t|>t_{n-1,1-\alpha/2}$, nulles hipotēze jānoraida.
+
+Ja $t \le t_{n-1,1-\alpha/2}$, nulles hipotēze jāakceptē.
+
+
+---
+## Vienas paraugkopas t-tests - 1.piemērs
+
+Pieejami dati par holesterīna līmeni asinīs bērniem, kuru tēviem ir sirds slimības. Vai šo bērnu holesterīna līmenis
+ir tāds pats kā vidēji valstī starp citiem bērniem (vidēji 175 mg/dl)?
+
+**Nulles hipotēze:** bērnu grupām holesterīna līmenis neatšķiras (tas ir 175 mg/dl, $H_0: \overline{x}=\mu$)
+
+**Alternatīvā hipotēze:** slimo tēvu bērniem ir paaugstināts holesterīna līmenis (tas ir > 175 mg/dl, $H_1: \overline{x}>\mu$) (Vienpusējs tests)
+
+
+---
+## Vienas paraugkopas t-tests - 1.piemērs
+
+Ja dots, ka pētījumu grupā (n=15) bērnu vidējais holesterīna līmenis ir 185 mg/dl, standartnovirze ir 18 mg/dl:
+
+$$
+t=\frac{\overline{x}-\mu_0}{s/\sqrt{n}}=\frac{185-175}{18/\sqrt{15}}=\frac{10}{4,648}=2,15
+$$
+
+Kritiskā (teorētiskā) t-vērtība: $t_{n-1,1-\alpha}=t_{15-1,1-0,05}$=1,76
+
+Kāds ir SECINĀJUMS?
+
+
+---
+## Vienas paraugkopas t-tests - 1.piemērs
+
+**Secinājums:** Tā kā empīriskā t vērtība ir lielāka par teorētisko t vērtību (2,15 > 1,76), nulles hipotēze ir noraidīta.
+Slimo vecāku bērniem holesterīna līmenis ir statistiski būtiski augstāks (pie $\alpha = 0,05$) kā vidēji citu bērnu holesterīna līmenis (p = 0,024).
+
+
+---
+## T-vērtību sadalījums
+```{r,echo=FALSE,warning=FALSE}
+x<-seq(-5,5,0.1)
+y<-dt(x,14)
+df<-data.frame(x,y)
+library(ggplot2)
+library(grid)
+ggplot(df,aes(x,y))+geom_line(size=1.3)+xlab("T vērtība")+ylab("")+
+  geom_ribbon(data=subset(df,x>1.76),aes(ymax=y,fill="Teorētiskā vērtība"),ymin=0,colour=NA)+
+  geom_ribbon(data=subset(df,x>2.15),aes(ymax=y,fill="Empīriskā vērtība"),ymin=0,colour=NA)+
+  scale_fill_manual(values=c("blue","red"))+
+    theme_bw()+
+    theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="top",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+---
+## Vienas paraugkopas t-tests - 2.piemērs
+
+Ir zināms, ka vidējais lauku zvirbuļu spārnu garums ir 69,5 mm. Pētījuma mērķis noskaidrot, vai Latvijā noķerto zvirbuļu spārnu garums atšķiras no šīs vidējās vērtības.
+
+**Nulles hipotēze:** zvirbuļu spārnu garums neatšķiras ( $H_0: \overline{x}=\mu$)
+
+**Alternatīvā hipotēze:** zvirbuļu spārnu garums ir atšķirīgs ( $H_1: \overline{x} \neq \mu$) (Divpusējs tests)
+
+
+---
+## Vienas paraugkopas t-tests - 2.piemērs
+
+Dati: 50 zvirbuļu spārnu mērījumi, vidējā vērtība 71,4 mm, standartnovirze 7,4 mm.
+
+$$
+t=\frac{\overline{x}-\mu_0}{s/\sqrt{n}}=\frac{71,4-69,5}{7,4/\sqrt{50}}=\frac{1,9}{1,047}=1,82
+$$
+
+Kritiskā (teorētiskā) t-vērtība (divpusējs tests): $t_{50-1,1-0,05/2}$=2,01
+
+
+Kāds ir SECINĀJUMS?
+
+
+---
+## Vienas paraugkopas t-tests - 2.piemērs
+
+**Secinājums:** Tā kā empīriskā t vērtība ir mazāka par teorētisko t vērtību (1,82 < 2,01), nulles hipotēze netiek noraidīta.
+Latvijā noķerto lauku zvirbuļu spārnu garums būtiski neatšķiras no vidējā spārnu garumu citur pasaulē (p = 0,076).
+
+
+---
+## T-vērtību sadalījuma
+
+```{r 4l_tpiemdivi,echo=FALSE,fig.align='center',warning=FALSE}
+x<-seq(-5,5,0.1)
+y<-dt(x,49)
+df<-data.frame(x,y)
+
+ggplot(df,aes(x,y))+geom_line(size=1.3)+xlab("T vērtība")+ylab("")+
+  geom_ribbon(data=subset(df,x>1.82),aes(ymax=y,fill="Empīriskā vērtība"),ymin=0,colour=NA)+
+  geom_ribbon(data=subset(df,x>2.01),aes(ymax=y,fill="Teorētiskā vērtība"),ymin=0,colour=NA)+
+  geom_ribbon(data=subset(df,x< -2.01),aes(ymax=y,fill="Teorētiskā vērtība"),ymin=0,colour=NA)+
+    scale_fill_manual(values=c("red","blue"))+
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="top",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+---
+## Vienas paraugkopas t-tests - 2.piemērs
+
+Vidējā aritmētiskā ticamības intervāls:
+
+$$\overline{x}-t_{n-1,1-\alpha/2} \cdot s_{\overline{x}} \hspace{10pt} - \hspace{10pt} \overline{x}+t_{n-1,1-\alpha/2} \cdot s_{\overline{x}}$$
+
+$$
+71,4-2,01 \cdot 7,4/\sqrt{50} \hspace{10pt} - \hspace{10pt} 71,4 + 2,01 \cdot 7,4/\sqrt{50} 
+$$
+
+$$
+69,3 \hspace{10pt} - \hspace{10pt} 73,5
+$$
+
+**Secinājums:** 95% vidējā aritmētiskā ticamības intervāls satur pārbaudāmo vērtību 69,5, kas nozīmē, ka paraugkopas dati var piederēt šai ģenerālkopai/populācijai.
+
+
+---
+## Vidējo aritmētisko salīdzināšana ar t-testu
+
+Salīdzināt divu neatkarīgu paraugkopu vidējos aritmētiskos.
+
+Klasiskais T-tests tiek veikts izmantojot sekojošos pieņēmumus:
+
+* dati populācijā atbilst normālajam sadalījumam
+
+* paraugkopu dispersijas ir homogēnas
+
+* paraugkopu novērojumi ir neatkarīgi
+
+---
+## Vidējo aritmētisko salīdzināšana ar t-testu (Homogēnas dispersijas)
+
+.izm80[
+$$
+t=\frac{\overline{x_1}-\overline{x_2}}{s \cdot \sqrt{\frac{1}{n_1}+\frac{1}{n_2}}}
+$$
+$$
+s=\sqrt{\frac{(n_1-1)s^2_1+(n_2-1)s^2_2}{(n_1+n_2-2)}}
+$$
+,kur
+
+$\overline{x_1}$, $\overline{x_2}$ - pirmās un otrās paraugkopas vidējie aritmētiskie
+
+$n_1$, $n_2$ - pirmās un otrās paraugkopas apjomi (novērojumu skaits)
+
+s - vidējo aritmētisko starpības standartkļūda
+
+$s^2_1$, $s^2_2$ - pirmās un otrās paraugkopas dispersijas
+]
+
+
+---
+## Vidējo aritmētisko salīdzināšana ar t-testu (Homogēnas dispersijas)
+
+Vidējo aritmētisko salīdzināšanā ar t-testu, nulles hipotēze nosaka, ka vidējie aritmētiskie ir vienādi.
+
+Nulles hipotēze: $H_0: \overline{x_1}=\overline{x_2}$
+
+
+Ja $t>t_{n_1+n_2-2,1-\alpha/2}$ vai $t< -t_{n_1+n_2-2,1-\alpha/2}$, nulles hipotēze ir noraidīta.
+
+Ja $-t_{n_1+n_2-2,1-\alpha/2}\le t \le t_{n_1+n_2-2,1-\alpha/2}$, nulles hipotēze ir jāakceptē.
+
+
+
+---
+## Vidējo aritmētisko starpības ticamības intervāls
+
+Apakšējā robeža:
+
+$$\overline{x_1}-\overline{x_2}-t_{n_1+n_2-2,1-\alpha/2} \cdot s\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}$$
+Augšējā robeža:
+
+$$\overline{x_1}-\overline{x_2}+t_{n_1+n_2-2,1-\alpha/2} \cdot s\sqrt{\frac{1}{n_1}+\frac{1}{n_2}}$$
+
+
+
+---
+## Vidējo aritmētisko salīdzināšana ar t-testu (Atšķirīgas dispersijas)
+
+Ja pirms vidējo aritmētisko salīdzināšanas konstatēts, ka dispersijas ir būtiski atšķirīgas, tad mainās veids kā aprēķina brīvības pakāpju skaitu teorētiskajai t vērtībai (Velča (Welch) pielāgojums).
+Pārējo vērtību aprēķināšanas metodes nemainās.
+$$
+t=\frac{\overline{x_1}-\overline{x_2}}{\sqrt{\frac{s^2_1}{n_1}+\frac{s^2_2}{n_2}}}
+$$
+
+
+$$
+d'=\frac{(s^2_1/n_1 + s^2_2/n_2)^2}{(s^2_1/n_1)^2/(n_1-1)+(s^2_2/n_2)^2/(n_2-1)}
+$$
+
+---
+## Vidējo aritmētisko salīdzināšana ar t-testu (Atšķirīgas dispersijas)
+
+Nulles hipotēze: $H_0: \overline{x_1}=\overline{x_2}$
+
+
+Ja $t>t_{d',1-\alpha/2}$ vai $t< -t_{d'1-\alpha/2}$, nulles hipotēze ir noraidīta.
+
+
+Ja $-t_{d',1-\alpha/2}\le t \le t_{d',1-\alpha/2}$, nulles hipotēze ir jāakceptē.
+
+
+---
+## Dispersiju salīdzināšana - F tests
+
+Dispersiju salīdzināšanu divām paraugkopām veic ar F testu.
+
+
+F tests ir jutīgs pret novirzēm no normālā sadalījuma!
+
+
+Ja starp divām paraugkopām dispersijas atšķiras, bet vidējie neatšķiras, šo faktu ir vērts ņemt vērā.
+
+
+$$
+F=\frac{s^2_1}{s^2_2}
+$$
+kur $s^2_1$ un $s^2_2$ attiecīgi pirmās un otrās paraugkopas dispersijas.
+
+
+---
+## Dispersiju salīdzināšana - F tests
+
+Salīdzinot divu paraugkopu dispersijas, nulles hipotēze nosaka, ka dispersijas ir vienādas (homogēnas).
+
+Nulles hipotēze: $H_0:s^2_1 = s^2_2$
+
+Ja $F>F_{n_1-1,n_2-1,1-\alpha/2}$ vai $F<F_{n_1-1,n_2-1,\alpha/2}$, nulles hipotēze ir noraidīta.
+
+
+Ja $F_{n_1-1,n_2-1,\alpha/2} \le F \le F_{n_1-1,n_2-1,1-\alpha/2}$, nulles hipotēze ir jāakceptē.
+
+
+---
+## Vidējo aritmētisko salīdzināšana - 1. piemērs
+
+Veikts pētījums par sistolisko asinsspiedienu vīriešiem atkarībā no tā, kādu darbu tie veic - biroja darbs vai ārpus biroja darbs.
+
+Biroja darbinieku raksturojums - vidējā vērtība 135,3 mm Hg, standartnovirze 14,6 mm Hg, novērojumu skaits 30.
+
+Ārpus biroja darbinieku raksturojums - vidējā vērtība 124,4 mm Hg, standartnovirze 17,5 mm Hg, novērojumu skaits 37.
+
+Kāds ir pārbaudāmais jautājums?
+
+
+---
+## Vidējo aritmētisko salīdzināšana - 1. piemērs
+
+Dispersiju salīdzināšana:
+$$
+F=\frac{s^2_1}{s^2_2}=\frac{14,6^2}{17,5^2}=0,69
+$$
+
+Kritiskā $F_{30-1,37-1,1 - 0,05/2}$ vērtība ir 0,49.
+
+Kritiskā $F_{30-1,37-1,0,05/2}$ vērtība ir 2,00.
+
+Kāds ir SECINĀJUMS?
+
+
+---
+## Vidējo aritmētisko salīdzināšana - 1. piemērs
+
+Dispersiju salīdzināšana:
+
+**Secinājums:** starp paraugkopu dispersijām nav statistiski būtiskas atšķirības, jo iegūtā F vērtība atrodas starp kritiskajām F vērtībām (p-vērtība 0,154).
+
+
+
+---
+## Vidējo aritmētisko salīdzināšana - 1. piemērs - F vērtību sadalījums
+
+```{r 4l_fsad,echo=FALSE,fig.align='center',warning=FALSE}
+x<-seq(0,3,0.01)
+y<-df(x,29,36)
+df<-data.frame(x,y)
+ggplot(df,aes(x,y))+geom_line(size=1.3)+xlab("F vertiba")+ylab("")+
+  geom_ribbon(data=subset(df,x<0.69),aes(ymax=y,fill="Empīriskā vērtība"),ymin=0,colour=NA)+
+  geom_ribbon(data=subset(df,x<0.49),aes(ymax=y,fill="Teorētiskā vērtība"),ymin=0,colour=NA)+
+  geom_ribbon(data=subset(df,x>1.995),aes(ymax=y,fill="Teorētiskā vērtība"),ymin=0,colour=NA)+
+    scale_fill_manual(values=c("red","blue"))+
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="top",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+---
+## Vidējo aritmētisko salīdzināšana - 1. piemērs
+
+Vidējo aritmētisko salīdzināšana:
+
+$$s=\sqrt{\frac{(30-1) * 14,6^2+(37-1)*17,5^2}{(30+37-2)}}=3,997$$
+
+$$
+t=\frac{135,3-124,4}{3,997 \cdot \sqrt{\frac{1}{30}+\frac{1}{37}}}=2,727
+$$
+
+Kritiskā $t_{30+37-2,1-0,05/2}$ vērtība ir 1,997.
+
+Kāds ir SECINĀJUMS?
+
+
+---
+## Vidējo aritmētisko salīdzināšana - 1. piemērs
+
+**Secinājums:** tā kā iegūtā t vērtība ir lielāka par kritisko t vērtību, nulles hipotēze ir noraidīta un var secināt, ka starp birojā un ārpus biroja strādājošo darbinieku sistolisko asinsspiedienu pastāv statistiski būtiska atšķirība (p vērtība 0,0082)
+
+
+---
+## Vidējo aritmētisko salīdzināšana - 1. piemērs - t vērtību sadalījums
+
+```{r 4l_tsali,echo=FALSE,fig.align='center',warning=FALSE}
+x<-seq(-5,5,0.1)
+y<-dt(x,65)
+df<-data.frame(x,y)
+
+ggplot(df,aes(x,y))+geom_line(size=1.3)+xlab("T vertiba")+ylab("")+
+  geom_ribbon(data=subset(df,x>1.997),aes(ymax=y,fill="Teorētiskā vērtība"),ymin=0,,colour=NA)+
+  geom_ribbon(data=subset(df,x>2.727),aes(ymax=y,fill="Empīriskā vērtība"),ymin=0,,colour=NA)+
+  geom_ribbon(data=subset(df,x< -1.997),aes(ymax=y,fill="Teorētiskā vērtība"),ymin=0,colour=NA)+
+    scale_fill_manual(values=c("red","blue"))+
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="top",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+
+---
+## Vidējo aritmētisko salīdzināšana - 1. piemērs 
+
+Vidējo aritmētisko starpības ticamības intervāls:
+
+Apakšējā robeža:
+$$
+135,3-124,4-1,997 \cdot 3,997 \sqrt{\frac{1}{30}+\frac{1}{37}}=2,917
+$$
+Augšējā robeža:
+$$
+135,3-124,4+1,997 \cdot 3,997 \sqrt{\frac{1}{30}+\frac{1}{37}}=18,883
+$$
+
+**Secinājums:** vidējo aritmētisko starpība ir 10,9 mm Hg un tās 95% ticamības intervāls ir no 2,917 līdz 18,883 mm Hg
+
+
+---
+## Saistītu paraugkopu vidējo aritmētisko salīdzināšana
+
+Atkarīgu paraugkopu t-testa mērķis ir salīdzināt divu paraugkopu vidējos aritmētiskos, ņemot vērā, ka novērojumi ir savstarpēji atkarīgi vai saistīti.
+
+
+---
+## Saistītu/atkarīgu datu piemēri
+
+* Tauku kroku platumu mērījumi labajā un kreisajā pusē tiem pašiem cilvēkiem
+
+* To pašu cilvēku sirdsdarbības novērtējums pirms un pēc slodzes
+
+* Dvīņu testa rezultātu salīdzinājums
+
+* Tēvu un dēlu holesterīna līmeņu salīdzinājums
+
+---
+## Saistītu paraugkopu vidējo aritmētisko salīdzināšana 
+
+.izm85[
+Aprēķina starpību starp katra pāra vērtībām:
+
+$$d_t=x_{t1}-x_{t2}$$
+
+Aprēķina vidējo pāru starpības vērtību:
+$$
+\overline{d}=(d_1+d_2+\cdots+d_n)/n
+$$
+
+Aprēķina t vērtību un pāru starpības reprezentācijas rādītāju ( $s_d$):
+
+$$t=\frac{\overline{d}}{s_d/\sqrt{n}}$$
+
+$$s_d=\sqrt{\frac{\sum\limits_{i=1}^{n}d^2_i-(\sum\limits_{i=1}^{n}d_i)^2/n}{(n-1)}}$$
+]
+---
+## Saistītu paraugkopu vidējo aritmētisko salīdzināšana
+
+Nulles hipotēze apgalvo, ka starp saistību grupu vidējiem aritmētiskiem nav būtiskas atšķirības.
+
+Ja $t>t_{n-1,1-\alpha/2}$ vai $t< -t_{n-1,1-\alpha/2}$, nulles hipotēze ir noraidīta.
+
+Ja $-t_{n-1,1-\alpha/2}\le t \le t_{n-1,1-\alpha/2}$, nulles hipotēze ir jāakceptē.
+
+---
+## Atkarīgu paraugkopu t-tests - Piemērs
+
+```{r echo=FALSE,comment=NA}
+rokas<-data.frame(lab=c(38.8,58,50.6,31.4,68.7,65.2,31.8,64.9,33.6,48.6),
+                  kre=c(34.8,48.7,51.4,34.5,56.4,57.5,37.8,51,39,39))
+rokas$d<-with(rokas,lab-kre)
+rokas$d2<-(rokas$d)^2
+rokas<-rbind(rokas,colSums(rokas))
+colnames(rokas)<-c("Labā","Kreisā","d","d^2")
+rownames(rokas)<-c(1:10,"Summa")
+rokas
+```
+
+
+---
+## Atkarīgu paraugkopu t-tests - Piemērs
+
+$$s_d=\sqrt{\frac{\sum\limits_{i=1}^{n}d^2_i-(\sum\limits_{i=1}^{n}d_i)^2/n}{(n-1)}}=\sqrt{\frac{653,85-51,5^2/10}{(10-1)}}=6,57$$
+
+$$
+t=\frac{\overline{d}}{s_d/\sqrt{n}}=\frac{5,15}{6,57/\sqrt{10}}=2,48
+$$
+
+Kritiskā t-vērtība: $t_{10-1,1-0.05/2}=2,26$
+
+Kāds ir SECINĀJUMS?
+
+
+---
+## Atkarīgu paraugkopu t-tests - Piemērs
+
+**Secinājums:** tā kā iegūtā t vērtība ir lielāka par teorētisko t vērtību (2,48>2,26), nulles hipotēze pie būtiskuma līmeņa 0,05 ir noraidīta. Starp roku spēku
+pastāv statistiski būtiska atšķirība.
+
+
+
+---
+## Atkarīgu paraugkopu t-tests - Piemērs
+
+Analizējos šos pašus datus kā neatkarīgus novērojumus (**NEPAREIZI!!!**).
+
+
+Labās un kreisās rokas: vidējie aritmētiskie 49,16 un 44,01, standartnovirzes 14,66 un 10,26.
+
+Empīriskā t vērtība: 0,91
+
+Teorētiskā t vērtība: 2,10
+
+Kāds ir SECINĀJUMS?
+
+
+---
+## Atkarīgu paraugkopu t-tests - Piemērs
+
+Atkarīgās paraugkopas analizētas kā neatkarīgas:
+
+**Secinājums:** tā kā iegūtā t vērtība ir mazāka par teorētisko t vērtību (0,91 < 2,10), tad var secināt, ka starp roku spēku atšķirība nav būtiska.
+
+**NEPAREIZA** metodes izvēle rada **NEPAREIZU** secinājumu!
+
+
+---
+## Divu neatkarīgu paraugkopu salīdzināšana ar neparametriskām metodēm
+
+Vilkoksona tests neatkarīgām paraugkopām (Vilkoksona rangu summu tests - Wilcoxon Rank-Sum test) vai Mann-Whitney tests ir viens no biežāk lietotajiem testiem neatkarīgām pazīmēm.
+
+Neparametriskās metodes pamatojas uz vērtību ranžēšanu (to kārtas skaitļiem)
+
+
+---
+## Divu neatkarīgu paraugkopu salīdzināšana ar neparametriskām metodēm
+
+Aprēķinu gaita:
+
+* Apvienu visus datus kopā
+
+* Sakārto vērtības augošā secībā
+
+* Katrai vērtībai piešķir kārtas skaitli
+
+* Ja ir vairākas vienādas vērtības, tad tām aprēķina vidējo kārtas skaitli
+
+* Izvēlas vienas paraugkopas datus kā referenci
+
+
+---
+## Divu neatkarīgu paraugkopu salīdzināšana ar neparametriskām metodēm
+
+Ja $R_1 \neq n_1 (n_1+n_2 +1)/2$ un nav vienādu rangu:
+
+$$T=\frac{(R_1 - \frac{n_1 (n_1+n_2 +1)}{2})-\frac{1}{2}}{\sqrt{(\frac{n_1 n_2}{12})(n_1 + n_2 +1)}}$$
+,kur
+
+$R_1$ - pirmās (references) paraugkopas rangu summa
+
+$n_1$ un $n_2$ - pirmās un otrās paraugkopas apjoms
+
+---
+## Divu neatkarīgu paraugkopu salīdzināšana ar neparametriskām metodēm
+
+.izm80[
+Ja $R_1 \neq n_1 (n_1+n_2 +1)/2$ un ir vienādi rangi:
+
+$$T=\frac{(R_1 - \frac{n_1 (n_1+n_2 +1)}{2})-\frac{1}{2}}{\sqrt{(\frac{n_1 n_2}{12})(n_1 + n_2 + 1 - \frac{\sum\limits_{i=1}^{g}t_i (t^2_i -1)}{(n_1+n_2)(n_1 + n_2 +1)})}}$$
+,kur
+
+$R_1$ - pirmās (references) paraugkopas rangu summa
+
+$n_1$ un $n_2$ - pirmās un otrās paraugkopas apjoms
+
+$g$ - grupu skaits ar vienādiem rangiem
+
+$t_i$ - novērojumu skaits ar vienādu rangu konkrētajā g grupā
+]
+
+
+---
+## Divu neatkarīgu paraugkopu salīdzināšana ar neparametriskām metodēm
+
+Nulles hipotēze: $H_0: F_x=F_y$ - divu paraugkopu vērtību sadalījums neatšķiras
+
+
+Ja $T > z_{1-\alpha/2}$, nulles hipotēze jānoraida.
+
+Ja $T < z_{1-\alpha/2}$, nulles hipotēze nav noraidīta.
+
+
+---
+## Divu atkarīgu paraugkopu salīdzināšana ar neparametriskām metodēm
+
+Vilkoksona tests atkarīgām paraugkopām (Vilkoksona rangu zīmju tests - Wilcoxon signed-rank test) ir tradicionāls neparametriskais tests divu atkarīgu paraugkopu salīdzināšanā. Testa pamatā ir ranžētas rindas veidošana no pāru starpību
+absolūtām vērtībām.  
+
+
+---
+## Divu atkarīgu paraugkopu salīdzināšana ar neparametriskām metodēm
+
+Aprēķinu gaita:
+
+* Aprēķina starpības star pāru vērtībām
+
+* Sakārto absolūtās starpības augošā secībā
+
+* Katrai starpībai piešķir kārtas skaitli
+
+* Ja ir vairākas vienādas starpības, tad tām aprēķina vidējo kārtas skaitli
+
+* Aprēķina pozitīvo starpību rangu summu
+
+
+
+---
+## Divu atkarīgu paraugkopu salīdzināšana ar neparametriskām metodēm
+
+Ja $R_1 \neq \frac{n(n+1)}{4}$ un nav vienādu rangu
+
+$$T=\frac{(R_1 - \frac{n(n+1)}{4})-\frac{1}{2}}{\sqrt{n(n+1)(2n+1)/24}}$$
+,kur
+
+$R_1$ - pozitīvo starpību rangu summa
+
+n - pāru skaits
+
+
+
+---
+## Divu atkarīgu paraugkopu salīdzināšana ar neparametriskām metodēm
+
+.izm80[
+Ja $R_1 \neq \frac{n(n+1)}{4}$ un ir vienādi rangi
+
+$$T=\frac{(R_1 - \frac{n(n+1)}{4})-\frac{1}{2}}{\sqrt{\frac{n(n+1)(2n+1)}{24}-\frac{\sum \limits_{i=1}^{g} (t^3_i-t_i)}{48}}}$$
+,kur
+
+$R_1$ - pozitīvo starpību rangu summa
+
+n - pāru skaits
+
+$g$ - grupu skaits ar vienādiem rangiem
+
+$t_i$ - novērojumu skaits ar vienādu rangu konkrētajā g grupā
+]
+
+---
+## Divu atkarīgu paraugkopu salīdzināšana ar neparametriskām metodēm
+
+Nulles hipotēze: $H_0: \delta=0$ - divu paraugkopu vērtību starpību mediāna ir 0
+
+Ja $T > z_{1-\alpha/2}$, nulles hipotēze jānoraida.
+
+Ja $T < z_{1-\alpha/2}$, nulles hipotēze nav noraidīta.
+
+
+
+
+---
+## Divu atkarīgu paraugkopu salīdzināšana ar neparametriskām metodēm - Piemērs
+
+```{r echo=FALSE,comment=NA}
+rokas<-data.frame(lab=c(38.8,58,50.6,31.4,68.7,65.2,31.8,64.9,33.6,48.6),
+                  kre=c(34.8,48.7,51.4,34.5,56.4,57.5,37.8,51,39,39))
+rokas$st<-with(rokas,lab-kre)
+rokas$abst<-abs(rokas$st)
+rokas$rangs<-c(3,7,1,2,9,6,4,10,5,8)
+colnames(rokas)<-c("Labā","Kreisā","Starpība","|Starpība|","Rangs")
+rokas
+```
+
+
+
+---
+## Divu atkarīgu paraugkopu salīdzināšana ar neparametriskām metodēm - Piemērs
+
+.izm90[
+Pozitīvo rangu summa $R_1=3+7+9+6+4+10+8=47$
+
+$$T=\frac{(R_1 - \frac{n(n+1)}{4})-\frac{1}{2}}{\sqrt{n(n+1)(2n+1)/24}}=\frac{(47 - \frac{10*(10+1)}{4})-\frac{1}{2}}{\sqrt{10*(10+1)(2*10+1)/24}}=1,936$$
+
+Kritiskā $z_{1-0,05/2}$ vērtība ir 1,959.
+
+Kāds ir SECINĀJUMS?
+]
+
+---
+## Divu atkarīgu paraugkopu salīdzināšana ar neparametriskām metodēm - Piemērs
+
+**Secinājums:** starp labās un kreisās rokas spēku nav statistiski būtiskas atšķirības (p=0,053).
+
+
+
+---
+## z vērtību sadalījuma
+
+
+```{r 4l_vilkat,echo=FALSE,fig.align='center',warning=FALSE}
+x<-seq(-5,5,0.1)
+y<-dnorm(x)
+
+df<-data.frame(x,y)
+
+ggplot(df,aes(x,y))+geom_line(size=1.3)+xlab("Z vertiba")+ylab("")+
+  geom_ribbon(data=subset(df,x>1.936),aes(ymax=y,fill="Empīriskā vērtība"),ymin=0,colour="red")+
+  geom_ribbon(data=subset(df,x>1.959),aes(ymax=y,fill="Teorētiskā vērtība"),ymin=0,colour=NA)+
+  scale_fill_manual(values=c("red","blue"))+
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="top",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+
+---
+## $\chi^2$ tests
+
+Ar $\chi^2$ testu pārbauda kvalitatīvu paraugkopu vērtību sadalījumu atbilstību teorētiski sagaidāmajam vērtību sadalījumam,
+vai arī divu paraugkopu vērtību sadalījumu atbilstību (līdzību).
+
+
+
+---
+## $\chi^2$ tests
+
+Atbildamo jautājumu piemēri:
+
+* Vai ģenētikas eksperimentā iegūto zirņu pazīmju skaldīšanās atbilst sagaidāmajai?
+
+* Vai zēnu un meiteņu attiecība populācijā ir 50:50?
+
+* Vai acu krāsu sadalījums atšķiras starp meitenēm un zēniem?
+
+
+---
+## $\chi^2$ tests
+
+$$\chi^2=\sum \frac{(O_{ij}-E_{ij})^2}{E_{ij}}$$
+
+O - novērotā frekvence, E - sagaidāmā frekvence.
+
+Nulles hipotēze nosaka, ka empīriskais sadalījums neatšķiras no teorētiskās sadalījuma, vai arī, ka divi sadalījumi savā starpā ir vienādi.
+
+Ja $\chi^2>\chi^2_{(R-1)x(C-1),1-\alpha}$, nulles hipotēze ir jānoraida.
+
+Ja $\chi^2<\chi^2_{(R-1)x(C-1),1-\alpha}$, nulles hipotēze ir jāakceptē.
+
+
+---
+## $\chi^2$ tests
+
+$\chi^2$ testa pieņēmumi:
+
+* Paraugkopas apjoms ir pietiekami liels. Pie maza paraugkopas apjoms ir liela iespēja pieļaut 2.tipa kļūdu
+
+* Pietiekami liels novērojumu skaits katrā ''šūnā''- ja ir 2x2 dati, tad katrā jābūt vismaz 5, ja ir lielāka tabula, tad vismaz 80% šūnu jābūt vismaz 5 novērojumiem (sagaidāmajām vērtībām). Visām sagaidāmajām vērtībām jābūt lielākām par 1.
+
+* Ja šos pieņēmumus nevar izpildīt, jāizmanto kādi eksaktie testi
+
+---
+## $\chi^2$ tests
+```{r,echo=FALSE,comment=NA}
+koki<-matrix(c(12,34,56,23,8,133,27,33,47,14,11,132,39,67,103,37,19,265),ncol=3)
+
+rownames(koki) <- c("Priede","Egle","Bērzs","Ozols","Kļava","Kopā")
+colnames(koki) <- c("Parauglaukums A","Parauglaukums B","Kopā")
+
+knitr::kable(koki)
+```
+
+---
+## $\chi^2$ tests
+
+.izm80[
+Sagaidāmā frekvence (1,1) $$= \frac{pirmas \hspace{5pt} rindas \hspace{5pt} summa \cdot pirmas \hspace{5pt} kolonnas \hspace{5pt} summa}{kopeja \hspace{5pt} summa}=\frac{39 \cdot 133}{265}=19,57$$
+
+Sagaidāmā frekvence (2,1) $$= \frac{otras \hspace{5pt} rindas \hspace{5pt} summa \cdot pirmas \hspace{5pt} kolonnas \hspace{5pt} summa}{kopeja \hspace{5pt} summa}=\frac{67 \cdot 133}{265}=33,63$$
+
+Sagaidāmā frekvence (1,2) $$= \frac{pirmas \hspace{5pt} rindas \hspace{5pt} summa \cdot otras \hspace{5pt} kolonnas \hspace{5pt} summa}{kopeja \hspace{5pt} summa}=\frac{39 \cdot 132}{265}=19,43$$
+]
+
+---
+## $\chi^2$ tests
+
+```{r,echo=FALSE,comment=NA}
+koki2<-matrix(c(19.57,33.63,51.69,18.56,9.54,19.42,33.37,51.31,18.43,9.46),ncol=2)
+
+rownames(koki2) <- c("Priede","Egle","Bērzs","Ozols","Kļava")
+colnames(koki2) <- c("Parauglaukums A","Parauglaukums B")
+
+knitr::kable(koki2)
+```
+
+
+
+---
+## $\chi^2$ tests
+
+$$\chi^2=\frac{(O_{11}-E_{11})^2}{E_{11}}+\frac{(O_{21}-E_{21})^2}{E_{21}}+\ldots+\frac{(O_{52}-E_{52})^2}{E_{52}}$$
+
+$$
+\chi^2=\frac{(12-19,57)^2}{19,57}+\frac{(34-33,63)^2}{33,63}+\ldots+\frac{(11-9,46)^2}{9,46}=9,2298
+$$
+
+Teorētiskā $\chi^2_{4,1-0,05}$ vērtība ir 9,4877.
+
+Kāds ir SECINĀJUMS?
+
+
+---
+## $\chi^2$ tests - Piemērs
+
+**Secinājums:** tā kā iegūtā $\chi^2$ vērtība ir mazāka par teorētisko vērtību, nulles hipotēze nav noraidīta un starp paraugkopu vērtību sadalījumu nav būtiskas atšķirības (p vērtība 0,056). 
+
+
+
+---
+## $\chi^2$ vērtību sadalījuma
+
+```{r 4l_chipiem,echo=FALSE,fig.align='center',fig.width=8,warning=FALSE}
+x<-seq(0,15,0.1)
+y<-dchisq(x,4)
+
+df<-data.frame(x,y)
+
+ggplot(df,aes(x,y))+geom_line(size=1.3)+xlab("X2 vertiba")+ylab("")+
+  geom_ribbon(data=subset(df,x>9.2298),aes(ymax=y,fill="Empīriskā vērtība"),ymin=0,colour=NA)+
+  geom_ribbon(data=subset(df,x>9.4877),aes(ymax=y,fill="Teorētiskā vērtība"),ymin=0,colour=NA)+
+  scale_fill_manual(values=c("red","blue"))+
+  theme_bw()+
+  theme(axis.title=element_text(size=rel(1.8),face="bold"),
+        axis.text=element_text(color="black",size=rel(1.5)),
+        panel.grid=element_blank(),
+        legend.position="top",
+        legend.text=element_text(size=rel(1.8),face="bold"),
+        legend.key=element_blank(),
+        legend.key.width=unit(2,"cm"),
+        legend.title=element_blank())
+```
+
+
+---
+## Kā izvēlēties statistiskos testus?
+
+* Cik grupas/paraugkopas ir jāsalīdzina?
+
+      - vienas paraugkopas testi
+      
+      - divu paraugkopu sadalīdzināšanas testi
+      
+      - atkārtotie testi (uzmanīgi!) vai dispersijas analīze
+
+---
+## Kā izvēlēties statistiskos testus?
+
+Kādu testu izvēlēties, ja ir tikai viena analizējamā paraugkopa?
+
+* Vai dati ir kvantitatīvi vai kvalitatīvi?
+
+      - Kvantitatīvi - vienas paraugkopas t-tests
+      
+      - Kvalitatīvi - $\chi^2$ tests, Fišera tests, proporciju tests
+
+
+---
+## Kā izvēlēties statistiskos testus?
+
+Kādu testu izvēlēties, ja ir divas analizējamās paraugkopas?
+
+Vai dati ir atkarīgi/saistīti vai neatkarīgi?
+
+* Atkarīgi/Saistīti
+
+  - Atbilst normālajam sadalījumam - atkarīgu paraugkopu t-tests
+  - Neatbilst normālajam sadalījumam - atkarīgu paraugkopu Vilkoksona tests
+
+* Neatkarīgi
+ 
+  - Atbilst normālajam sadalījumam - neatkarīgu paraugkopu t-tests
+  - Neatbilst normālajam sadalījumam - neatkarīgu paraugkopu Vilkoksona tests
+            
+
+---
+class: center, inverse, middle
+# Kādi būtu jautājumi?

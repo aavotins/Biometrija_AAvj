@@ -1,0 +1,360 @@
+---
+title: "Korelācijas analīze"
+author: "Andris Avotiņš & Didzis Elferts"
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css","my-css.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:10'
+---
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+mono_accent(
+  base_color = "#43418A",
+  text_font_size = "25px",
+  text_slide_number_font_size = "0.5em",
+  outfile = "xaringan-themer.css"
+)
+options(htmltools.dir.version = FALSE)
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.height = 4.5, fig.width = 8, dev='svg', fig.align = "center")
+```
+
+
+## Dati
+
+```{r,comment=NA,echo=FALSE}
+library(readxl)
+smiltaji <- read_excel("../Dati/smiltaji.xlsx")
+```
+```{r,comment=NA,eval=FALSE}
+library(readxl)
+smiltaji <- read_excel("smiltaji.xlsx")
+```
+```{r,comment=NA}
+str(smiltaji)
+```
+
+
+---
+## Grafiskā analīze
+
+```{r,eval=FALSE}
+pairs(smiltaji)
+```
+
+```{r, echo=FALSE, fig.height=4}
+par(ps=15,mar=c(3,3,3,3))
+pairs(smiltaji)
+```
+
+---
+## Normalitātes tests
+
+Paketē `cowplot` ir funkcija `plot_grid()`, kas ļauj vairākus `ggplot2` attēlus izvietot vienā. Katru atsevišķo attēlu jāsaglabā kā objektu. 
+
+```{r,eval=FALSE}
+library(ggplot2)
+library(cowplot)
+p1 <- ggplot(smiltaji, aes(sample = pH)) + geom_qq() + 
+      geom_qq_line()
+p2 <- ggplot(smiltaji, aes(sample = smilts)) + geom_qq() + 
+      geom_qq_line()
+p3 <- ggplot(smiltaji, aes(sample = sunas)) + geom_qq() + 
+      geom_qq_line()
+p4 <- ggplot(smiltaji, aes(sample = sugas)) + geom_qq() + 
+      geom_qq_line()
+plot_grid(p1, p2, p3, p4, ncol = 2)
+```
+
+---
+## Normalitātes tests
+
+```{r,echo=FALSE, message=FALSE}
+library(ggplot2)
+library(cowplot)
+p1 <- ggplot(smiltaji, aes(sample = pH)) + geom_qq() + geom_qq_line()
+p2 <- ggplot(smiltaji, aes(sample = smilts)) + geom_qq() + geom_qq_line()
+p3 <- ggplot(smiltaji, aes(sample = sunas)) + geom_qq() + geom_qq_line()
+p4 <- ggplot(smiltaji, aes(sample = sugas)) + geom_qq() + geom_qq_line()
+plot_grid(p1, p2, p3, p4, ncol = 2)
+```
+
+
+---
+## Normalitātes tests
+
+.pull-left[
+```{r}
+shapiro.test(smiltaji$pH)
+```
+
+```{r}
+shapiro.test(smiltaji$smilts)
+```
+]
+
+.pull-right[
+```{r}
+shapiro.test(smiltaji$sunas)
+```
+
+
+```{r}
+shapiro.test(smiltaji$sugas)
+```
+]
+
+
+---
+## Normalitātes tests
+
+
+**Secinājums:** gan grafiskā, gan analītiskā metode apstiprina, ka trīs pazīmju novērojumu sadalījums kopumā atbilsts normālajam sadalījumam un nevar noraidīt nulles hipotēzi (pH $(W_{(73)} = 0,988; p = 0,700)$; 
+smilts $(W_{(73)} = 0,988; p = 0,715)$; 
+sūnas $(W_{(73)} = 0,981; p = 0,323)$). Toties sugu skaita vērtību sadalījums neveido normālo sadalījumu un Šapiro-Vilka normalitātes testā ir noraidīta nulles hipotēze par atbilstību normālajam sadalījumam  $(W_{(73)} = 0,882; p < 0,0001)$ .
+
+
+---
+## Funkcijas analīzes veikšanai
+
+Pamatfunkcijas korelācijas analīzes veikšanai ir `cor()` un `cor.test()`. 
+
+Pirmajā funkcijā var likt gan atsevišķus vektorus (kolonnas), gan vienu vai divas vienāda garuma datu tabulas. Otrajā funkcijā var likt tikai divus vektorus (kolonnas), starp kurām jāaprēķina korelācijas koeficients.
+
+Pēc noklusējuma abas funkcijas aprēķina Pīrsona korelācijas koeficientu. Ja nepieciešams cits, tad attiecīgi jāpievieno arguments `method = "kendall"` vai `method = "spearman"`.
+
+Ja datos ir iztrūkstošās vērtības (NA), pievieno argumentu `use = "pairwise.complete.obs"`.
+
+
+
+---
+## Pīrsona korelācijas koeficients 1
+
+Tā kā normālajam sadalījumam atbilda tikai trīs mainīgie, tiek atlasītas pirmās trīs kolonnas Pīrsona korelācijas analīzes veikšanai (to jādara tikai tad, ja tas **NEPIECIEŠAMS**).
+
+```{r,comment=NA}
+cor(smiltaji[,1:3])
+```
+
+Funkcijas `cor()` rezultātos ir redzama korelācijas koeficientu matrica, bet neparādās korelācijas koeficientu būtiskumi (p vērtības).
+
+---
+## Pīrsona korelācijas koeficients 2
+
+Paketē `ltm` ir funkcija `rcor.test()`, kurā var likt kā argumentu arī datu tabulu. Funkcijā var arī pievienot argumentu `method =`, lai mainīt korelācijas analīzes veidu.
+
+
+.izm90[
+```{r,message=FALSE,comment=NA}
+library(ltm)
+rcor.test(smiltaji[,1:3])
+```
+]
+
+
+Funkcijas rezultātā ir redzama matrica, kur virs diagonāles ir korelācijas koeficienti, bet zem diagonāles ir atbilstošās p vērtības.
+
+---
+## Pīrsona korelācijas koeficients 3
+
+
+
+**Secinājums:** statistiski būtiska negatīva korelācija pie būtiskumu līmeņa $\alpha=0,05$ pastāv starp pH un sūnu segumu $(r = -0,252; p = 0,032)$ un sūnu un smilts segumiem $(r = -0,558; p < 0,001)$, jo atbilstošās p vērtības ir mazākas par būtiskuma līmeni. Starp pH un smilts segumu korelācija ir pozitīva $(r = 0,221)$, bet tā nav statistiski būtiska $(p = 0,060)$, jo iegūtā p-vērtība ir lielāka par būtiskuma vērtību.
+
+---
+## Pīrsona korelācijas koeficients 4
+
+.izm90[
+```{r,comment=NA}
+cor.test(smiltaji$pH, smiltaji$sunas)
+```
+]
+
+**Secinājums:** Pastāv statistiski būtiska negatīva korelācija starp pH un sūnu segumu
+( $r = -0,252;$ korelācijas koeficienta ticamības intervāls no -0,455 līdz -0,023), jo iegūtā p vērtība testā $(t_{71} = -2,192; p = 0,032)$ ir mazāka par būtiskuma līmeni $\alpha = 0,05$.
+
+
+---
+## Spirmena korelācijas koeficients
+
+.izm90[
+
+```{r,comment=NA}
+cor.test(smiltaji$sugas, smiltaji$smilts, method = "spearman")
+```
+
+**Secinājums:** Pastāv statistiski būtiska negatīva korelācija starp sugu skaitu un smilts
+segumu $(r_s = -0,291)$, jo iegūtā p vērtība $(S_{71} = 83657; p = 0,013)$ ir mazāka par būtiskuma līmeni $\alpha = 0,05$.
+]
+---
+## Kendela korelācijas koeficients
+
+```{r,comment=NA}
+cor.test(smiltaji$sugas, smiltaji$smilts, method = "kendall")
+```
+
+**Secinājums:** Pastāv statistiski būtiska negatīva korelācija starp sugu skaitu un smilts
+segumu $(r_k = -0,234)$, jo iegūtā p vērtība $(z_{71} = -2,546; p = 0,011)$ ir mazāka par būtiskuma līmeni $\alpha = 0,05$.
+
+
+---
+## Autokorelācija 1
+
+Autokorelācijas analīzi veic ar funkciju `acf()`, kurai kā argumentus norāda analizējamo datu rindu, vai arī datu tabulu, ja tajā ir tikai viena kolonna, kā arī argumentu `lag.max =`, kas norāda maksimālo nobīdi.
+
+```{r eval=FALSE}
+acf(datu.kolonna, lag.max = nobīde)
+```
+
+---
+## Autokorelācija 2
+
+Piemēram izmantoti dati par priedes gadskārtu platumu vērtētībām simts gadu periodā.
+
+```{r,comment=NA,echo=FALSE}
+priede <- read_excel("../Dati/priede.xlsx")
+```
+```{r,comment=NA,eval=FALSE}
+priede <- read_excel("priede.xlsx")
+```
+```{r}
+str(priede)
+```
+
+---
+## Autokorelācija 3
+
+```{r eval=FALSE}
+acf(priede)
+```
+```{r 6n_acf,echo=FALSE, fig.height=3}
+par(ps=15,mar=c(5,5,3,3))
+acf(priede)
+```
+
+**Secinājums:** statistiski būtiska autokorelācija novērojuma ar nobīdi līdz trīs gadiem (atbilstošie stabiņi pārsniedz raustīto zilo līniju).
+
+
+---
+## Autokorelācija 4
+
+Lai iegūtu autokorelācijas koeficientu skaitliskās vērtības, funkcijas `acf()` rezultāts jāsaglabā kā objekts.
+
+.izm90[
+```{r,comment=NA}
+akor <- acf(priede, plot = FALSE)
+akor
+```
+]
+
+
+
+---
+## Korelācijas koeficientu vizualizācija
+
+R pakete `corrplot` ļauj vizualizēt korelācijas koeficientu matricas, kas ir sevišķi aktuāli, ja jāparāda liela datu masīva (ar daudz mainīgajiem) rezultātus.
+
+Pamatfunkcija attēlu veidošanai ir `corrplot()`, kurai kā arguments jāliek korelācijas koeficientu matrica, ko iegūst ar `cor()`.
+
+Vairāk informācijas un piemēru: https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html
+
+
+---
+## Korelācijas koeficientu vizualizācija
+
+Piemēram izmanto R iekļauto datu objektu `mtcars`, kurā ir 32 automarku raksturojums.
+
+```{r, message=FALSE, fig.height=4}
+library(corrplot)
+data("mtcars")
+head(mtcars, n = 2)
+```
+
+```{r, eval=FALSE}
+M <- cor(mtcars)
+corrplot(M)
+```
+
+
+---
+## Korelācijas koeficientu vizualizācija
+
+```{r, echo=FALSE}
+M <- cor(mtcars)
+corrplot(M)
+```
+
+
+---
+## Korelācijas koeficientu vizualizācija
+
+Ar argumentu `method = ` var dažādus attēlošanas veidus.
+
+```{r, message=FALSE, fig.height=4}
+corrplot(M, method = "color")
+```
+
+
+---
+## Korelācijas koeficientu vizualizācija
+
+
+```{r, message=FALSE, fig.height=4}
+corrplot(M, method = "ellipse")
+```
+
+
+---
+## Korelācijas koeficientu vizualizācija
+
+
+```{r, message=FALSE, fig.height=4}
+corrplot(M, method = "number")
+```
+
+
+---
+## Korelācijas koeficientu vizualizācija
+
+Ar argumentu `type =` var izvēlēties rādīt tikai daļu matricas
+
+```{r, message=FALSE, fig.height=4}
+corrplot(M, method = "color", type = "upper")
+```
+
+
+---
+## Korelācijas koeficientu vizualizācija
+
+Ar funkciju `cor.mtest()` var aprēķināt p-vērtības un korelācijas koeficienut ticamības intervālus starp visiem mainīgajiem (Pīrsona metode), ko vēlāk izmantot vizualizācijai.
+
+```{r}
+rez.mat <- cor.mtest(mtcars)
+```
+
+.izm75[
+```{r}
+rez.mat
+```
+]
+
+
+---
+## Korelācijas koeficientu vizualizācija
+
+Ar argumentu `p.mat = ` norāda atbilstošās p-vērtības un arguments `insig = ` nosakā kā parādīt nebūtiskos koeficientus.
+
+```{r, fig.height=3.5}
+corrplot(M, p.mat = rez.mat$p, insig = "blank")
+```
+
+
+---
+class: center, inverse, middle
+# Kādi būtu jautājumi?
