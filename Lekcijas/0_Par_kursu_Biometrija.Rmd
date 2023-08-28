@@ -81,16 +81,17 @@ tēmām, kas ir bijusi kursa laikā
 ## Nodarbību laiki
 
 * Lekcijas
-  1. Pirmdiena, 8.30 - 10.00 (kopā 8 lekcijas)
+
+   Pirmdiena, 8.30 - 10.00 (kopā 8 lekcijas)
   
 * Praktiskās nodarbības/darbi
-  1. Pirmdiena, 12.30 - 14.00
+  1. grupa: Pirmdiena, 12.30 - 14.00
   
-  2. Pirmdiena, 14.30 - 16.00
+  2. grupa: Pirmdiena, 14.30 - 16.00
   
-  3. Otrdiena, 12.30 - 14.00
+  3. grupa: Otrdiena, 12.30 - 14.00
   
-  4. Otrdiena, 14.30 - 16.00
+  4. grupa: Otrdiena, 14.30 - 16.00
 
 .defin[
 Citas grupas laikā var ierasties tikai iepriekš saskaņojot ar pasniedzēju!
