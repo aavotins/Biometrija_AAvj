@@ -1,6 +1,6 @@
 ---
 title: "Programma R"
-author: "Andris Avotiņš & Didzis Elferts"
+author: "Andris Avotiņš"
 output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css","my-css.css"]
@@ -74,7 +74,7 @@ class: center, inverse, middle
 ## R popularitāte
 
 
-.center[<img src="../Atteli/Fig_2a_ScholarlyImpact2018.png" height = 400>]
+.center[<img src="Atteli/Fig_2a_ScholarlyImpact2018.png" height = 400>]
 
 .izm50[
 Avots: http://r4stats.com/2019/04/01/scholarly-datasci-popularity-2019/
@@ -84,7 +84,7 @@ Avots: http://r4stats.com/2019/04/01/scholarly-datasci-popularity-2019/
 ---
 ## R popularitāte ekoloģijā
 
-.center[<img src="../Atteli/eco_r.png" height = 400>]
+.center[<img src="Atteli/eco_r.png" height = 400>]
 
 
 .izm50[
@@ -119,7 +119,7 @@ class: center, inverse, middle
 
 
 
-.center[<img src="../Atteli/RStudio.png" alt="drawing" height="400"/>]
+.center[<img src="Atteli/RStudio.png" height="400"/>]
 
 .izm80[
 * File -> New File -> R Script
@@ -245,7 +245,7 @@ Pēc noklusējuma R meklē/saglabā failus darba direktorijā.
 ```{r,warning=FALSE,message=FALSE}
 getwd()
 
-setwd("D:/Biometrija")
+setwd("D:/Biometrija_AAvj")
 
 getwd()
 ```

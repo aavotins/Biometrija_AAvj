@@ -1,6 +1,6 @@
 ---
 title: "Biometrija un dati"
-author: "Didzis Elferts"
+author: "Andris Avotiņš"
 output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css","my-css.css"]
@@ -222,7 +222,7 @@ Pētnieku interesē pazīmes, kurām raksturīga mainība jeb variācija
 ## Populācija un paraugkopa
 
 .defin[
-**Parametrs** – skaitlisks mērījums, kas rakstuto kādu populācijas aspektu.
+**Parametrs** – skaitlisks mērījums, kas raksturo kādu populācijas aspektu.
 ]
 
 <br>
@@ -397,7 +397,7 @@ indivīdam ir vienāda iespēja tikt izvēlētam.
 ---
 ## Nejaušs paraugs
 
-Loterejā ir jāizvēlas 5 skaitļi no 36. Vinnē tas, kura izvēlētie skaitļi
+Loterijā ir jāizvēlas 5 skaitļi no 36. Vinnē tas, kura izvēlētie skaitļi
 sakrīt ar uzvarējušiem pieciem skaitļiem.
 
 --
@@ -409,7 +409,7 @@ sakrīt ar uzvarējušiem pieciem skaitļiem.
 --
 
 
-- Vai ir iespējams vinnēt loterejā, ja katrā izvēlas skaitļus 31, 32, 33, 34 un 35?
+- Vai ir iespējams vinnēt loterijā, ja katrā izvēlas skaitļus 31, 32, 33, 34 un 35?
 
 
 ---

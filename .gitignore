@@ -11,3 +11,4 @@ libs/
 .Rdata
 .httr-oauth
 .quarto
+.pdf
