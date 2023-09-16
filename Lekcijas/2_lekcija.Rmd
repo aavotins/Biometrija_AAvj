@@ -1,6 +1,6 @@
 ---
 title: "Teorētiskie sadalījumi. Eksperimentu dizains."
-author: "Didzis Elferts"
+author: "Andris Avotiņš"
 output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css","my-css.css"]
@@ -65,7 +65,7 @@ notikums sauc par **vienādi iespējamiem**
 
 * $P(A) = \phi$ – notikuma iestāšanās varbūtība
 
-* $P(A) = \kappa$ – pretējā notikuma iestāšanās varbūtība
+* $P(B) = \kappa$ – pretējā notikuma iestāšanās varbūtība
 
 * Klasiskās definīcijas pielietošana ir ierobežota (nevar noteikt
 m un n)
@@ -407,7 +407,7 @@ class: inverse, middle, center
 
 * datu sagatavošana – pirmsapstrāde
 
-* filtrēšana & nerakturīgo vērtību (outlier) izslēgšana
+* filtrēšana & neraksturīgo vērtību (outlier) izslēgšana
 
 * normalizēšana
 
@@ -583,6 +583,7 @@ vērtība, kas norādīta $H_0$.
 set.seed(4444)
 popul<-rnorm(1000,170,10)
 ```
+
 Mums ir populācija, kuru veido 1000 studenti ar vidējo garumu `r round(mean(popul),1)` cm.
 
 ```{r,echo=FALSE,warning=FALSE,message=FALSE}
@@ -603,6 +604,7 @@ set.seed(345)
 par1<-sample(popul,50)
 par2<-sample(popul,50)
 ```
+
 Paraugkopa 1 => vidējais aritmētiskais `r round(mean(par1),1)` cm
 
 Paraugkopa 2 => vidējais aritmētiskais `r round(mean(par2),1)` cm
@@ -732,7 +734,7 @@ tā ir nepatiesa.
 ```{r,echo=FALSE}
 library(jpeg)
 library(grid)
-img <- readJPEG("../Atteli/type-i-and-type-ii-errors.jpg") 
+img <- readJPEG("./Atteli/type-i-and-type-ii-errors.jpg") 
  grid.raster(img)
 ```
 http://effectsizefaq.files.wordpress.com/2010/05/type-i-and-type-ii-errors.jpg
@@ -769,7 +771,7 @@ hipotēzes noraidīšanai
 **Statistiskā spēja (power)** – iespējamība pareizi identificēt kādas
 izmaiņas
 
-**Statistiskā ticamība** – iespējamība neindificēt neesošas izmaiņas
+**Statistiskā ticamība** – iespējamība neidentificēt neesošas izmaiņas
 
 ---
 ## Efekta lielums (Effect size)
