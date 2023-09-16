@@ -1,6 +1,6 @@
 ---
 title: "R grafiskās iespējas"
-author: "Andris Avotiņš & Didzis Elferts"
+author: "Andris Avotiņš"
 subtitle: "ggplot2 grafiskā sistēma"
 output:
   xaringan::moon_reader:
@@ -83,7 +83,7 @@ parādīšanas veidam (aesthetics), kā arī veido leģendas un asis
 
 *  **coord** – koordināšu sistēma, ko izmanto diagrammā
 
-*  **facet** – nosaka kā sadalīt datus pa atsevišķām diagrammām
+*  **facet** – nosaka kā sadalīt datus atsevišķās diagrammās
 
 ---
 ## geom veidi
@@ -222,7 +222,7 @@ ggplot(dati, aes(gaisma)) + geom_bar()
 ---
 ## geom_bar()
 
-Stabiņam ir iespējams noteik krāsu (līniju, kas ir apkārt) un aizpildījumu (`fill=`).
+Stabiņam ir iespējams noteikt krāsu (līniju, kas ir apkārt) un aizpildījumu (`fill=`).
 
 ```{r}
 ggplot(dati, aes(gaisma)) + 
@@ -304,7 +304,7 @@ ggplot(dati, aes(garums, lapas)) +
 ## geom_line()
 ```{r}
 ggplot(dati, aes(garums, lapas)) + 
-      geom_line(colour = "red", size = 1)
+      geom_line(colour = "red", lwd = 1)
 ```
 
 
