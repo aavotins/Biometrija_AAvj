@@ -1,6 +1,6 @@
 ---
 title: "Statistiskie rādītāji. Ticamības intervāli"
-author: "Didzis Elferts & Andris Avotiņš"
+author: "Andris Avotiņš"
 output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css","my-css.css"]
@@ -87,7 +87,7 @@ kur  $x_j$ - j-tās klases vidējā vērtība vai konkrētā vērtība, k - kla�
 
 Nosakot studentu vērtējumus stipendijas saņemšanai, rēķina vidējos svērto vērtējumu, kas atkarīgs no kredītpunktu apjoma kursā. 
 
-Tātad studentam, kura atzīmes kursis ir 7 (2 KP kurss), 8 (3 KP kurss) un 9 (4 KP kurss), vienkāršs vidējais aritmētiskais būtu 8, toties vidējā svērtā atzīme būs
+Tātad studentam, kura atzīmes kursos ir 7 (2 KP kurss), 8 (3 KP kurss) un 9 (4 KP kurss), vienkāršs vidējais aritmētiskais būtu 8, toties vidējā svērtā atzīme būs
 
 $$\overline{x}=\frac{2*7 + 3*8 + 4*9}{2+3+4}=\frac{14 + 24 + 36}{9}=\frac{74}{9}=8,22$$
 
