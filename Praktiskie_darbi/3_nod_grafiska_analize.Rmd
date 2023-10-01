@@ -1,6 +1,6 @@
 ---
 title: "Datu grafiskā analīze"
-author: "Andris Avotiņš & Didzis Elferts"
+author: "Andris Avotiņš"
 output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css","my-css.css"]
