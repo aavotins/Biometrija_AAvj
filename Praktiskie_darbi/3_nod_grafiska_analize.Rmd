@@ -234,5 +234,33 @@ tapply(niedr$garums,niedr$paraug,shapiro.test)
 
 
 ---
+## Datus ir nepieciešams apskatīties 1
+
+.izm75[
+```{r}
+library(datasauRus)
+data("datasaurus_dozen")
+
+round(tapply(datasaurus_dozen$x,datasaurus_dozen$dataset,mean),2)
+round(tapply(datasaurus_dozen$y,datasaurus_dozen$dataset,mean),2)
+
+round(tapply(datasaurus_dozen$x,datasaurus_dozen$dataset,sd),2)
+round(tapply(datasaurus_dozen$y,datasaurus_dozen$dataset,sd),2)
+```
+]
+
+
+
+---
+## Datus ir nepieciešams apskatīties 2
+
+```{r}
+ggplot(datasaurus_dozen, aes(x = x, y = y))+
+  geom_point()+
+  theme_void()+
+  facet_wrap(~dataset, ncol = 5)
+```
+
+---
 class: center, inverse, middle
 # Kādi būtu jautājumi?
