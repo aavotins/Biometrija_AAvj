@@ -47,7 +47,7 @@ tapply(niedr$garums,niedr$paraug,sd)
 
 n <- length(niedr$garums) #noverojumu skaits
 briv <- n-1 #brivibas pakapju skaits
-but <- 0.01 #butiskuma l?menis
+but <- 0.01 #butiskuma limenis
 vid <- mean(niedr$garums) #videjais aritmetiskais
 stand <- sd(niedr$garums) #standartnovirze
 
@@ -87,6 +87,7 @@ tic_tabula
 ggplot(tic_tabula, aes(x = Parauglaukums, y = Mean, ymin  = Lower, ymax = Upper)) +
       geom_pointrange() + labs(y = "Videjais ar 99% ticamibas intervalu")
 
+## Ticamibas intervali - binomialais sadalijums
 
 set.seed(1278)
 alpha <- 0.05
