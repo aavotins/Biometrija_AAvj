@@ -1,6 +1,6 @@
 ---
 title: "Statistiskie rādītāji un Ticamības intervāli"
-author: "Didzis Elferts & Andris Avotiņš"
+author: "Andris Avotiņš"
 output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css","my-css.css"]
@@ -104,7 +104,7 @@ quantile(niedr$garums, probs = c(0.025, 0.975))
 ---
 ## Statistiskie rādītāji 6
 
-Ja funkcijā `summary()` ievieto skaiļu vektoru, rezultātā iegūst sešus statistiskos rādītājus, kas to raksturo. 
+Ja funkcijā `summary()` ievieto skaitļu vektoru, rezultātā iegūst sešus statistiskos rādītājus, kas to raksturo. 
 
 ```{r,comment=NA}
 summary(niedr$garums)
