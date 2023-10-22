@@ -1,6 +1,6 @@
 ---
 title: "Korelācijas un Regresijas analīze"
-author: "Didzis Elferts"
+author: "Andris Avotiņš"
 output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css","my-css.css"]
@@ -60,7 +60,7 @@ Korelācijas analīžu veidi:
 
 * Pīrsona korelācijas analīze
 
-* Rangu korelācija - Spirmena un Kendela
+* Rangu korelācija - Spīrmena un Kendela
 
 * Autokorelācija
 
@@ -252,7 +252,7 @@ Kāds ir SECINĀJUMS?
 ---
 ## Pīrsona korelācijas koeficients
 
-Korelācijas koeficients starp sūnu segumu un smilšaino laukumu segumu ir -0,56. Korelācijas koeficients ir statistiski būtisks, jo iegūtā p-vērtība ir mazāka par būtiskuma līmeni ( $t_{71} = -5,66; p = 2,297e-07<0,05$).
+Korelācijas koeficients starp sūnu segumu un smilšaino laukumu segumu ir -0,56. Korelācijas koeficients ir statistiski būtisks, jo iegūtā p-vērtība ir mazāka par būtiskuma līmeni ( $t_{(71)} = -5,66; p = 2,297e-07<0,05$).
 
 
 ---
@@ -277,9 +277,9 @@ http://statisticsunesa.blogspot.com/2010/12/table-of-t-values.html
 
 
 ---
-## Rangu korelācija jen neparametriskās metodes
+## Rangu korelācija jeb neparametriskās metodes
 
-* Rangu korelācijas koeficienti - Spirmena vai Kendela
+* Rangu korelācijas koeficienti - Spīrmena vai Kendela
 
 * Aprēķinus veic ar vērtību rangiem, vai vērtību starpību rangiem
 
@@ -289,9 +289,9 @@ http://statisticsunesa.blogspot.com/2010/12/table-of-t-values.html
 
 
 ---
-## Rangu korelācija - Spirmena
+## Rangu korelācija - Spīrmena
 
-Spirmena rangu korelācijas koeficienta $r_S$pamatā ir rangu pāru starpības $d_g$
+Spirmena rangu korelācijas koeficienta $r_S$ pamatā ir rangu pāru starpības $d_g$
 
 
 $$
@@ -301,7 +301,7 @@ $$
 ---
 ## Rangu korelācija - Kendela
 
-Kendela rangu korelācijas koeficientā $r_K$tiek salīdzinātas pirmās pazīmes rangi ar ikvienu otrās pazīmes rangu. Veidojas divas jaunas skaitļu rindas ar lielāku rangu skaitu un mazāku. Lielāku rangu summa veido P, bet mazāku - S
+Kendela rangu korelācijas koeficientā $r_K$ tiek salīdzinātas pirmās pazīmes rangi ar ikvienu otrās pazīmes rangu. Veidojas divas jaunas skaitļu rindas ar lielāku rangu skaitu un mazāku. Lielāku rangu summa veido P, bet mazāku - S
 
 $$
 r_K = \frac{P - S}{0.05\cdot n \cdot (n-1)}
@@ -309,7 +309,7 @@ $$
 
 
 ---
-## Spirmena korelācijas koeficients
+## Spīrmena korelācijas koeficients
 
 ```{r,comment=NA,echo=FALSE,warning=FALSE}
 with(smiltaji,cor.test(pH,sugas,method="spearman"))
@@ -318,9 +318,9 @@ with(smiltaji,cor.test(pH,sugas,method="spearman"))
 Kāds ir SECINĀJUMS?
 
 ---
-## Spirmena korelācijas koeficients
+## Spīrmena korelācijas koeficients
 
-Korelācijas koeficients starp augsnes pH un sugu skaitu ir 0,59. Korelācijas koeficients ir statistiski būtisks, jo iegūtā p-vērtība ir mazāka par būtiskuma līmeni ( $S_{71} = 26767, p = 4,8e-08 < 0,05$).
+Korelācijas koeficients starp augsnes pH un sugu skaitu ir 0,59. Korelācijas koeficients ir statistiski būtisks, jo iegūtā p-vērtība ir mazāka par būtiskuma līmeni ( $S_{(73)} = 26767, p = 4,8e-08 < 0,05$).
 
 ---
 ## Kendela korelācijas koeficients
@@ -334,7 +334,7 @@ Kāds ir SECINĀJUMS?
 ---
 ## Kendela korelācijas koeficients 
 
-Korelācijas koeficients starp augsnes pH un sugu skaitu ir 0,47. Korelācijas koeficients ir statistiski būtisks, jo iegūtā p-vērtība ir mazāka par būtiskuma līmeni ( $z_{71} = 5,157; p = 2,5e-07 < 0,05)$.
+Korelācijas koeficients starp augsnes pH un sugu skaitu ir 0,47. Korelācijas koeficients ir statistiski būtisks, jo iegūtā p-vērtība ir mazāka par būtiskuma līmeni ( $z_{(73)} = 5,157; p = 2,5e-07 < 0,05)$.
 
 
 ---
@@ -730,7 +730,7 @@ Kāds ir SECINĀJUMS?
 
 * Determinācijas koeficients Adjusted R-Squared = 0,7121
 
-* Lineārās regresijas modelis ir būtisks, jo p-value = 1,031e-08 < 0,05 ($ F_{1, 26} = 67,77$)
+* Lineārās regresijas modelis ir būtisks, jo p-value = 1,031e-08 < 0,05 ( $F_{(1, 26)} = 67,77$ )
 
 * Lineārās regresijas vienādojums ir  svars = 12,25 + 0,0269 * udens
 
@@ -911,7 +911,7 @@ kur i = 1,2, ..., k, k - regresoru skaits, $b_0$, $b_1$,... $b_k$ - regresijas k
 ## Multiplā jeb daudzfaktoru lineārā regresija
 
 
-Ierobežojums: paraugkopas apjomam jābūt vismaz 10 līdz 20 reizes lielākam par regresoru skaitu.
+Ierobežojums: paraugkopas apjomam jābūt vismaz 10 līdz 20 reizes lielākam par regresoru kombināciju skaitu.
 
 
 Multiplās regresijas analīzei ir divi pamatuzdevumi:
@@ -952,7 +952,7 @@ Kāds ir SECINĀJUMS?
 
 * Determinācijas koeficients Adjusted R-Squared = 0,8426
 
-* lineārās regresijas modelis ir būtisks, jo p-value = 2,2e-16 < 0,05 ( $F_{3, 46} = 88,41$)
+* lineārās regresijas modelis ir būtisks, jo p-value = 2,2e-16 < 0,05 ( $F_{(3, 46)} = 88,41$)
 
 * Jūlija temperatūru un nokrišņu daudzuma ietekme ir būtiska, bet jūnija temperatūru ietekme nav būtiska
 
@@ -984,7 +984,7 @@ Kāds ir SECINĀJUMS?
 
 * 84,5% kopējās regresenta (platiba) izkliedes izskaidrojami ar regresoru (julijs un nokrisni) lineāro ietekmi;
 
-* pēc Fišera kritērija $F_{2,47} = 134,1$ lineārās regresijas modelis ir statistiski būtisks
+* pēc Fišera kritērija $F_{(2,47)} = 134,1$ lineārās regresijas modelis ir statistiski būtisks
 
 * lineārās regresijas vienādojums ir
 $platiba = 10,9051-0,5616*julijs+0,3711*nokrisni$
