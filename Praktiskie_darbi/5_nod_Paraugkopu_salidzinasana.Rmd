@@ -1,6 +1,6 @@
 ---
 title: "Paraugkopu salīdzināšana"
-author: "Andris Avotiņš & Didzis Elferts"
+author: "Andris Avotiņš"
 output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css","my-css.css"]
@@ -123,7 +123,7 @@ var.test(niedr2$platums ~ niedr2$paraug)
 ## Dispersiju salīdzināšana 3
 
 **Secinājums:** Pie būtiskuma līmeņa $\alpha = 0,05$ divu paraugkopu dispersijas ir
-homogēnas (neatšķiras būtiski), jo iegūtā F-vērtība ir 1,1996 un p-vērtība ir
+homogēnas (neatšķiras būtiski), jo iegūtā F-vērtība ar 17 novērojumiem katrā parauglaukumā ir 1,1996 un p-vērtība ir
 0,7203 (lielāka par 0,05). Ja skatās uz F vērtības ticamības intervālu, tad tas satur skaitli
 viens (0,43 līdz 3,31), tātad dispersijas ir līdzīgas (homogēnas).
 
