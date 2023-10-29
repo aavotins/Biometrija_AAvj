@@ -356,5 +356,15 @@ corrplot(M, p.mat = rez.mat$p, insig = "blank")
 
 
 ---
+## Korelācijas koeficientu vizualizācija
+
+
+```{r}
+corrplot.mixed(M, p.mat = rez.mat$p, insig = "blank",
+               tl.pos="lt",upper="ellipse",number.cex=0.75)
+```
+
+
+---
 class: center, inverse, middle
 # Kādi būtu jautājumi?
