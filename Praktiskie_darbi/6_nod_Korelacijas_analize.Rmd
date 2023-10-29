@@ -1,6 +1,6 @@
 ---
 title: "Korelācijas analīze"
-author: "Andris Avotiņš & Didzis Elferts"
+author: "Andris Avotiņš"
 output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css","my-css.css"]
@@ -147,7 +147,7 @@ Funkcijas `cor()` rezultātos ir redzama korelācijas koeficientu matrica, bet n
 ---
 ## Pīrsona korelācijas koeficients 2
 
-Paketē `ltm` ir funkcija `rcor.test()`, kurā var likt kā argumentu arī datu tabulu. Funkcijā var arī pievienot argumentu `method =`, lai mainīt korelācijas analīzes veidu.
+Paketē `ltm` ir funkcija `rcor.test()`, kurā kā argumentu var likt arī datu tabulu. Funkcijā var arī pievienot argumentu `method =`, lai mainīt korelācijas analīzes veidu.
 
 
 .izm90[
@@ -177,7 +177,7 @@ cor.test(smiltaji$pH, smiltaji$sunas)
 ]
 
 **Secinājums:** Pastāv statistiski būtiska negatīva korelācija starp pH un sūnu segumu
-( $r = -0,252;$ korelācijas koeficienta ticamības intervāls no -0,455 līdz -0,023), jo iegūtā p vērtība testā $(t_{71} = -2,192; p = 0,032)$ ir mazāka par būtiskuma līmeni $\alpha = 0,05$.
+( $r = -0,252;$ korelācijas koeficienta ticamības intervāls no -0,455 līdz -0,023), jo iegūtā p vērtība testā $(t_{(71)} = -2,192; p = 0,032)$ ir mazāka par būtiskuma līmeni $\alpha = 0,05$.
 
 
 ---
@@ -190,7 +190,7 @@ cor.test(smiltaji$sugas, smiltaji$smilts, method = "spearman")
 ```
 
 **Secinājums:** Pastāv statistiski būtiska negatīva korelācija starp sugu skaitu un smilts
-segumu $(r_s = -0,291)$, jo iegūtā p vērtība $(S_{71} = 83657; p = 0,013)$ ir mazāka par būtiskuma līmeni $\alpha = 0,05$.
+segumu $(r_s = -0,291)$, jo iegūtā p vērtība $(S_{(73)} = 83657; p = 0,013)$ ir mazāka par būtiskuma līmeni $\alpha = 0,05$.
 ]
 ---
 ## Kendela korelācijas koeficients
@@ -200,7 +200,7 @@ cor.test(smiltaji$sugas, smiltaji$smilts, method = "kendall")
 ```
 
 **Secinājums:** Pastāv statistiski būtiska negatīva korelācija starp sugu skaitu un smilts
-segumu $(r_k = -0,234)$, jo iegūtā p vērtība $(z_{71} = -2,546; p = 0,011)$ ir mazāka par būtiskuma līmeni $\alpha = 0,05$.
+segumu $(r_k = -0,234)$, jo iegūtā p vērtība $(z_{(73)} = -2,546; p = 0,011)$ ir mazāka par būtiskuma līmeni $\alpha = 0,05$.
 
 
 ---
@@ -294,7 +294,7 @@ corrplot(M)
 ---
 ## Korelācijas koeficientu vizualizācija
 
-Ar argumentu `method = ` var dažādus attēlošanas veidus.
+Ar argumentu `method = ` var kontrolēt dažādus attēlošanas veidus.
 
 ```{r, message=FALSE, fig.height=4}
 corrplot(M, method = "color")
@@ -332,7 +332,7 @@ corrplot(M, method = "color", type = "upper")
 ---
 ## Korelācijas koeficientu vizualizācija
 
-Ar funkciju `cor.mtest()` var aprēķināt p-vērtības un korelācijas koeficienut ticamības intervālus starp visiem mainīgajiem (Pīrsona metode), ko vēlāk izmantot vizualizācijai.
+Ar funkciju `cor.mtest()` var aprēķināt p-vērtības un korelācijas koeficientu ticamības intervālus starp visiem mainīgajiem (Pīrsona metode), ko vēlāk izmantot vizualizācijai.
 
 ```{r}
 rez.mat <- cor.mtest(mtcars)
@@ -348,7 +348,7 @@ rez.mat
 ---
 ## Korelācijas koeficientu vizualizācija
 
-Ar argumentu `p.mat = ` norāda atbilstošās p-vērtības un arguments `insig = ` nosakā kā parādīt nebūtiskos koeficientus.
+Ar argumentu `p.mat = ` norāda atbilstošās p-vērtības un arguments `insig = ` nosaka kā parādīt nebūtiskos koeficientus.
 
 ```{r, fig.height=3.5}
 corrplot(M, p.mat = rez.mat$p, insig = "blank")
