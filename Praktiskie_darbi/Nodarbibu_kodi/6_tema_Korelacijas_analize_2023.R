@@ -61,3 +61,5 @@ rez.mat
 
 corrplot(M, p.mat = rez.mat$p, insig = "blank")
 
+corrplot.mixed(M, p.mat = rez.mat$p, insig = "blank",
+               tl.pos="lt",upper="ellipse",number.cex=0.75)
