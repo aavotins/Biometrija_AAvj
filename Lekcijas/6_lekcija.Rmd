@@ -1,6 +1,6 @@
 ---
 title: "Dispersijas un Kovariācijas analīze"
-author: "Didzis Elferts"
+author: "Andris Avotiņš"
 output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css","my-css.css"]
@@ -447,7 +447,7 @@ $y_{ijk}$ - ir konkrētais novērojums j-tajā pirmā faktora grupā un k-tajā 
 
 $\mu$ - ir konstante, kas raksturo vispārējo vidējo vērtību
 
-$a_j$ - ir konstante, kas raksturo pirmās faktora efektu
+$a_j$ - ir konstante, kas raksturo pirmā faktora efektu
 
 $b_k$ - ir konstante, kas raksturo otrā faktora efektu
 
@@ -497,7 +497,7 @@ NPK | Gaisma | Bariba | Garums
 
 * Kombinācijas (mijiedarbības) efekts - viena regresora ietekme atkarībā no otra regresora
 
-* Vienkāršs efekts - viena regresora ietekme pie noteikta otra regresora līmeņa
+* Vienkāršs efekts (tiešais efekts) - viena regresora ietekme pie noteikta otra regresora līmeņa
 
 
 ---
