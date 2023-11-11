@@ -1,6 +1,6 @@
 ---
 title: "Regresijas analīze"
-author: "Andris Avotiņš & Didzis Elferts"
+author: "Andris Avotiņš"
 output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css","my-css.css"]
@@ -295,7 +295,7 @@ summary(modelis)
 ---
 ## Regresoru neatkarība
 
-Regresoriem ir jābūt savstarpēji neatkarīgiem - tādiem, kas cits citu (arī kopīgi) nespēj precīzi prognozēt. Citiem vārdiem sakot, to vērtību dispersijām (*variance*) ir jābūt savstarpēji neietekmētām. To var pārbaudīt ar `vif()` (*variance inflation factor*) funkciju, kurā kā argumentu lieto izveidoto regresijas objektu. Ir pieņemts uzskatīt, ka $vif\le4$ nozīmē savstarpēju neatkarību, tomēr modeli var veidot kā prognostisku (ne vairs precīzi skaidrojošu) sistēmu, ja $vif\le10$
+Regresoriem ir jābūt savstarpēji neatkarīgiem - tādiem, kas cits citu (arī kopīgi) nespēj precīzi prognozēt. Citiem vārdiem sakot, to vērtību dispersijām (*variance*) ir jābūt savstarpēji neietekmētām. To var pārbaudīt ar `vif()` (*variance inflation factor*) funkciju, kurā kā argumentu lieto izveidoto regresijas objektu. Ir pieņemts uzskatīt, ka $vif\leq4$ nozīmē savstarpēju neatkarību, tomēr modeli var veidot kā prognostisku (ne vairs precīzi skaidrojošu) sistēmu, ja $vif\leq10$
 
 ```{r}
 library(car)
