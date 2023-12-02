@@ -1,7 +1,7 @@
 ---
 title: "Vispārējie lineārie modeļi"
 subtitle: "Generalized linear model (GLM)"
-author: "Didzis Elferts"
+author: "Andris Avotiņš"
 output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css","my-css.css"]
@@ -123,7 +123,7 @@ summary(mod)
 
 * Kategorijas
 
-* Skaita
+* Skaits
 
 
 
@@ -173,7 +173,7 @@ GLM modeļi ļauj analizēt lineārās saistības starp regresoriem un regresent
 
 * Atlikuma vērtības normāli vai ne-normāli sadalītas
 
-* Konstanta vai ne-konstante variēšana (dispersija)
+* Konstanta vai ne-konstanta variēšana (dispersija)
 
 ---
 ## GLM ir trīs soļi:
@@ -336,7 +336,7 @@ ggplot(df,aes(diametrs,retums))+geom_point(size=3)+geom_smooth(method="glm",se=F
 ---
 ## Iespējamību attiecība
 
-Iespējamību attiecība jeb Odds ratio
+Iespējamību/izredžu attiecība jeb Odds ratio
 $$
 \frac{p_1/q_1}{p_2/q_2}
 $$
@@ -422,7 +422,7 @@ $$
 E(Y_i)=\mu_i \hspace{10 pt} un \hspace{10 pt} var(Y_i)=\mu_i
 $$
 
-Lineārā saistība starp sagaidām vidējo vērtību un regresoru (saistības funkcija ir log)
+Lineārā saistība starp sagaidāmo vidējo vērtību un regresoru (saistības funkcija ir log)
 $$
 log(\mu_i)=\alpha+\beta \cdot X_i \hspace{10 pt} jeb \hspace{10 pt} \mu_i=e^{\alpha+\beta \cdot X_i}
 $$
@@ -494,7 +494,7 @@ summary(mod1)
 ---
 ## Puasona regresija - piemērs
 
-Lai gan pH ietekme šajā gadījumā nav būtiska, koeficients pie pH nozīmē, ka palielinoties pH par vienu vienību, sugu skaits mainās exp(0,03887) reizēm jeb 1,039.
+Lai gan pH ietekme šajā gadījumā nav būtiska, koeficients pie pH nozīmē, ka palielinoties pH par vienu vienību, sugu skaits mainās par exp(0,03887) reizēm jeb 1,039.
 
 
 ---
@@ -582,7 +582,7 @@ summary(mod)
 
 * Veicot prognozēšanu ar lineārās regresijas modeli, pie lielām biomasas vērtībām iegūst negatīvu sugu skaitu
 
-* Salīdzinot grafiski skaidri parādās abu modeļu atšķirības
+* Salīdzinot grafiski, skaidri parādās abu modeļu atšķirības
 
 
 ---
