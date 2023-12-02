@@ -1,6 +1,6 @@
 ---
 title: "Kovariācijas analīze"
-author: "Andris Avotiņš & Didzis Elferts"
+author: "Andris Avotiņš"
 output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css","my-css.css"]
@@ -383,6 +383,7 @@ model.matrix(ancova)
 ```{r ,fig.align='center',fig.height=4.5,fig.width=8}
 par(mfrow = c(2, 2))
 plot(ancova)
+par(mfrow = c(1, 1))
 ```
 
 ---
