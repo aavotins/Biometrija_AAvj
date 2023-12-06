@@ -184,7 +184,7 @@ AICc(ancova,ancova2)
 ```
 ]
 
-**Secinājums:** starp modeļiem nepastāv statistiski būtiska atšķirība $(F_{(1;37)} = 0,1031$, p vērtība ir 0,75 un tā ir lielāka par būtiskuma līmeni 0,05), tad var izvēlēties vienkāršāko modeli - ancova2. Pēc AICc tas ir uzskatāms par labāku vispārinājumu populācijā.
+**Secinājums:** starp modeļiem nepastāv statistiski būtiska atšķirība $(F_{(1;73)} = 0,1031$, p vērtība ir 0,75 un tā ir lielāka par būtiskuma līmeni 0,05), tad var izvēlēties vienkāršāko modeli - ancova2. Pēc AICc tas ir uzskatāms par labāku vispārinājumu populācijā.
 
 
 ---
@@ -342,7 +342,7 @@ anova(ancova,ancova2)
 ---
 ## Secinājumi
 
-Labākais vispārinājums dzimuma un vecuma ietekmei uz svaru popuācijā ir sarežģītākais - tiešo un mijiedarbības efektu - modelis, jo tam ir mazākā AICc vērtība. Tas ir statistiski nozīmīgi labāks par otro - tiešo efektu - $(F_{(1;55)} = 33,608; p<0,0001)$ modeli.
+Labākais vispārinājums dzimuma un vecuma ietekmei uz svaru popuācijā ir sarežģītākais - tiešo un mijiedarbības efektu - modelis, jo tam ir mazākā AICc vērtība. Tas ir statistiski nozīmīgi labāks par otro - tiešo efektu - $(F_{(1;103)} = 33,608; p<0,0001)$ modeli.
 
 ---
 ## Labākais modelis
