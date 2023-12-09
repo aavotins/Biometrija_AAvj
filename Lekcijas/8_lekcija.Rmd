@@ -1,6 +1,6 @@
 ---
 title: "Kas ir labs attēls?  Kā parādīt statistisko testu rezultātus?"
-author: "Didzis Elferts"
+author: "Andris Avotiņš"
 output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css","my-css.css"]
@@ -202,7 +202,7 @@ Materiāls ņemts no https://www.ctspedia.org/do/view/CTSpedia/BestPractices
 
 * Maksimalizējiet datu/tintes attiecību
 
-* Katram "tintes" daudzumam ir jābūt nepieciešam, lai uzsvērtu galveno attēla vēstījumu
+* Katram "tintes" daudzumam ir jābūt nepieciešamam, lai uzsvērtu galveno attēla vēstījumu
 
 * Attēlā nedrīkst likt lietas, kas nav reāli nepieciešamas
 
@@ -265,7 +265,7 @@ Avots: http://www.datuskola.lv/2017/02/08/datu-apgraizisanai-ne/
 
 * Attēlos jāizvēlas vienkārši un pierasti simboli, apzīmējumi, ko ir viegli atšķirt
 
-* Veidojot attēlus posteriem un prezentācijām, jāizmanto platākas līnijas, lielāko simboli un teksti
+* Veidojot attēlus posteriem un prezentācijām, jāizmanto platākas līnijas, lielāki simboli un teksti
 
 * Simbolu un līniju veidu/krāsu nozīmei jābūt vienādiem starp attēliem viena dokumenta ietvaros
 
@@ -277,7 +277,7 @@ Avots: http://www.datuskola.lv/2017/02/08/datu-apgraizisanai-ne/
 
 * Krāsām jābūt kontrastainām un viegli atšķiramām. Jāņem vērā arī tas, ka ir cilvēki ar problēmām uztvert atsevišķas krāsas
 
-* Jāpārliecinās, ka krāsainais attēls skatīts melnbaltā arī ir uztverams
+* Jāpārliecinās, lai krāsainais attēls skatīts melnbaltā arī ir uztverams
 
 * Visām palīglīnijām ir jābūt savādākām nekā datu līnijām
 
@@ -326,18 +326,18 @@ citation("vegan")
 ---
 ## Rezultāti
 
-* Raksturojot pazīmes vidējo vērtību, vēlams norādīt arī izkliedi raksturojošos rādītājus, piemēram, ticamības intervālu, standartkļūdu vai standartnovirzi (jābūt saprotamam, kas ir norādīts)
+* Raksturojot pazīmes vidējo vērtību, nepieciešams norādīt arī izkliedi raksturojošos rādītājus, piemēram, ticamības intervālu, standartkļūdu vai standartnovirzi (jābūt saprotamam, kas ir norādīts)
 
 * Statistisko testu rezultātos nepietiek tikai ar p-vērtību, bet vēlams norādīt arī papildus rādītājus - t-testam t-vērtību un df, dispersijas analīzei F vērtību, ...
 
-* Vēlams norādīt reālās p-vērtības, piemēram, p=0,035, nevis p<0,05. Ja p-vērtība ir ļoti maza (p<0,0001), tad labāk rakstīt, p < 0,0001, nevis skaitli ar mīnus pakāpi.
+* Vēlams norādīt reālās p-vērtības, piemēram, p=0,035, nevis p<0,05. Ja p-vērtība ir ļoti maza (p<0,0001), tad labāk rakstīt, p < 0,0001, nevis skaitli ar negatīvu pakāpi.
 
 ---
 ## Rezultātu parādīšana
 
 * Meitenēm vidējā atzīmē (8,4, sd=1,3) ir būtiski augstāka nekā zēniem (7,6, sd=1,4), t(44)=2,65, p=0,003
 
-* Vienfaktora dispersijas analīzi izmantoja, lai noskaidrotu koku diametru atšķirības starp trīs mežu augšanas tipiem. Vidējie diametri statistiski būtiski atšķīrās starp augšanas tipiem (F (2,27)=5,77, p=0,008).
+* Vienfaktora dispersijas analīzi izmantoja, lai noskaidrotu koku diametru atšķirības starp trīs mežu augšanas tipiem. Vidējie diametri statistiski būtiski atšķīrās starp augšanas tipiem (F(2,27)=5,77, p=0,008).
 
 ---
 
