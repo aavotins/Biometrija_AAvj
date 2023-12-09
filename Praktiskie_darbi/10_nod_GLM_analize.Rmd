@@ -1,7 +1,7 @@
 ---
 title: "Vispārējie lineārie modeļi"
 subtitle: "Generalized linear model (GLM)"
-author: "Andris Avotiņš & Didzis Elferts"
+author: "Andris Avotiņš"
 output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css","my-css.css"]
@@ -67,7 +67,7 @@ cdplot(ESR ~ globulin, data = plasma)
 ---
 ## Modeļa definēšana
 
-GLM analīzes veikšanai izmanto funkciju `glm()`, kurai kā argumentus norāda modeļa formulu, datu objektu, kā arī atlikuma vērtību struktūru (`family =`) un saistības funkciju. Ja atlikuma struktūru nenorāda, tad tiek veikta parasta lineārā regresija.
+GLM analīzes veikšanai izmanto funkciju `glm()`, kurai kā argumentus norāda modeļa formulu, datu objektu, kā arī atlikuma vērtību struktūru (`family =`) un saistības funkciju. Ja atlikuma struktūru nenorāda, tad tiek veikta lineārā regresija.
 
 ```{r,comment=NA}
 plasma_glm_1 <- glm(ESR ~ fibrinogen, data = plasma,
@@ -152,7 +152,7 @@ AICc(plasma_glm_1,plasma_glm_2)
 ---
 ## Modeļu salīdiznājums - loģistiskā regresija
 
-**Secinājums:** Pēc informācijas kritērija vērtībām, abi modeļi ir uzskatāmi par konkurējošiem $(\Delta AICc= 0,57)$, starp tiem nepastāv statistiski būtiska atšķirība $(\chi^2_{(1;30)}= 1,8692; p = 0,17)$, tādēļ var izvēlēties vienkāršāko modeli, kas šajā gadījumā ir 1. modelis. 
+**Secinājums:** Pēc informācijas kritērija vērtībām, abi modeļi ir uzskatāmi par neizšķiramiem $(\Delta AICc= 0,57)$, starp tiem nepastāv statistiski būtiska atšķirība $(\chi^2_{(1;59)}= 1,8692; p = 0,17)$, tādēļ var izvēlēties vienkāršāko modeli, kas šajā gadījumā ir 1. modelis. 
 
 
 ---
@@ -323,7 +323,7 @@ eform(womensrole_glm_2)
 ---
 ## Modeļa rezultāts - 2. piemērs
 
-**Secinājums:**  uz iespējamību, ka respondenti piekrīt apgalvojumam, izglītības ilgumam ir statistiski būtisks $(z_{(1)}=-11,592; p = <0,001)$ negatīvs efekts, tas ir, ar katru mācību gadu izredzes piekrist šādam apgalvojumam samazinās par 21% (OR=0,791; 95% TI 0,761 - 0,823). Izglītības ilguma ietekme statistiski būtiski atšķiras starp dzimumiem $(z_{(1)}=-2,617; p = 0,009)$ - sievietēm negatīvais efekts ir izteiktāts (OR=0,922; 95% TI 0,867 - 0,980). Arī pie vienāda izglītības līmeņa starp dzimumiem pastāv statistiski būtiska atšķirība $(z_{(1)}=2,513; p = 0,012)$ iespējamībās piekrist apgalvojumam - sivietēm tās ir augstākas (OR=2,471; 95% TI 1,220 - 5,005).
+**Secinājums:**  uz iespējamību, ka respondenti piekrīt apgalvojumam, izglītības ilgumam ir statistiski būtisks $(z_{(1)}=-11,592; p = <0,001)$ negatīvs efekts, tas ir, ar katru mācību gadu izredzes piekrist šādam apgalvojumam samazinās par 21% (OR=0,791; 95% TI 0,761 - 0,823). Izglītības ilguma ietekme statistiski būtiski atšķiras starp dzimumiem $(z_{(1)}=-2,617; p = 0,009)$ - sievietēm negatīvais efekts ir izteiktāts (OR=0,922; 95% TI 0,867 - 0,980). Arī pie vienāda izglītības līmeņa starp dzimumiem pastāv statistiski būtiska atšķirība $(z_{(1)}=2,513; p = 0,012)$ iespējamības piekrist apgalvojumam - sievietēm tās ir augstākas (OR=2,471; 95% TI 1,220 - 5,005).
 
 
 ---
@@ -432,7 +432,7 @@ AICc(model1,model2)
 ---
 ## Modeļu salīdzinājums
 
-**Secinājums:** Saskaņā ar informācijas kritērija vērtību $(\Delta AICc=11,499)$, otrais modelis ir labāks vispārinājums, turklāt tas ir statistiski nozīmīgi labāks $(\chi^2_{(1;42)}=16,04; p<0,001)$, tādēļ jāizvēlas 2. modelis, kurā iekļauta faktoru kombinācija.
+**Secinājums:** Saskaņā ar informācijas kritērija vērtību $(\Delta AICc=11,499)$, otrais modelis ir labāks vispārinājums, turklāt tas ir statistiski nozīmīgi labāks $(\chi^2_{(1;170)}=16,04; p<0,001)$, tādēļ jāizvēlas 2. modelis, kurā iekļauta faktoru kombinācija.
 
 ---
 ## Rezultātu parādīšana
