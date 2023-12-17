@@ -1,7 +1,7 @@
 ## Attelu veidosana
 
 library(readxl)
-dati <- read_excel("augi.xlsx")
+dati <- read_excel("./Dati/augi.xlsx")
 head(dati)
 
 
