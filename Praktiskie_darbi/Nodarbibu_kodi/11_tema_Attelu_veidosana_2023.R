@@ -75,43 +75,90 @@ ggplot(dati, aes(gaisma, lapas, shape = stress)) +
                 position = position_dodge(width = 0.25)) +
    labs(x = "Stresa līmenis", y = expression(paste("Lapu laukums, ", cm^{2})))
 
+## Izvairamies slēpt datus
+
+ggplot(dati, aes(gaisma, lapas, shape = stress)) + 
+  geom_violin(position = position_dodge(width = 0.9))+
+  geom_point(position = position_jitterdodge(jitter.width = 0.25),col="grey")+
+  stat_summary(fun.data = "mean_cl_normal", 
+               position = position_dodge(width = 0.9)) +
+  labs(x = "Stresa līmenis", y = expression(paste("Lapu laukums, ", cm^{2})))+
+  theme_classic()
+
+## Izlases apjoms
+
+library(EnvStats)
+ggplot(dati, aes(gaisma, lapas, shape = stress)) + 
+  geom_violin(position = position_dodge(width = 0.9))+
+  geom_point(position = position_jitterdodge(jitter.width = 0.25),col="grey")+
+  stat_summary(fun.data = "mean_cl_normal", 
+               position = position_dodge(width = 0.9)) +
+  labs(x = "Gaismas līmenis", y = expression(paste("Lapu laukums, ", cm^{2})))+
+  theme_classic()+
+  stat_n_text()
+
+## Grupu atšķirību būtiskums
+
+dati$apvienots=interaction(dati$gaisma,dati$stress)
+tests=aov(lapas~apvienots,data=dati)
+library(rstatix)
+salidzinajumi=tukey_hsd(tests)
+salidzinajumi$y.position=c(360,370,380,390,400,410)
+salidzinajumi
+
+
+attels=ggplot(dati, aes(apvienots, lapas)) + 
+  geom_violin()+
+  geom_point(position = position_jitter(width = 0.25),col="grey")+
+  stat_summary(fun.data = "mean_cl_normal", 
+               position = position_dodge(width = 0.9)) +
+  labs(x = "Gaisma stresa grupās", y = expression(paste("Lapu laukums, ", cm^{2})))+
+  theme_classic()+
+  stat_n_text()
+attels
+
+attels+ggpubr::stat_pvalue_manual(salidzinajumi,label="p.adj.signif",size=3)
+
+
+
+
+
+
 ## Regresijas attelojums
 library(ggplot2)
 library(ggpmisc)
 ggplot(iris,aes(Petal.Width,Petal.Length)) +
       geom_point() +
       geom_smooth(method = "lm") +
-      stat_poly_eq(formula = y ~ x, parse = TRUE) +
+      stat_poly_eq(formula = y ~ x) +
    labs(x = "Vainaglapu platums, cm", y = "Kauslapu garums, cm")
 
 ggplot(iris,aes(Petal.Width,Petal.Length)) +
       geom_point() +
       geom_smooth(method = "lm") +
       stat_poly_eq(formula = y ~ x, parse = TRUE, 
-                   aes(label = ..adj.rr.label..)) +
+                   aes(label = after_stat(adj.rr.label))) +
    labs(x = "Vainaglapu platums, cm", y = "Kauslapu garums, cm")
 
 ggplot(iris,aes(Petal.Width,Petal.Length)) +
       geom_point() +
       geom_smooth(method = "lm") +
-      stat_poly_eq(formula = y ~ x, parse = TRUE, 
-                   aes(label = ..eq.label..)) +
+      stat_poly_eq(formula = y ~ x, 
+                   mapping=use_label('eq.label')) +
    labs(x = "Vainaglapu platums, cm", y = "Kauslapu garums, cm")
 
 ggplot(iris,aes(Petal.Width,Petal.Length)) +
       geom_point() +
       geom_smooth(method = "lm") +
-      stat_poly_eq(formula = y ~ x, parse = TRUE,
-                   aes(label = paste(..eq.label..,
-                                     ..adj.rr.label..,sep = "*\",\"~~"))) +
+      stat_poly_eq(formula = y ~ x,
+                   mapping=use_label(c("eq.label","adj.rr.label"))) +
    labs(x = "Vainaglapu platums, cm", y = "Kauslapu garums, cm")
 
 ggplot(iris,aes(Petal.Width,Petal.Length, color = Species)) +
       geom_point() +
       geom_smooth(method = "lm") +
-      stat_poly_eq(formula = y ~ x, parse = TRUE,
-                   aes(label = paste(..eq.label..,
-                                     ..rr.label..,sep = "*\",\"~~"))) +
+      stat_poly_eq(formula = y ~ x,
+                   mapping=use_label(c("eq.label","adj.rr.label"))) +
    labs(x = "Vainaglapu platums, cm", y = "Kauslapu garums, cm")
 
 ## Vairaku attelu apvienosana viena
